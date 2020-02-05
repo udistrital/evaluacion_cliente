@@ -144,6 +144,12 @@ export class VerEvaluacionComponent implements OnInit {
         this.proveedor = res_contrato[0].informacion_proveedor;
         this.contratoCompleto = res_contrato[0].contrato_general;
         this.supervisor = this.contratoCompleto.Supervisor;
+        /*this.administrativaAmazonService.get('supervisor_contrato?query=Documento:' + this.supervisor.Documento
+          + ',DependenciaSupervisor:' + this.contratoCompleto.DependenciaSolicitante).subscribe((response) => {
+            console.info(response[0].Cargo)
+          }), (error_service) => {
+          };*/
+
       }), (error_service) => {
         this.openWindow(error_service.message);
         this.regresarFiltro();
