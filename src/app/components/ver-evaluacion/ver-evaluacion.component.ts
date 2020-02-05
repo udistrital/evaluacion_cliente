@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
+import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NbWindowService } from '@nebular/theme';
 import jsPDF from 'jspdf';
@@ -29,6 +30,7 @@ export class VerEvaluacionComponent implements OnInit {
   labelAux: any;
   constructor(
     private evaluacionCrudService: EvaluacioncrudService,
+    private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
     private administrativaAmazonService: AdministrativaamazonService,
   ) {
@@ -134,32 +136,18 @@ export class VerEvaluacionComponent implements OnInit {
     }
   }
 
+  // Se consulta los datos del contrato general.
   consultarDatosContrato() {
-    // Se consulta los datos del contrato general.
-    this.administrativaAmazonService.get('contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:'
-      + this.dataContrato[0].ContratoSuscrito + ',VigenciaContrato:' + this.dataContrato[0].Vigencia)
-      .subscribe((res_admi_amazon) => {
-        if (res_admi_amazon !== null) {
-          this.contratoCompleto = res_admi_amazon[0];
-          this.supervisor = res_admi_amazon[0].Supervisor;
-          // Se consulta el nombre del Proveedor
-          this.administrativaAmazonService.get('informacion_proveedor?query=Id:' + res_admi_amazon[0].Contratista)
-            .subscribe((res_contratista) => {
-              this.proveedor = res_contratista[0];
-            }, (error_service) => {
-              this.openWindow(error_service.message);
-            });
-          // Se consulta el nombre de la dependencia.
-          this.administrativaAmazonService.get('dependencia_SIC?query=ESFCODIGODEP:' + res_admi_amazon[0].DependenciaSolicitante)
-            .subscribe((res_dependencia) => {
-              this.dependencia = res_dependencia[0].ESFDEPENCARGADA;
-            }, (error_service) => {
-              this.openWindow(error_service.message);
-            });
-        }
-      }, (error_service) => {
+    this.evaluacionMidService.get('datosContrato/?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
+      '&VigenciaContrato=' + this.dataContrato[0].Vigencia).subscribe((res_contrato) => {
+        this.dependencia = res_contrato[0].dependencia_SIC.ESFDEPENCARGADA;
+        this.proveedor = res_contrato[0].informacion_proveedor;
+        this.contratoCompleto = res_contrato[0].contrato_general;
+        this.supervisor = this.contratoCompleto.Supervisor;
+      }), (error_service) => {
         this.openWindow(error_service.message);
-      });
+        this.regresarFiltro();
+      };
   }
 
   regresarFiltro() {
