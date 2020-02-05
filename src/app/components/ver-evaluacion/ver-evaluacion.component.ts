@@ -138,12 +138,18 @@ export class VerEvaluacionComponent implements OnInit {
 
   // Se consulta los datos del contrato general.
   consultarDatosContrato() {
-    this.evaluacionMidService.get('datosContrato/?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
+    this.evaluacionMidService.get('datosContrato?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
       '&VigenciaContrato=' + this.dataContrato[0].Vigencia).subscribe((res_contrato) => {
         this.dependencia = res_contrato[0].dependencia_SIC.ESFDEPENCARGADA;
         this.proveedor = res_contrato[0].informacion_proveedor;
         this.contratoCompleto = res_contrato[0].contrato_general;
         this.supervisor = this.contratoCompleto.Supervisor;
+        /*this.administrativaAmazonService.get('supervisor_contrato?query=Documento:' + this.supervisor.Documento
+          + ',DependenciaSupervisor:' + this.contratoCompleto.DependenciaSolicitante).subscribe((response) => {
+            console.info(response[0].Cargo)
+          }), (error_service) => {
+          };*/
+
       }), (error_service) => {
         this.openWindow(error_service.message);
         this.regresarFiltro();
