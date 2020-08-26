@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="card-title">Lista de proveedores</h2>
+      </div>
+    </div>
+    <div class="row justify-content-md-center">
+      <div class="col-md-auto">
+        <div class="example-form">
+          <mat-form-field>
+            <input type="number" [(ngModel)]="identificacion_proveedor" matInput
+              placeholder="Identificación del proveedor"
+              onkeypress="return (event.charCode == 8 || event.charCode == 0) ? undefined : event.charCode >= 48 && event.charCode <= 57">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-auto">
+        <div class="example-form">
+          <mat-form-field>
+            <input type="number" [(ngModel)]="numero_contrato" matInput placeholder="Numero de contrato"
+              onkeypress="return (event.charCode == 8 || event.charCode == 0) ? undefined : event.charCode >= 48 && event.charCode <= 57">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="col-md-auto">
+        <mat-form-field>
+          <mat-select placeholder="Vigencia" [(ngModel)]="vigencia">
+            <mat-option *ngFor="let vigencia of vigencias" [value]="vigencia">
+              {{vigencia}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div>
+      <p class="nota">
+        * Ingresar el número de identificación del proveedor y el número de contrato sin puntos, comas o guiones. 
+      </p>
+    </div>
+    <div class="row justify-content-md-center">
+      <div class="col-md-auto">
+        <button (click)="filtro()"  (sendData)="filtro()" nbButton>Filtrar</button>
+      </div>
+      <div class="col-md-auto">
+        <button (click)="limpiarfiltro()" nbButton>Limpiar Filtro</button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #contentTemplate let-data>
+  <h4>{{ data.text }}</h4>
+</ng-template>

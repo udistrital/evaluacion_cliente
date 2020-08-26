@@ -1,0 +1,131 @@
+<div class="card card-margin" *ngFor="let seccionPadre of json.Secciones; let i = index">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-10">
+        <h2>{{seccionPadre.Nombre}}</h2>
+      </div>
+      <div class="col-2" *ngFor="let seccionHija of seccionPadre.Seccion_hija_id; let j = index">
+        <p class="p-valor" *ngIf="seccionHija['Item'][0].Tamano!=12 && j==0">Valor asignado</p>
+      </div>
+    </div>
+    <div class="div-seccionHija" *ngFor="let seccionHija of seccionPadre.Seccion_hija_id; let j = index">
+      <div class="col-12" *ngIf="seccionHija['Item'][0].Tamano==12">
+        <mat-form-field class="txtArea-full" *ngIf="this.realizar==true">
+          <textarea matInput placeholder="Item Evaluado" [(ngModel)]="this.json.label"></textarea>
+        </mat-form-field>
+        <label class="txtArea-full" matInput placeholder="Item Evaluado" *ngIf="this.realizar==false">{{this.json.label}}</label>
+      </div>
+
+      <div *ngIf="seccionHija['Item'][0].Tamano!=12">
+        <div *ngIf="seccionHija['Condicion'].length>0">
+          <div class="row"
+            *ngIf="seccionPadre.Seccion_hija_id[j-1]['Item'][2].Valor.Nombre==seccionHija['Condicion'][0]['Nombre']">
+            <div [ngClass]="'col-'+item['Tamano']" *ngFor="let item of seccionHija['Item']; let k = index"
+              [ngSwitch]="item['IdTipoItem']['Nombre']">
+              <p *ngSwitchCase="'label'">
+                {{item['Valor']}}
+              </p>
+              <div class="mat-select" *ngSwitchCase="'select'">
+                <label matInput *ngIf="this.realizar===false">{{seccionHija['Item'][2].Valor.Nombre}}</label>
+                <mat-select *ngIf="this.realizar===true && this.evaRealizada == false"
+                  [(ngModel)]="json.Secciones[i].Seccion_hija_id[j]['Item'][2].Valor"
+                  (selectionChange)="filterChanged(i, seccionHija['Condicion'][0]['Nombre'])" placeholder="Opción">
+                  <mat-option *ngFor="let opcion of seccionHija['Item'][2]['Opcion_item']"
+                    [value]="opcion['IdOpciones']">
+                    {{opcion['IdOpciones']['Nombre']}}
+                  </mat-option>
+                </mat-select>
+                <mat-select *ngIf="this.realizar===true && this.evaRealizada == true"
+                  [(ngModel)]="json.Secciones[i].Seccion_hija_id[j]['Item'][2].Valor"
+                  (selectionChange)="filterChanged(i, seccionHija['Condicion'][0]['Nombre'])"
+                  placeholder="{{seccionHija['Item'][2].Valor.Nombre}}">
+                  <mat-option *ngFor="let opcion of seccionHija['Item'][2]['Opcion_item']"
+                    [value]="opcion['IdOpciones']">
+                    {{opcion['IdOpciones']['Nombre']}}
+                  </mat-option>
+                </mat-select>
+              </div>
+            </div>
+            <div class="col-2">
+              <p class="p-valor-item">
+                {{seccionHija['Item'][2].Valor.Valor}}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="seccionHija['Condicion'].length==0">
+          <div [ngClass]="'col-'+item['Tamano']" *ngFor="let item of seccionHija['Item']; let k = index"
+            [ngSwitch]="item['IdTipoItem']['Nombre']">
+            <p *ngSwitchCase="'label'">
+              {{item['Valor']}}
+            </p>
+            <div class="mat-select" *ngSwitchCase="'select'">
+              <label matInput *ngIf="this.realizar===false">{{seccionHija['Item'][2].Valor.Nombre}}</label>
+              <mat-select *ngIf="this.realizar===true && this.evaRealizada == false"
+                [(ngModel)]="json.Secciones[i].Seccion_hija_id[j]['Item'][2].Valor"
+                (selectionChange)="filterChanged(i,'', seccionPadre.Seccion_hija_id[j]['Item'][2].Valor.Nombre)"
+                placeholder="Opción">
+                <mat-option *ngFor="let opcion of seccionHija['Item'][2]['Opcion_item']" [value]="opcion['IdOpciones']">
+                  {{opcion['IdOpciones']['Nombre']}}
+                </mat-option>
+              </mat-select>
+              <mat-select *ngIf="this.realizar===true && this.evaRealizada == true"
+                [(ngModel)]="json.Secciones[i].Seccion_hija_id[j]['Item'][2].Valor"
+                (selectionChange)="filterChanged(i,'', seccionPadre.Seccion_hija_id[j]['Item'][2].Valor.Nombre)"
+                placeholder="{{seccionHija['Item'][2].Valor.Nombre}}">
+                <mat-option *ngFor="let opcion of seccionHija['Item'][2]['Opcion_item']" [value]="opcion['IdOpciones']">
+                  {{opcion['IdOpciones']['Nombre']}}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+          <div class="col-2">
+            <p class="p-valor-item">
+              {{seccionHija['Item'][2].Valor.Valor}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let seccionHija of seccionPadre.Seccion_hija_id; let j = index">
+      <hr *ngIf="seccionHija['Item'][0].Tamano!=12 && j==0" />
+      <div class="row div-seccionHija" *ngIf="seccionHija['Item'][0].Tamano!=12 && j==0">
+        <div class="col-8">
+        </div>
+        <div class="col-2">
+          <p>Puntaje total</p>
+        </div>
+        <div class="col-2">
+          <p class="p-valor-item">{{seccionPadre.ValorSeccion}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card card-margin">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-5">
+        <h2>Puntaje total de la evaluación</h2>
+      </div>
+      <div class="col-2">
+        <p class="p-valor-item"> {{ this.json.ValorFinal }}</p>
+      </div>
+      <div class="col-2">
+        <div *ngFor="let clasificador of json['Clasificaciones']; let k = index">
+          <p class="p-valor-item"
+            *ngIf="json.ValorFinal >= clasificador.LimiteInferior && json.ValorFinal <= clasificador.LimiteSuperior">
+            {{ clasificador['Nombre']  }}</p>
+        </div>
+      </div>
+      <div class="col-3">
+        <button (click)="realizarEvaluacion()" nbButton class="btn-evaluacion" *ngIf="this.realizar==true">
+          Enviar Evaluación
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #contentTemplate let-data>
+  <h4>{{ data.text }}</h4>
+</ng-template>

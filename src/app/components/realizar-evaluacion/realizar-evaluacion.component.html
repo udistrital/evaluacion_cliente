@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <h1>Evaluación Proveedor</h1>
+      <br>
+      <ngx-plantilla-evaluacion [realizar]="this.realizar" (jsonEvaluacion)="realizarEvaluacion($event)"></ngx-plantilla-evaluacion>
+      <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
+        <i class="fas fa-arrow-alt-circle-left"></i>
+        Regresar
+      </button>
+    </div>
+  </div>
+</div>
+<ng-template #contentTemplate let-data>
+  <h4>{{ data.text }}</h4>
+</ng-template>

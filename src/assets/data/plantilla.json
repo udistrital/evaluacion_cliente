@@ -1,0 +1,1244 @@
+{
+  "Type": "OK",
+  "Code": "200",
+  "Body": {
+    "Activo": true,
+    "Clasificaciones": [
+      {
+        "Activo": true,
+        "CodigoAbreviacion": "EX",
+        "Descripcion": "calificacion para el proveedor que cumplio con todos los termnios",
+        "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+        "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+        "Id": 1,
+        "LimiteInferior": 80,
+        "LimiteSuperior": 100,
+        "Nombre": "EXCELENTE",
+        "NumeroOrden": 0
+      },
+      {
+        "Activo": true,
+        "CodigoAbreviacion": "BN",
+        "Descripcion": "calificacion para el proveedor que cumplio parcialmentente con los terminos",
+        "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+        "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+        "Id": 2,
+        "LimiteInferior": 46,
+        "LimiteSuperior": 79,
+        "Nombre": "BUENO",
+        "NumeroOrden": 0
+      },
+      {
+        "Activo": true,
+        "CodigoAbreviacion": "ML",
+        "Descripcion": "caloficacion para el proveedor que cumplio con pocos terminos",
+        "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+        "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+        "Id": 3,
+        "LimiteInferior": 0,
+        "LimiteSuperior": 45,
+        "Nombre": "MALO",
+        "NumeroOrden": 0
+      }
+    ],
+    "Descripcion": "",
+    "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+    "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+    "Id": 6,
+    "Secciones": [ 
+      {
+        "Activo": true,
+        "FechaCreacion": "2019-12-20 11:53:36.114623 +0000 +0000",
+        "FechaModificacion": "2019-12-20 11:53:36.11478 +0000 +0000",
+        "Id": 65,
+        "IdPlantilla": {
+          "Activo": true,
+          "Descripcion": "",
+          "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+          "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+          "Id": 6,
+          "Usuario": "utest10"
+        },
+        "Nombre": "Calidad",
+        "SeccionPadreId": null,
+        "Seccion_hija_id": [
+          {
+            "Activo": true,
+            "Condicion": [],
+            "FechaCreacion": "2019-12-20 11:53:36.21815 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:36.218297 +0000 +0000",
+            "Id": 66,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 101,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "CONFORMIDAD"
+              },
+              {
+                "Id": 102,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto CONFORMIDAD",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿El bien o servicio cumplió con las especificaciones y requisitos pactados en el momento de entrega?"
+              },
+              {
+                "Id": 103,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:40.673539 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:40.674599 +0000 +0000",
+                      "Id": 3,
+                      "Nombre": "SI",
+                      "Valor": 20
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:38.036502 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:38.037961 +0000 +0000",
+                      "Id": 2,
+                      "Nombre": "NO",
+                      "Valor": 0
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Conformidad",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:36.114623 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:36.11478 +0000 +0000",
+              "Id": 65,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "Calidad",
+              "SeccionPadreId": null
+            }
+          },
+          {
+            "Activo": true,
+            "Condicion": [],
+            "FechaCreacion": "2019-12-20 11:53:37.662831 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:37.663169 +0000 +0000",
+            "Id": 67,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 104,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "FUNCIONALIDAD ADICIONAL"
+              },
+              {
+                "Id": 105,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto FUNCIONALIDAD ADICIONAL",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿El producto comprado o el servicio prestado proporcionó más herramientas o funciones de las solicitadas originalmente?"
+              },
+              {
+                "Id": 106,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:42.087471 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:42.0894 +0000 +0000",
+                      "Id": 4,
+                      "Nombre": "SI",
+                      "Valor": 10
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:38.036502 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:38.037961 +0000 +0000",
+                      "Id": 2,
+                      "Nombre": "NO",
+                      "Valor": 0
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Funcionalidad AdicionaL ",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:36.114623 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:36.11478 +0000 +0000",
+              "Id": 65,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "Calidad",
+              "SeccionPadreId": null
+            }
+          }
+        ]
+      },
+      {
+        "Activo": true,
+        "FechaCreacion": "2019-12-20 11:53:39.106425 +0000 +0000",
+        "FechaModificacion": "2019-12-20 11:53:39.106562 +0000 +0000",
+        "Id": 68,
+        "IdPlantilla": {
+          "Activo": true,
+          "Descripcion": "",
+          "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+          "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+          "Id": 6,
+          "Usuario": "utest10"
+        },
+        "Nombre": "pos contractual",
+        "SeccionPadreId": null,
+        "Seccion_hija_id": [
+          {
+            "Activo": true,
+            "Condicion": [],
+            "FechaCreacion": "2019-12-20 11:53:39.210244 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:39.210391 +0000 +0000",
+            "Id": 69,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 107,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "RECLAMACIONES"
+              },
+              {
+                "Id": 108,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto reclamaciones",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿Se han presentado reclamaciones al proveedor en calidad o gestión?"
+              },
+              {
+                "Id": 109,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:43.610356 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:43.611269 +0000 +0000",
+                      "Id": 5,
+                      "Nombre": "SI",
+                      "Valor": 0
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:43.895024 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:43.895538 +0000 +0000",
+                      "Id": 6,
+                      "Nombre": "NO",
+                      "Valor": 12
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Reclamaciones",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:39.106425 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:39.106562 +0000 +0000",
+              "Id": 68,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "pos contractual",
+              "SeccionPadreId": null
+            }
+          },
+          {
+            "Activo": true,
+            "Condicion": [
+              {
+                "Nombre": "SI",
+                "Nombre_seccion_condicion": "Reclamaciones",
+                "Valor": 0
+              }
+            ],
+            "FechaCreacion": "2019-12-20 11:53:40.656707 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:40.656872 +0000 +0000",
+            "Id": 70,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 110,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "RECLAMACIONES"
+              },
+              {
+                "Id": 111,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto reclamaciones",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿El proveedor soluciona oportunamente las no conformidades de calidad y gestión de los bienes o servicios recibidos?"
+              },
+              {
+                "Id": 112,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:37.748732 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:37.749888 +0000 +0000",
+                      "Id": 1,
+                      "Nombre": "SI",
+                      "Valor": 12
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:38.036502 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:38.037961 +0000 +0000",
+                      "Id": 2,
+                      "Nombre": "NO",
+                      "Valor": 0
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Reclamaciones",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:39.106425 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:39.106562 +0000 +0000",
+              "Id": 68,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "pos contractual",
+              "SeccionPadreId": null
+            }
+          },
+          {
+            "Activo": true,
+            "Condicion": [],
+            "FechaCreacion": "2019-12-20 11:53:42.304164 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:42.304313 +0000 +0000",
+            "Id": 71,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 113,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "SERVICIO POS VENTA"
+              },
+              {
+                "Id": 114,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto SERVICIO POS VENTA",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿El proveedor cumple con los compromisos pactados dentro del contrato u orden de servicio o compra?  (aplicación de garantías, mantenimiento, cambios,  reparaciones, capacitaciones, entre otras) "
+              },
+              {
+                "Id": 115,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:42.087471 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:42.0894 +0000 +0000",
+                      "Id": 4,
+                      "Nombre": "SI",
+                      "Valor": 10
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:38.036502 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:38.037961 +0000 +0000",
+                      "Id": 2,
+                      "Nombre": "NO",
+                      "Valor": 0
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Servicio Pos Venta",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:39.106425 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:39.106562 +0000 +0000",
+              "Id": 68,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "pos contractual",
+              "SeccionPadreId": null
+            }
+          }
+        ]
+      },
+      {
+        "Activo": true,
+        "FechaCreacion": "2019-12-20 11:53:43.746312 +0000 +0000",
+        "FechaModificacion": "2019-12-20 11:53:43.74646 +0000 +0000",
+        "Id": 72,
+        "IdPlantilla": {
+          "Activo": true,
+          "Descripcion": "",
+          "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+          "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+          "Id": 6,
+          "Usuario": "utest10"
+        },
+        "Nombre": "Gestión",
+        "SeccionPadreId": null,
+        "Seccion_hija_id": [
+          {
+            "Activo": true,
+            "Condicion": [],
+            "FechaCreacion": "2019-12-20 11:53:43.850035 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:43.850206 +0000 +0000",
+            "Id": 73,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 116,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "PROCEDIMIENTOS"
+              },
+              {
+                "Id": 117,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto PROCEDIMIENTOS",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿El contrato es suscrito en el tiempo pactado, entrega las pólizas a tiempo, entrega de informes de la ejecución y  las facturas son radicadas en el tiempo indicado con las condiciones y soportes requeridos para su trámite contractual? "
+              },
+              {
+                "Id": 118,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:05:46.54993 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:05:46.552132 +0000 +0000",
+                      "Id": 7,
+                      "Nombre": "EXCELENTE",
+                      "Valor": 9
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:05:46.836472 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:05:46.838813 +0000 +0000",
+                      "Id": 8,
+                      "Nombre": "BUENO",
+                      "Valor": 6
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:05:47.122225 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:05:47.124209 +0000 +0000",
+                      "Id": 9,
+                      "Nombre": "REGULAR",
+                      "Valor": 3
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:05:47.407643 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:05:47.409719 +0000 +0000",
+                      "Id": 10,
+                      "Nombre": "MALO",
+                      "Valor": 0
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Procedimientos",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:43.746312 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:43.74646 +0000 +0000",
+              "Id": 72,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "Gestión",
+              "SeccionPadreId": null
+            }
+          },
+          {
+            "Activo": true,
+            "Condicion": [],
+            "FechaCreacion": "2019-12-20 11:53:45.704373 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:45.704523 +0000 +0000",
+            "Id": 74,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 119,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "GARANTÍA"
+              },
+              {
+                "Id": 120,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto GARANTÍA",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿Se requirió hacer uso de la garantía del producto o servicio?"
+              },
+              {
+                "Id": 121,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:43.610356 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:43.611269 +0000 +0000",
+                      "Id": 5,
+                      "Nombre": "SI",
+                      "Valor": 0
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:05:48.819703 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:05:48.822222 +0000 +0000",
+                      "Id": 11,
+                      "Nombre": "NO",
+                      "Valor": 15
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Garantía",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:43.746312 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:43.74646 +0000 +0000",
+              "Id": 72,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "Gestión",
+              "SeccionPadreId": null
+            }
+          },
+          {
+            "Activo": true,
+            "Condicion": [
+              {
+                "Nombre": "SI",
+                "Nombre_seccion_condicion": "Garantía",
+                "Valor": 0
+              }
+            ],
+            "FechaCreacion": "2019-12-20 11:53:47.143342 +0000 +0000",
+            "FechaModificacion": "2019-12-20 11:53:47.143496 +0000 +0000",
+            "Id": 75,
+            "IdPlantilla": {
+              "Activo": true,
+              "Descripcion": "",
+              "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+              "Id": 6,
+              "Usuario": "utest10"
+            },
+            "Item": [
+              {
+                "Id": 122,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [],
+                "Tamano": 2,
+                "Valor": "GARANTÍA"
+              },
+              {
+                "Id": 123,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "lbl",
+                  "Descripcion": "item usado como label para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "label",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "texto GARANTÍA",
+                "Opcion_item": [],
+                "Tamano": 6,
+                "Valor": "¿El proveedor cumplió a satisfacción con la garantía pactada?"
+              },
+              {
+                "Id": 124,
+                "IdEstiloPipe": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "ngxcap",
+                  "Descripcion": "pipe que coloca la primeta letra en mayuscula y las demas en minuscula",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 1,
+                  "Nombre": "ngxCapitalize",
+                  "NumeroOrden": 0
+                },
+                "IdTipoItem": {
+                  "Activo": true,
+                  "CodigoAbreviacion": "slt",
+                  "Descripcion": "item usado como slect para la plantilla",
+                  "FechaCreacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "FechaModificacion": "2019-11-12 00:00:00 +0000 +0000",
+                  "Id": 3,
+                  "Nombre": "select",
+                  "NumeroOrden": 0
+                },
+                "Nombre": "",
+                "Opcion_item": [
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:05:50.039449 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:05:50.03992 +0000 +0000",
+                      "Id": 12,
+                      "Nombre": "SI",
+                      "Valor": 15
+                    }
+                  },
+                  {
+                    "IdOpciones": {
+                      "Activo": true,
+                      "Descripcion": "",
+                      "FechaCreacion": "2019-12-16 13:00:38.036502 +0000 +0000",
+                      "FechaModificacion": "2019-12-16 13:00:38.037961 +0000 +0000",
+                      "Id": 2,
+                      "Nombre": "NO",
+                      "Valor": 0
+                    }
+                  }
+                ],
+                "Tamano": 2,
+                "Valor": ""
+              }
+            ],
+            "Nombre": "Garantía",
+            "SeccionPadreId": {
+              "Activo": true,
+              "FechaCreacion": "2019-12-20 11:53:43.746312 +0000 +0000",
+              "FechaModificacion": "2019-12-20 11:53:43.74646 +0000 +0000",
+              "Id": 72,
+              "IdPlantilla": {
+                "Activo": true,
+                "Descripcion": "",
+                "FechaCreacion": "2019-12-20 11:53:31.879861 +0000 +0000",
+                "FechaModificacion": "2019-12-20 11:53:49.100154 +0000 +0000",
+                "Id": 6,
+                "Usuario": "utest10"
+              },
+              "Nombre": "Gestión",
+              "SeccionPadreId": null
+            }
+          }
+        ]
+      }
+    ],
+    "Usuario": "utest10"
+  }
+}

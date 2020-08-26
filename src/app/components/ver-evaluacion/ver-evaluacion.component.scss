@@ -1,0 +1,27 @@
+.btn-flotante {
+  display: scroll;
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  font-size: 13px;
+  padding: 10px;
+}
+
+.btn-right {
+  float: right;
+}
+
+p {
+  opacity: 50%;
+  font-size: 11px;
+}
+
+.font-black {
+  color: black !important;
+}
+
+.table-header {
+  color: black !important;
+  background-color: white;
+  font-size: 12px;
+}

@@ -2,63 +2,48 @@ import { NbMenuItem } from '@nebular/theme';
 
 export const MENU_ITEMS: NbMenuItem[] = [
   {
-    title: 'ARKA',
-    group: true,
+    title: 'Home',
+    icon: 'nb-home',
+    link: '/pages/dashboard',
   },
+  // {
+  //   title: 'Evaluaciones',
+  //   icon: 'nb-edit',
+  //   children: [
+  //     {
+  //       title: 'Evaluar Proveedor',
+  //       link: '/pages/evaluar_proveedor/',
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: 'Evaluación',
+  //   icon: 'nb-checkmark',
+  //   children: [
+  //     {
+  //       title: 'Evaluación',
+  //       link: '/pages/evaluacion/',
+  //     },
+  //   ],
+  // },
   {
-    title: 'MENÚ',
-    icon: 'nb-star',
-  },
-  {
-    title: 'Acta de Recibido',
-    icon: 'nb-compose',
+    title: 'Consulta Evaluación',
+    icon: 'nb-search',
     children: [
       {
-        title: 'Consulta de Actas de Recibido',
-        link: '/pages/acta_recibido/consulta_acta_recibido',
-      },
-      {
-        title: 'Registro de Acta de Recibido',
-        link: '/pages/acta_recibido/registro_acta_recibido',
-      },
-      {
-        title: 'Verificación de Acta de Recibido',
-        link: '/pages/acta_recibido/verificacion_acta_recibido',
+        title: 'Evaluación',
+        link: '/pages/consulta_evaluacion/',
       },
     ],
   },
-  {
-    title: 'Movimientos',
-    icon: 'nb-shuffle',
-    children: [
-      {
-        title: 'Solicitud de Baja de Bien',
-        link: '/pages/movimientos/solicitud_baja_bien',
-      },
-      {
-        title: 'Aprobación de Baja de Bien',
-        link: '/pages/movimientos/aprobacion_baja_bien',
-      },
-    ],
-  },
-  {
-    title: 'Entradas',
-    icon: 'nb-compose',
-    children: [
-      {
-        title: 'Registrar',
-        link: '/pages/entradas/registro',
-      },
-    ],
-  },
-  {
-    title: 'Salidas',
-    icon: 'nb-paper-plane',
-    children: [
-      {
-        title: 'Registrar Salida',
-        link: '/pages/salidas/registro',
-      },
-    ],
-  },
+  // {
+  //   title: 'Administración plantillas',
+  //   icon: 'nb-compose',
+  //   children: [
+  //     {
+  //       title: 'Administración de plantillas',
+  //       link: '/pages/administracion_plantillas/',
+  //     },
+  //   ],
+  // },
 ];

@@ -1,0 +1,79 @@
+<div class="card card-margin" *ngIf="realizar == false">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-8">
+        <H2>Ver Evaluación</H2>
+      </div>
+      <div class="col-2">
+        <button (click)="imprimirEvalucion()" nbButton class="btn-right">
+          Descargar Evaluación
+        </button>
+      </div>
+      <div class="col-2">
+        <button (click)="regresarFiltro()" nbButton status="warning">
+          <i class="fas fa-arrow-alt-circle-left"></i>
+          Regresar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<br>
+<div class="font-black" id="pdf">
+  <div class="card card-margin" *ngIf="realizar == false">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-9">
+          <H1>Información General</H1>
+        </div>
+        <div class="col-3">
+        </div>
+      </div>
+      <!-- Div para los datos del contrato   -->
+      <div class="row">
+        <div class="col-4">
+          <p>Puntaje Total de la evaluación</p>
+          <label>{{ this.evaluacionRealizada.ValorFinal}}</label>
+        </div>
+        <div class="col-4">
+          <p>Calificación</p>
+          <div *ngFor="let clasificador of evaluacionRealizada['Clasificaciones']; let k = index">
+            <label class="p-valor-item"
+              *ngIf="evaluacionRealizada.ValorFinal >= clasificador.LimiteInferior && evaluacionRealizada.ValorFinal <= clasificador.LimiteSuperior">
+              {{ clasificador['Nombre']  }}</label>
+          </div>
+        </div>
+        <div class="col-4">
+          <p>Dependencia que evalúa</p>
+          <label>{{this.dependencia}}</label>
+        </div>
+        <div class="col-4">
+          <p>Fecha de la evaluación</p>
+          <label>{{ this.formatDate(this.fechaEvaluacion) }}</label>
+        </div>
+        <div class="col-4">
+          <p>Nombre del supervisor encargado de la evaluación</p>
+          <label>{{this.supervisor.Nombre}}</label>
+        </div>
+        <div class="col-4">
+          <p>Cargo</p>
+          <label>{{this.supervisor.Cargo}}</label>
+        </div>
+        <div class="col-4">
+          <p>Empresa o Provedor</p>
+          <label>{{this.proveedor.NomProveedor}}</label>
+        </div>
+        <div class="col-8">
+          <p>Objeto del Contrato</p>
+          <label>{{this.contratoCompleto.ObjetoContrato}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ngx-plantilla-evaluacion [realizar]="this.realizar">
+  </ngx-plantilla-evaluacion>
+</div>
+<ng-template #contentTemplate let-data>
+  <h4>{{ data.text }}</h4>
+</ng-template>

@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="col-xl">
+    <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false">
+      <ngx-filtro (dataResponse)="guardarDatosConsulta($event)"></ngx-filtro>
+      <ngx-tabla-busqueda [dataContratos]="this.data" (dataView)="verEvaluacion($event)"
+        (dataToDo)="relizarEvaluacion($event)"></ngx-tabla-busqueda>
+    </div>
+    <ngx-ver-evaluacion [dataContrato]="this.datosContratoAVer" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteVer==true"></ngx-ver-evaluacion>
+    <ngx-realizar-evaluacion [dataContrato]="this.datosContratoAEvaluar" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-realizar-evaluacion>
+  </div>
+</div>

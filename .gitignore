@@ -5,6 +5,7 @@
 
 # dependencies
 /node_modules
+/ngxGenerator
 
 # IDEs and editors
 /.idea
