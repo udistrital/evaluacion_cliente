@@ -1,0 +1,140 @@
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h1>Certificacion</h1>
+            <br>
+            <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
+          <i class="fas fa-arrow-alt-circle-left"></i>
+          Regresar
+        </button>
+
+        </div>
+
+    </div>
+
+
+</div>
+<br>
+<div class="font-black" id="pdf">
+    <div class="card card-margin">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-9">
+                    <H1>Información General De Certificaciones</H1>
+                </div>
+                <div class="col-3">
+                </div>
+            </div>
+            <!-- Div para los datos del contrato   -->
+            <div class="row">
+                <div class="col-4">
+                    <p>Novedades.</p>
+                    <div class="col text-center">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Novedades</mat-label>
+                            <mat-select [(ngModel)]="novedad">
+                                <mat-option value="sin novedad">SIN NOVEDAD</mat-option>
+                                <mat-option value="terminacion y liquidacion">TERMINACIÓN Y LIQUIDACIÓN</mat-option>
+                                <mat-option value="suspension">SUSPENSIÓN</mat-option>
+                                <mat-option value="cesion">CESIÓN</mat-option>
+
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+                <div class="col-4">
+                    <p>Valor del contrato</p>
+                    <div class="col text-center">
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Valor Contrato</mat-label>
+                                <mat-select>
+                                    <mat-option value="option">SI</mat-option>
+                                    <mat-option value="option">NO</mat-option>
+
+
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-4">
+                    <p>Duracion del contrato(meses)</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Duracion del contrato(meses)</mat-label>
+                                    <mat-select>
+                                        <mat-option value="option">SI</mat-option>
+                                        <mat-option value="option">NO</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-4">
+                    <p>Fecha de inicio</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Fecha de inicio</mat-label>
+                                    <mat-select>
+                                        <mat-option value="option">SI</mat-option>
+                                        <mat-option value="option">NO</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <p>Fecha de Finalizacion</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Fecha de inicio</mat-label>
+                                    <mat-select>
+                                        <mat-option value="option">SI</mat-option>
+                                        <mat-option value="option">NO</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="col text-center">
+    <button (click)="crearPdf()" nbButton status="download" class="btn-flotante">
+        
+        
+        <i class="fas fa-file-alt"></i>
+        Crear Certificado
+      </button>

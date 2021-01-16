@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from '../../@core/_guards/auth.guard';
 
 @Component({
-  selector: 'ngx-evaluacion',
-  templateUrl: './evaluacion.component.html',
-  styleUrls: ['./evaluacion.component.scss'],
+  selector: 'ngx-certificaciones',
+  templateUrl: './certificaciones.component.html',
+  styleUrls: ['./certificaciones.component.scss']
 })
-export class EvaluacionComponent implements OnInit {
-  titulo: string = "Lista Provedores";
+export class CertificacionesComponent implements OnInit {
+  titulo: string = "Certificaciones";
+  /* se guarda el rol actual*/
+  rolActual:  any;
+
   /*Se guarda los datos que envía el componente filtro*/
   data: any;
   /*Variables que guardan los datos que envía el componente tabla-busqueda*/
@@ -17,13 +21,15 @@ export class EvaluacionComponent implements OnInit {
   /*Varible para saber si debe mostrar o no el componente ver*/
   componenteRealizar: boolean;
 
-  constructor() {
+  constructor(private authGuard: AuthGuard) {
     this.data = [];
     this.datosContratoAVer = [];
     this.datosContratoAEvaluar = [];
+    
    }
 
   ngOnInit() {
+    this.rolActual = this.authGuard.rolActual();
     this.componenteVer = false;
     this.componenteRealizar = false;
   }
@@ -33,15 +39,15 @@ export class EvaluacionComponent implements OnInit {
   }
 
   /*Guarda los datos de la fila selecionada en el componente tabla-busqueda en la variable datosContratoAVer
-   y habilita el componente ver-evaluacion*/
-  verEvaluacion(data: any) {
+   y habilita el componente ver-certificacion*/
+  verCertificacion(data: any) {
     this.datosContratoAVer[0] = data;
     this.componenteVer = true;
   }
 
   /*Guarda los datos de la fila selecionada en el componente tabla-busqueda en la variable datosContratoAVer
-   y habilita el componente realizar-evaluacion*/
-  relizarEvaluacion(data: any) {
+   y habilita el componente realizar-certificacion*/
+  relizarCertificacion(data: any) {
     this.datosContratoAEvaluar[0] = data;
     this.componenteRealizar = true;
   }
@@ -54,4 +60,7 @@ export class EvaluacionComponent implements OnInit {
       this.componenteRealizar = false;
     }
   }
+
+
+
 }

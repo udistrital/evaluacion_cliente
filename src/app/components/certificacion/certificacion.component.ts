@@ -3,14 +3,14 @@ import { NbWindowService } from '@nebular/theme';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { ImplicitAutenticationService } from '../../@core/utils/implicit_autentication.service';
 
-
 @Component({
-  selector: 'ngx-filtro',
-  templateUrl: './filtro.component.html',
-  styleUrls: ['./filtro.component.scss'],
+  selector: 'ngx-certificacion',
+  templateUrl: './certificacion.component.html',
+  styleUrls: ['./certificacion.component.scss']
 })
-export class FiltroComponent implements OnInit {
+export class CertificacionComponent implements OnInit {
 
+  
   @Output() dataResponse: EventEmitter<any>;
   @Input() nombreTitulo : String;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
@@ -35,10 +35,10 @@ export class FiltroComponent implements OnInit {
   }
 
   filtro() {
-
+    
     this.autentication_data = this.authService.getPayload();
-    this.documento = this.autentication_data.documento;
-    console.log(this.documento)
+    this.documento ="19483708" ;
+    this.identificacion_proveedor=this.autentication_data.documento;
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {

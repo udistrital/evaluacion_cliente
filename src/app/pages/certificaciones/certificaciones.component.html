@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="col-xl ">
+        <div *ngIf="this.rolActual === 'ORDENADOR_DEL_GASTO' ">
+            <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false">
+                <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
+                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)"></ngx-tabla-busqueda-certificacion>
+            </div>
+
+            <ngx-crear-certificacion [dataContrato]="this.data" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+
+        </div>
+        <div class="col-xl " *ngIf="this.rolActual === 'CONTRATISTA' ">
+            <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false">
+                <ngx-certificacion (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-certificacion>
+                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)"></ngx-tabla-busqueda-certificacion>
+            </div>
+            <ngx-crear-certificacion [dataContrato]="this.data" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+
+        </div>
+
+    </div>
+
+
+
+
+</div>
