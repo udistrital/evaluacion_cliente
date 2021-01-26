@@ -140,7 +140,7 @@ export class VerEvaluacionComponent implements OnInit {
 
   // Se consulta los datos del contrato general.
   consultarDatosContrato() {
-    this.evaluacionMidService.get('datosContrato/?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
+    this.evaluacionMidService.get('datosContrato?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
       '&VigenciaContrato=' + this.dataContrato[0].Vigencia).subscribe((res_contrato) => {
         this.dependencia = res_contrato[0].dependencia_SIC.ESFDEPENCARGADA;
         this.proveedor = res_contrato[0].informacion_proveedor;

@@ -18,6 +18,7 @@ export class RequestManager {
   private path: string;
   public httpOptions: any;
   public httpOptions2: any;
+  public httpOptions3: any;
   constructor(private http: HttpClient, private errManager: HttpErrorManager) {
     this.httpOptions = {
       headers: new HttpHeaders({
@@ -29,6 +30,7 @@ export class RequestManager {
         'Content-Type': 'multipart/form-data',
       }),
     };
+    
   }
 
 

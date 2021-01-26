@@ -20,7 +20,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-9">
-                    <H1>Información General De Certificaciones Contractuales</H1>
+                    <H1>Información General De Certificaciones De Cumplimiento</H1>
                 </div>
                 <div class="col-3">
                 </div>
@@ -28,28 +28,12 @@
             <!-- Div para los datos del contrato   -->
             <div class="row">
                 <div class="col-4">
-                    <p>Novedades.</p>
-                    <div class="col text-center">
-                        <mat-form-field appearance="fill">
-                            <mat-label>Novedades</mat-label>
-                            <mat-select [(ngModel)]="novedad">
-                                <mat-option value="sin novedad">SIN NOVEDAD</mat-option>
-                                <mat-option value="terminacion y liquidacion">TERMINACIÓN Y LIQUIDACIÓN</mat-option>
-                                <mat-option value="suspension">SUSPENSIÓN</mat-option>
-                                <mat-option value="cesion">CESIÓN</mat-option>
-
-                            </mat-select>
-                        </mat-form-field>
-
-                    </div>
-                </div>
-                <div class="col-4">
                     <p>Valor del contrato</p>
                     <div class="col text-center">
                         <div>
                             <mat-form-field appearance="fill">
                                 <mat-label>Valor Contrato</mat-label>
-                                <mat-select [(ngModel)]="valor_contrato">
+                                <mat-select [(ngModel)]="valor_Contrato">
                                     <mat-option value="1">SI</mat-option>
                                     <mat-option value="0">NO</mat-option>
 
@@ -70,7 +54,7 @@
                             <div>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Duracion del contrato(meses)</mat-label>
-                                    <mat-select [(ngModel)]="duracion_contrato">
+                                    <mat-select [(ngModel)]="duracion_Contrato">
                                         <mat-option value="1">SI</mat-option>
                                         <mat-option value="0">NO</mat-option>
 
@@ -125,48 +109,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
-
-                    <div class="col text-center">
-                        <div class="col text-center">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1" [(ngModel)]="nuevo_texto" value="true">
-                                <label class="form-check-label" for="exampleCheck1">Añadir novedad</label>
-                            </div>
-
-
-
-                        </div>
-                    </div>
-
-
-                </div>
             </div>
         </div>
-
-    </div>
-    <br>
-
-    <div class="font-black" id="novedad" *ngIf="this.nuevo_texto==true">
-        <div class="card card-margin">
-            <div class="card-body">
-                <br>
-
-                <input class="form-control" type="text" [(ngModel)]="tituloNovedad" placeholder="Titulo Novedad" style="text-transform: uppercase;">
-                <!-- Div para  el cuadro de texto  -->
-                <br>
-                <div class="form-group">
-                    <label for="exampleFormControlTextarea1">Texto de novedad</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" [(ngModel)]="textoNovedad"></textarea>
-                </div>
-
-            </div>
-        </div>
-
     </div>
 
-    <div class="col text-center">
-        <button (click)="crearPdf()" nbButton status="download" class="btn-flotante">
+</div>
+
+<div class="col text-center">
+    <button (click)="crearPdf()" nbButton status="download" class="btn-flotante">
         
         
         <i class="fas fa-file-alt"></i>

@@ -17,9 +17,12 @@
                     <td>
                         <div class="row justify-content-md-center">
                             <div *ngIf="logueado" class="col-md-auto">
-                                <button *ngIf=" this.rolActual === 'ORDENADOR_DEL_GASTO' " type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" data-placement="bottom" title="Crear o Editar Certificacion">
+                                <button *ngIf=" this.rolActual === 'ORDENADOR_DEL_GASTO' " type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" data-placement="bottom" title="Crear  Certificacion Contractual">
                   <i class="fas fa-edit"></i>
                 </button>
+                                <button *ngIf=" this.rolActual === 'ORDENADOR_DEL_GASTO' " type="button" (click)="relizarCertificacionSinNovedad(contrato)" class="btn-i" data-toggle="tooltip" data-placement="bottom" title="Crear certificacion de cumplimiento">
+                    <i class="fas fa-edit"></i>
+                  </button>
                             </div>
 
                             <div class="col-md-auto" *ngIf="this.rolActual === 'ORDENADOR_DEL_GASTO' || this.rolActual === 'CONTRATISTA'  ">

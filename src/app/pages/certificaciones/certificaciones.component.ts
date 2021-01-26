@@ -20,6 +20,8 @@ export class CertificacionesComponent implements OnInit {
   componenteVer: boolean;
   /*Varible para saber si debe mostrar o no el componente ver*/
   componenteRealizar: boolean;
+  /*Varible para saber si debe mostrar o no el componente ver*/
+  componenteRealizarCertificacion: boolean;
 
   constructor(private authGuard: AuthGuard) {
     this.data = [];
@@ -32,6 +34,7 @@ export class CertificacionesComponent implements OnInit {
     this.rolActual = this.authGuard.rolActual();
     this.componenteVer = false;
     this.componenteRealizar = false;
+    this.componenteRealizarCertificacion = false;
   }
   /*Guardo los datos de la consulta obtenida creada por el filtro*/
   guardarDatosConsulta(data: any) {
@@ -51,13 +54,19 @@ export class CertificacionesComponent implements OnInit {
     this.datosContratoAEvaluar[0] = data;
     this.componenteRealizar = true;
   }
+  relizarCertificacionSinNovedad(data: any) {
+    this.datosContratoAEvaluar[0] = data;
+    this.componenteRealizarCertificacion = true;
+  }
 
-  /*Asigna a las variables componenteVer y componenteRealizar false para deshabilitar el componente ver-evaluacion
-   y realizar-evaluacion*/
+  /*Asigna a las variables componenteVer y componenteRealizar false para deshabilitar el componente ver-certificacion
+   y realizar-certificacion*/
   habilitarFiltro(data: any) {
     if (data === true ) {
       this.componenteVer = false;
       this.componenteRealizar = false;
+      this.componenteRealizarCertificacion = false;
+      
     }
   }
 

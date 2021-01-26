@@ -15,16 +15,16 @@ import { Txt } from "pdfmake-wrapper";
 import { EvaluacionmidService } from "../../@core/data/evaluacionmid.service";
 import { NbWindowService } from "@nebular/theme";
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
-import { AdministrativaamazonService } from "../../@core/data/admistrativaamazon.service";
+import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 
 // Set the fonts to use
 
 @Component({
-  selector: "ngx-crear-certificacion",
-  templateUrl: "./crear-certificacion.component.html",
-  styleUrls: ["./crear-certificacion.component.scss"],
+  selector: "ngx-crear-certificacion-sin-novedad",
+  templateUrl: "./crear-certificacion-sin-novedad.component.html",
+  styleUrls: ["./crear-certificacion-sin-novedad.component.scss"],
 })
-export class CrearCertificacionComponent implements OnInit {
+export class CrearCertificacionSinNovedadComponent implements OnInit {
   @ViewChild("contentTemplate", { read: false })
   contentTemplate: TemplateRef<any>;
   @Output() volverFiltro: EventEmitter<Boolean>;
@@ -38,32 +38,51 @@ export class CrearCertificacionComponent implements OnInit {
   actividadEspecifica: string;
   valorContrato: string;
   nombre: string;
-  //los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
-  valor_contrato: string;
-  duracion_contrato: string;
+  valor_Contrato: string;
+  duracion_Contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
-  nuevo_texto: boolean = false;
-  //----------------------------------------------------------------------------------
-  tituloNovedad: string = "";
-  textoNovedad: string = "";
-  fechaSuscrip: string = "";
-  duracionContrato: string = "";
-  idContrato: string = "";
-  fechaInicio: string = "";
-  fechaFin: string = " ";
-
+  fecha_suscrip: string;
+  duracion_contrato: string;
+  evaluacionRealizada: any;
+  fechaEvaluacion: Date;
+ 
+  
   constructor(
     private nuxeoService: NuxeoService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
-    private AdministrativaAmazon: AdministrativaamazonService
+    private evaluacionCrudService: EvaluacioncrudService,
   ) {
     this.volverFiltro = new EventEmitter();
+    this.evaluacionRealizada = {};
+    this.fechaEvaluacion = new Date();
   }
 
   ngOnInit() {
+    this.evaluacionCrudService.get('evaluacion?query=ContratoSuscrito:' + this.dataContrato[0].ContratoSuscrito +
+      ',Vigencia:' + this.dataContrato[0].Vigencia).subscribe((res_evaluacion) => {
+        if (Object.keys(res_evaluacion[0]).length !== 0) {
+          this.evaluacionCrudService.getEvaluacion('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion[0].Id + ',Activo:true');
+          this.evaluacionCrudService.get('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion[0].Id + ',Activo:true')
+            .subscribe((res_resultado_eva) => {
+              if (res_resultado_eva !== null) {
+                this.evaluacionRealizada = JSON.parse(res_resultado_eva[0].ResultadoEvaluacion);
+                this.fechaEvaluacion = new Date(res_resultado_eva[0].FechaCreacion.substr(0, 16));
+                
+              }
+            }, (error_service) => {
+              this.openWindow(error_service.message);
+            });
+        } else {
+          this.regresarFiltro();
+          this.openWindow('El contrato no ha sido evaluado.');
+        }
+      }, (error_service) => {
+        this.openWindow(error_service.message);
+      });
+    //console.log("Modulo de certificaciones sin novedades");
     this.consultarDatosContrato();
   }
   regresarFiltro() {
@@ -71,16 +90,10 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   crearPdf() {
-    console.log(this.nuevo_texto);
-    var cadena1 =
-      "QUE, REVISADA LA BASE DE DATOS DE CONTRATACIÓN, SE ENCONTRÓ QUE ";
+    var cadena1 = "QUE EL SEÑOR(A) ";
     var cadena2 = " IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ";
-    var cadena3 =
-      " , SUSCRIBIÓ CON LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS LOS SIGUIENTES CONTRATOS:  ";
-    var date = new Date();
-
-    this.actividadEspecifica =
-      " 1.  COLABORAR EN LA ELABORACIÓN DE (HORARIOS, INSCRIPCIONES, ADICIONES, CANCELACIONES, CARGA ACADÉMICA REGISTROS Y TRANSFERENCIAS). 2. CONTRIBUIR CON EL APOYO A LA GENERACIÓN DEL, PLAN DE ACCIÓN, PLANES DE TRABAJO, INFORMES DE GESTIÓN,  3. Y DEMÁS FUNCIONES CONEXAS Y COMPLEMENTARIAS  A LA NATURALEZA DEL OBJETO DEL CONTRATO.";
+    var cadena3 = " , CUMPLIO A SATISFACCIÓN CON LAS SIGUIENTES ORDENES ";
+    
 
     PdfMakeWrapper.setFonts(pdfFonts, {
       myCustom: {
@@ -109,11 +122,6 @@ export class CrearCertificacionComponent implements OnInit {
       body1: {
         fontSize: 11,
         bold: true,
-        alignment: "justify",
-      },
-      body2: {
-        fontSize: 8,
-        bold: false,
         alignment: "justify",
       },
     });
@@ -178,7 +186,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
-            { text: this.duracionContrato + " meses", style: "body" },
+            { text: "6 meses", style: "body" },
           ],
         },
       ],
@@ -186,7 +194,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE INICIO:  ", style: "body1", bold: true },
-            { text: this.fechaInicio.slice(0, 10), style: "body" },
+            { text: "24/09/2020", style: "body" },
           ],
         },
       ],
@@ -194,7 +202,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE FINALIZACION:  ", style: "body1", bold: true },
-            { text: this.fechaFin.slice(0, 10), style: "body" },
+            { text: "23/03/2021", style: "body" },
           ],
         },
       ],
@@ -202,47 +210,30 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE SUSCRIPCIÓN:  ", style: "body1", bold: true },
-            { text: this.fechaSuscrip.slice(0, 10), style: "body" },
+            { text: this.fecha_suscrip, style: "body" },
           ],
         },
       ],
-      texTituloNovedad: [
+      resultadoEva: [
         {
           text: [
-            {
-              text: this.tituloNovedad.toUpperCase() + ": ",
-              style: "body1",
-              bold: true,
-            },
-            { text: this.textoNovedad.toUpperCase(), style: "body" },
+            { text: "CUMPLIMIENTO:  ", style: "body1", bold: true },
+            { text: this.getCalificacion(), style: "body" },
           ],
         },
+        
       ],
-      texPieDePagina: [
+      footer: [
         {
           text: [
-            {
-              text:
-                "Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016",
-              style: "body2",
-              bold: true,
-            },
+            { text: "PBX: 3239300 Ext: 1911 – 1919 – 1912 \n Carrera 7 No. 40 B – 53 Piso 9°  Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016 ", style: "body1", bold: true },
+            { text: this.fecha_suscrip, style: "body" },
           ],
         },
+        
       ],
-      firmaPagina: [
-        {
-          text: [
-            {
-              text:
-                "FERNANDO ANTONIO TORRES GÓMEZ  \n JEFE OFICINA ASESORA JURÍDICA",
-              style: "body1",
-              bold: true,
-              alignment: "center",
-            },
-          ],
-        },
-      ],
+
+
     };
 
     //-------------------------------------------------------------------------------------
@@ -251,7 +242,6 @@ export class CrearCertificacionComponent implements OnInit {
     )
       .fit([80, 80])
       .build()
-      
       .then((img) => {
         pdf.add(
           new Table([[img, docDefinition.valorCabe]]).layout("noBorders").end
@@ -261,7 +251,12 @@ export class CrearCertificacionComponent implements OnInit {
         pdf.add("\n");
 
         pdf.add(
-          new Txt("EL SUSCRITO JEFE DE LA OFICINA ASESORA JURIDICA").style(
+          new Txt("EL SUSCRITO JEFE DE LA SECCIÓN DE COMPRAS DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS").style(
+            "Title"
+          ).end
+        );
+        pdf.add(
+          new Txt("NIT: 899.999.230-7").style(
             "Title"
           ).end
         );
@@ -273,54 +268,39 @@ export class CrearCertificacionComponent implements OnInit {
         //------------------------------ se arma el primer parrafo
         pdf.add(docDefinition.content[0]);
         pdf.add(docDefinition.line);
+        pdf.add("\n\n");
+        //-------------------------------- Objeto
+        pdf.add(docDefinition.content2);
+        pdf.add("\n\n");
+        //-------------------------------- fehca de suscripcion
+        pdf.add(docDefinition.fechaSub);
 
         pdf.add("\n");
 
-        pdf.add(
-          new Txt(
-            "CONTRATO DE PRESTACIÓN DE SERVICIOS NO." +
-              this.dataContrato[0].ContratoSuscrito +
-              "-" +
-              this.dataContrato[0].Vigencia
-          ).bold().end
-        );
+        
+        if (this.valor_Contrato == "1") {
+          pdf.add(docDefinition.valorContra);
+        }
+        pdf.add("\n\n");
+
+        if (this.duracion_Contrato == "1") {
+          pdf.add(docDefinition.duraContra);
+        }
+        pdf.add("\n\n");
         if (this.fecha_Inicio == "1") {
-          pdf.add("\n\n");
           pdf.add(docDefinition.fechainicio);
         }
+        pdf.add("\n\n");
         if (this.fecha_final == "1") {
-          pdf.add("\n\n");
           pdf.add(docDefinition.fechafin);
         }
         pdf.add("\n\n");
-        pdf.add(docDefinition.fechaSub);
-        pdf.add("\n\n");
-        pdf.add(docDefinition.content2);
-        pdf.add("\n\n");
-        pdf.add(docDefinition.content3);
+        pdf.add(docDefinition.resultadoEva)
         pdf.add("\n\n");
 
-        if (this.duracion_contrato == "1") {
-          pdf.add(docDefinition.duraContra);
-        }
-        if (this.valor_contrato == "1") {
-          pdf.add(docDefinition.valorContra);
-        }
+        pdf.add("\n\n");
 
-        if (this.nuevo_texto == true) {
-          pdf.add("\n\n");
-          pdf.add(docDefinition.texTituloNovedad);
-        }
-
-        new Img("../../../assets/images/firma.png")
-          .fit([200, 300])
-          .build()
-          .then((img) => {
-            pdf.add(img);
-            pdf.add(docDefinition.firmaPagina);
-          });
-
-        pdf.add(docDefinition.firmaPagina);
+        pdf.add("\n\n");
 
         pdf.footer(
           new Txt(
@@ -347,8 +327,8 @@ export class CrearCertificacionComponent implements OnInit {
         nombre: 1014250554,
       };
       arreglo.push(file);
-
-      //this.uploadFilesToMetadaData(arreglo, []); arreglar
+      //subida de archivo a nuxeo
+      //this.uploadFilesToMetadaData(arreglo, []);
     });
   }
 
@@ -362,20 +342,9 @@ export class CrearCertificacionComponent implements OnInit {
       });
       this.nuxeoService.getDocumentos$(files, this.documentoService).subscribe(
         (response) => {
-          //response respuesta de nuxeo con el id del registro
           console.info("uploadFilesToMetadata - Resp nuxeo: ", response);
           if (Object.keys(response).length === files.length) {
-            // files.forEach((file) => {
-            //   respuestas.push({
-            //     fecha_presentacion: (new Date()).toISOString(),
-            //     respuestas: [
-            //       {
-            //         item_id: file.Id,
-            //         respuesta: response[file.Id].Id,
-            //       },
-            //     ],
-            //   });
-            // });
+            
             resolve(true);
           }
         },
@@ -401,19 +370,8 @@ export class CrearCertificacionComponent implements OnInit {
         this.nombre = res_contrato[0].informacion_proveedor.NomProveedor;
         this.numeroContrato =
           res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
-        this.fechaSuscrip =
+        this.fecha_suscrip =
           res_contrato[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
-        this.duracionContrato = res_contrato[0].contrato_general.PlazoEjecucion;
-        this.idContrato =
-          res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
-        console.log(this.idContrato);
-
-        this.AdministrativaAmazon.get(
-          "acta_inicio?query=NumeroContrato:" + this.idContrato
-        ).subscribe((res_Contrato) => {
-          this.fechaInicio = res_Contrato[0].FechaInicio;
-          this.fechaFin = res_Contrato[0].FechaFin;
-        });
       }),
       (error_service) => {
         this.openWindow(error_service.message);
@@ -425,5 +383,13 @@ export class CrearCertificacionComponent implements OnInit {
       title: "Alerta",
       context: { text: mensaje },
     });
+  }
+  getCalificacion() {
+    for (let i = 0; i < this.evaluacionRealizada.Clasificaciones.length; i++) {
+      if (this.evaluacionRealizada.ValorFinal >= this.evaluacionRealizada.Clasificaciones[i].LimiteInferior
+        && this.evaluacionRealizada.ValorFinal <= this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior) {
+        return this.evaluacionRealizada.Clasificaciones[i].Nombre;
+      }
+    }
   }
 }

@@ -14,15 +14,21 @@ export const environment = {
 
     PATH: 'https://documental.portaloas.udistrital.edu.co/nuxeo/',
     CREDENTIALS: {
+      USERNAME: 'Administrator',
+      PASS: 'S1st3m4s04S=Fr331P4',
+      //Administrator---S1st3m4s04S=Fr331P4
+      /*
+      
       USERNAME: 'desarrollooas',
       PASS: 'desarrollooas2019',
+      
+      */
     },
   },
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
   NOTIFICACION_SERVICE: 'ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws',
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
-  //EVALUACIONMID_SERVICE: 'http://localhost:8080/v1/',
-  EVALUACIONMID_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8507/v1/',
+  EVALUACIONMID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_mid/v1/',
   EVALUACIONCRUD_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_crud/v1/',
   ADMINISTRIVA_AMAZON: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/',
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',

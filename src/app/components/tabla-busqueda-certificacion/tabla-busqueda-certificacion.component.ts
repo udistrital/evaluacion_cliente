@@ -11,6 +11,7 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
   rolActual: any;
   @Input() dataContratos: any = [];
   @Output() dataToDo: any = {};
+  @Output() dataToDo2: any = {};
   @Output() dataView: any = {};
   logueado: boolean = false;
 
@@ -19,6 +20,7 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
     private authGuard: AuthGuard,
   ) {
     this.dataToDo = new EventEmitter();
+    this.dataToDo2 = new EventEmitter();
     this.dataView = new EventEmitter();
 
   }
@@ -32,6 +34,9 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
 
   relizarCertificacion(data: any) {
     this.dataToDo.emit(data);
+  }
+  relizarCertificacionSinNovedad(data: any) {
+    this.dataToDo2.emit(data);
   }
 
   verCertificacion(data: any) {    
