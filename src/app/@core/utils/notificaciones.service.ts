@@ -9,7 +9,7 @@ import { ImplicitAutenticationService } from './implicit_autentication.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { NotificacionEstadoUsuario } from '../data/models/notificacion_estado_usuario';
 
-const { NOTIFICACION_SERVICE, production } = environment;
+const {  production } = environment;
 
 @Injectable({
     providedIn: 'root',
@@ -60,7 +60,7 @@ export class NotificacionesService {
         if (this.autenticacion.live() && production) {
             this.payload = this.autenticacion.getPayload();
             this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role).filter((data: any) => (data.indexOf('/') === -1));
-            this.messagesSubject = webSocket(`${NOTIFICACION_SERVICE}?id=${this.payload.sub}&profiles=${this.roles}`);
+            
             this.messagesSubject
                 .pipe(
                     map((msn) => {
@@ -125,7 +125,7 @@ export class NotificacionesService {
     }
 
     queryNotification() {
-        this.confService.get('notificacion_estado_usuario?query=Usuario:' + this.payload.sub + ',Activo:true&sortby=id&order=asc&limit=-1')
+       /* this.confService.get('notificacion_estado_usuario?query=Usuario:' + this.payload.sub + ',Activo:true&sortby=id&order=asc&limit=-1')
             .subscribe((resp: any) => {
                 if (resp !== null) {
                     this.notificacion_estado_usuario = resp;
@@ -148,7 +148,7 @@ export class NotificacionesService {
                         });
                 }
 
-            });
+            });*/
 
     }
 
