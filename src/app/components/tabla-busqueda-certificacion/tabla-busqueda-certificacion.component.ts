@@ -43,6 +43,8 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
     
     this.dataView.emit(data);
   }
+
+  
   
 
 }

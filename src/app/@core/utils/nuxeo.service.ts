@@ -23,8 +23,7 @@ export class NuxeoService {
     this.documentos = {};
     this.blobDocument = {};
     this.updateDoc = {};
-    console.info(this.blobDocument);
-    console.info(this.updateDoc);
+    
 
     NuxeoService.nuxeo = new Nuxeo({
       baseURL: environment.NUXEO.PATH,
@@ -43,6 +42,10 @@ export class NuxeoService {
 
   public getDocumentoById$(Id, documentoService): Observable<object[]> {
     this.getFile(Id, documentoService, this);
+    return this.blobDocument$.asObservable();
+  }
+  public getDocumentoOne$(Id, documentoService): Observable<object[]> {
+    this.getOneFile(Id, documentoService, this);
     return this.blobDocument$.asObservable();
   }
 
@@ -192,5 +195,41 @@ export class NuxeoService {
         }
       });
     });
+  }
+  getOneFile(file, documentoService, nuxeoservice) {
+    this.blobDocument = {};
+    nuxeoservice.blobDocument = {};
+    
+      documentoService.get("documento/?query=Enlace:" + file.Id).subscribe((res) => {
+        //console.log("esta es la primera respuesta",res[0].Enlace)
+        if (res !== null) {
+          //console.log("esta es la segunda respuesta",res.Enlace)
+          if (res[0].Enlace != null) {
+            
+            NuxeoService.nuxeo.header("X-NXDocumentProperties", "*");
+            NuxeoService.nuxeo
+              .request("/id/" + res[0].Enlace)
+              .get()
+              .then(function (response) {
+                response
+                  .fetchBlob()
+                  .then(function (blob) {
+                    blob.blob().then(function (responseblob) {
+                      const url = URL.createObjectURL(responseblob);
+                                      
+                      nuxeoservice.blobDocument[file.key] = url;
+                                        
+                      nuxeoservice.blobDocument$.next(
+                        nuxeoservice.blobDocument
+                      );
+                    });
+                  })
+                  .catch(function (response2) {});
+              })
+              .catch(function (response) {});
+          }
+        }
+      });
+    
   }
 }
