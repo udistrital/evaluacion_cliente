@@ -19,5 +19,5 @@ export * from '../../components/realizar-evaluacion/realizar-evaluacion.componen
 export * from '../../components/certificacion/certificacion.component';
 export * from '../../components/tabla-busqueda-certificacion/tabla-busqueda-certificacion.component';
 export * from '../../components/crear-certificacion/crear-certificacion.component';
-export * from '../../components/crear-certificacion-sin-novedad/crear-certificacion-sin-novedad.component'
+export * from '../../components/crear-certificacion-sin-novedad/crear-certificacion-sin-novedad.component';
 export * from '../../components/ver-certificacion/ver-certificacion.component';

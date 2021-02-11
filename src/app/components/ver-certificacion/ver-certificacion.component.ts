@@ -14,108 +14,196 @@ import { PdfMakeWrapper, Img, Columns, Table, Cell } from "pdfmake-wrapper";
 import { Txt } from "pdfmake-wrapper";
 import { EvaluacionmidService } from "../../@core/data/evaluacionmid.service";
 import { NbWindowService } from "@nebular/theme";
+
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
-import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
+import { EvaluacioncrudService } from "../../@core/data/evaluacioncrud.service";
+import Swal from 'sweetalert2';
+
+
+
 
 @Component({
-  selector: 'ngx-ver-certificacion',
-  templateUrl: './ver-certificacion.component.html',
-  styleUrls: ['./ver-certificacion.component.scss']
+  selector: "ngx-ver-certificacion",
+  templateUrl: "./ver-certificacion.component.html",
+  styleUrls: ["./ver-certificacion.component.scss"],
 })
 export class VerCertificacionComponent implements OnInit {
   @ViewChild("contentTemplate", { read: false })
   contentTemplate: TemplateRef<any>;
+
   @Output() volverFiltro: EventEmitter<Boolean>;
   @Input() dataContrato: any = [];
+  @Input() rol: string = "";
   uidDocumento: string;
   idDocumento: number;
   novedad: string;
   objeto: string;
   cedula: string;
   numeroContrato: string;
-  actividadEspecifica: string;
-  valorContrato: string;
+  tipoCertificacion:string;
+
   nombre: string;
-  valor_Contrato: string;
-  duracion_Contrato: string;
-  fecha_Inicio: string;
-  fecha_final: string;
-  fecha_suscrip: string;
+
   duracion_contrato: string;
-  evaluacionRealizada: any;
-  fechaEvaluacion: Date;
-  datosCertficiaciones: any[]=[]
-  
- 
-  
+
+  datosCertficiaciones: any[] = [];
+  codigoDocumento:string;
+
   constructor(
     private nuxeoService: NuxeoService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
-    private evaluacionCrudService: EvaluacioncrudService,
+
+    private evaluacionCrudService: EvaluacioncrudService
   ) {
     this.volverFiltro = new EventEmitter();
-    this.evaluacionRealizada = {};
-    this.fechaEvaluacion = new Date();
   }
-  
 
   ngOnInit() {
     this.consultarDatosContrato();
+  }
+
+  consultarIdCertificaciones() {
     
+    if(this.rol == "CONTRATISTA" || this.rol == "ASISTENTE_JURIDICA"){
+      this.tipoCertificacion ="cps"
+      this.documentoService
+      .get(
+        "documento/?query=Nombre:certificacion_" +
+          this.numeroContrato +
+          "__" +
+          this.cedula +
+          "_"+this.tipoCertificacion+
+          "&limit=-1"
+      )
+      .subscribe((data: any) => {
+        if (Object.keys(data[0]).length !== 0) {
+          this.datosCertficiaciones = data;
+        } else {
+          this.openWindow('El numero del contrato '+this.numeroContrato+" No contiene Certificaciones") 
+
+          this.regresarFiltro();
+          
+        }
+      });
+    }else if( this.rol == "ASISTENTE_COMPRAS"){
+      this.tipoCertificacion ="ops"
+      this.documentoService
+      .get(
+        "documento/?query=Nombre:certificacion_" +
+          this.numeroContrato +
+          "__" +
+          this.cedula +
+          "_"+this.tipoCertificacion+
+          "&limit=-1"
+      )
+      .subscribe((data: any) => {
+        if (Object.keys(data[0]).length !== 0) {
+          this.datosCertficiaciones = data;
+        } else {
+          
+          this.openWindow('El numero del contrato '+this.numeroContrato+" No contiene Certificaciones") 
+          
+
+          this.regresarFiltro();
+          
+        }
+      });     
+
+    }else if(this.rol == "ORDENADOR_DEL_GASTO" || this.rol == "OPS"){
+      console.log("este es el rol",this.rol)
+      this.documentoService
+      .get(
+        "documento/?query=Nombre:certificacion_" +
+          this.numeroContrato +
+          "__" +
+          this.cedula +
+          "_ops"+",Nombre:certificacion_" +
+          this.numeroContrato +
+          "__" +
+          this.cedula +
+          "_cps"+
+          "&limit=-1"
+      )
+      .subscribe((data: any) => {
+        if (Object.keys(data[0]).length !== 0) {
+          this.datosCertficiaciones = data;
+        } else {
+          this.openWindow('El numero del contrato '+this.numeroContrato+" No contiene Certificaciones") 
+          
+          
+
+          this.regresarFiltro();
+          
+        }
+      });
+    }
     
-    
-   
   }
   regresarFiltro() {
     this.volverFiltro.emit(true);
   }
-
-  consultarIdCertificaciones(){
-
-    this.documentoService.get('documento/?query=Nombre:certificacion_'+this.numeroContrato+"__"+this.cedula).subscribe((data : any ) => {
-      //console.log(data); data 
-      this.datosCertficiaciones = data
-
-
-    });
-
-  }
-  descargarCertificacion(contrato : any){
+  descargarCertificacion(contrato: any) {
     //console.log("este es el id del certificacion")
     const anObject = {
-      Id:contrato.Enlace,
-      key:"prueba"
-      
-    }
-    
-    this.nuxeoService.getDocumentoOne$(anObject,this.documentoService).subscribe((response ) => {
-      
-      console.log("respuesta",response['prueba'])
+      Id: contrato.Enlace,
+      key: "prueba",
+    };
 
+    this.nuxeoService
+      .getDocumentoOne$(anObject, this.documentoService)
+      .subscribe((response) => {
+        console.log("respuesta", response["prueba"]);
 
-      this.download(response['prueba'],"",500,500);
-
-     
-
-
-    })
-
+        this.download(response["prueba"], "", 1000, 1000);
+      }),
+      (error_service) => {
+        this.openWindow('No se pudo descargar la certificacion');
+        this.regresarFiltro();
+      };
   }
   download(url, title, w, h) {
-    const left = (screen.width / 2) - (w / 2);
-    const top = (screen.height / 2) - (h / 2);
-    window.open(url, title, 'toolbar=no,' +
-      'location=no, directories=no, status=no, menubar=no,' +
-      'scrollbars=no, resizable=no, copyhistory=no, ' +
-      'width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    window.open(
+      url,
+      title,
+      "toolbar=no," +
+        "location=no, directories=no, status=no, menubar=no," +
+        "scrollbars=no, resizable=no, copyhistory=no, " +
+        "width=" +
+        w +
+        ", height=" +
+        h +
+        ", top=" +
+        top +
+        ", left=" +
+        left
+    );
   }
 
+  buscarId(){
+    
 
+    this.documentoService
+      .get(
+        "documento/?query=Enlace:" +this.codigoDocumento
+      )
+      .subscribe((data: any) => {
+        console.log("datos de el id",data)
+        if (Object.keys(data[0]).length !== 0) {
+          this.datosCertficiaciones = data;
+        } else {
+          this.openWindow('El id'+this.numeroContrato+" No contiene Certificaciones asociadas") 
 
-  
-  
+          
+          
+        }
+      }); 
+
+  }
+
   consultarDatosContrato() {
     this.evaluacionMidService
       .get(
@@ -127,40 +215,27 @@ export class VerCertificacionComponent implements OnInit {
       .subscribe((res_contrato) => {
         //console.log("aca esta el contrato", res_contrato); contrato
         this.objeto = res_contrato[0].contrato_general.ObjetoContrato;
-        this.valorContrato = res_contrato[0].contrato_general.ValorContrato;
+
         this.cedula = res_contrato[0].informacion_proveedor.NumDocumento;
         //console.log("aca esta la cedula",this.cedula); cedula
         this.nombre = res_contrato[0].informacion_proveedor.NomProveedor;
         this.numeroContrato =
           res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
-        this.fecha_suscrip =
-          res_contrato[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
 
-          this.consultarIdCertificaciones();
-
+        this.consultarIdCertificaciones();
       }),
       (error_service) => {
         this.openWindow(error_service.message);
         this.regresarFiltro();
       };
-
-      
   }
   openWindow(mensaje) {
-    this.windowService.open(this.contentTemplate, {
-      title: "Alerta",
-      context: { text: mensaje },
-    });
+    const Swal = require('sweetalert2')
+    Swal.fire({
+      icon: 'error',
+      title: 'ERROR',
+      text: mensaje,
+      
+    })
   }
-  getCalificacion() {
-    for (let i = 0; i < this.evaluacionRealizada.Clasificaciones.length; i++) {
-      if (this.evaluacionRealizada.ValorFinal >= this.evaluacionRealizada.Clasificaciones[i].LimiteInferior
-        && this.evaluacionRealizada.ValorFinal <= this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior) {
-        return this.evaluacionRealizada.Clasificaciones[i].Nombre;
-      }
-    }
-  }
-
- 
-
 }

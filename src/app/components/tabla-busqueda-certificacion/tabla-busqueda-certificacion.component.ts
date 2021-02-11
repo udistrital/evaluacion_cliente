@@ -33,9 +33,11 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
   }
 
   relizarCertificacion(data: any) {
+    console.log(data);
     this.dataToDo.emit(data);
   }
   relizarCertificacionSinNovedad(data: any) {
+    console.log(data);
     this.dataToDo2.emit(data);
   }
 

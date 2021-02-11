@@ -37,7 +37,7 @@ export class FiltroComponent implements OnInit {
   filtro() {
 
     this.autentication_data = this.authService.getPayload();
-    this.documento = this.autentication_data.documento;
+    this.documento ="19483708" ;
     console.log(this.documento)
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
@@ -54,6 +54,7 @@ export class FiltroComponent implements OnInit {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&SupID=' + String(this.documento))
         .subscribe((res) => {
           if (res !== null) {
+            
             this.dataResponse.emit(res);
           }
         }, (error_service) => {
@@ -67,6 +68,7 @@ export class FiltroComponent implements OnInit {
          + '&SupID=' + String(this.documento))
           .subscribe((res) => {
             if (res !== null) {
+              
               this.dataResponse.emit(res);
             }
           }, (error_service) => {
@@ -79,6 +81,7 @@ export class FiltroComponent implements OnInit {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento))
             .subscribe((res) => {
               if (res !== null) {
+                
                 this.dataResponse.emit(res);
               }
             }, (error_service) => {
@@ -91,6 +94,7 @@ export class FiltroComponent implements OnInit {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia='
               + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
                 if (res !== null) {
+                  
                   this.dataResponse.emit(res);
                 }
               }, (error_service) => {
@@ -103,6 +107,8 @@ export class FiltroComponent implements OnInit {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento)).subscribe((res) => {
                   if (res !== null) {
+                   
+
                     this.dataResponse.emit(res);
                   }
                 }, (error_service) => {

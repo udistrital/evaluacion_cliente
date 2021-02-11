@@ -59,30 +59,31 @@ export class NuxeoService {
     this.documentos = {};
     nuxeoservice.documentos = {};
     NuxeoService.nuxeo.connect().then(function (client) {
-      files.forEach((file) => {
+      
+        
         documentoService
-          .get("tipo_documento/" + file.IdDocumento)
+          .get("tipo_documento/" + files[0].IdDocumento)
           .subscribe((res) => {
             if (res !== null) {
               const tipoDocumento = <TipoDocumento>res;
-              console.info(tipoDocumento);
+              //console.info(tipoDocumento);
               NuxeoService.nuxeo
                 .operation("Document.Create")
                 .params({
                   type: tipoDocumento.TipoDocumentoNuxeo,
-                  name: file.nombre,
-                  properties: "dc:title=" + file.nombre,
+                  name: files[0].nombre,
+                  properties: "dc:title=" + files[0].nombre,
                 })
                 .input(tipoDocumento.Workspace)
                 .execute()
                 .then(function (doc) {
-                  const nuxeoBlob = new Nuxeo.Blob({ content: file.file });
+                  const nuxeoBlob = new Nuxeo.Blob({ content: files[0].file });
                   
                   NuxeoService.nuxeo
                     .batchUpload()
                     .upload(nuxeoBlob)
                     .then(function (response) {
-                      file.uid = doc.uid;
+                      files[0].uid = doc.uid;
                       NuxeoService.nuxeo
                         .operation("Blob.AttachOnDocument")
                         .param("document", doc.uid)
@@ -90,17 +91,20 @@ export class NuxeoService {
                         .execute()
                         .then(function (respuesta) {
                           const documentoPost = new Documento();
-                          documentoPost.Enlace = file.uid;
-                          documentoPost.Nombre = file.nombre;
+                          documentoPost.Enlace = files[0].uid;
+                          documentoPost.Nombre = files[0].nombre;
                           documentoPost.TipoDocumento = tipoDocumento;
                           documentoService
                             .post("documento", documentoPost)
                             .subscribe((resuestaPost) => {
-                              nuxeoservice.documentos[file.key] =
+                              
+                              
+                              nuxeoservice.documentos[files[0].key] =
                                 resuestaPost.Body;
                               nuxeoservice.documentos$.next(
-                                nuxeoservice.documentos
+                                resuestaPost
                               );
+                              return resuestaPost;
                             });
                         });
                     })
@@ -116,18 +120,20 @@ export class NuxeoService {
             }
           });
       });
-    });
+    
   }
   
 
-  updateFile(files, documentoService, nuxeoservice) {
+  updateFile(file, documentoService, nuxeoservice) {
+    console.log(1)
+    
     this.updateDoc = {};
     nuxeoservice.updateDoc = {};
-    files.forEach((file) => {
+    
       if (file.file !== undefined) {
         const nuxeoBlob = new Nuxeo.Blob({ content: file.file });
         documentoService
-          .get("documento?query=Id:" + file.documento)
+          .get("documento?query=Enlace:" + file.documento)
           .subscribe((res) => {
             if (res !== null) {
               const documento_temp = <any>res[0];
@@ -162,7 +168,7 @@ export class NuxeoService {
             }
           });
       }
-    });
+    
   }
 
   getFile(files, documentoService, nuxeoservice) {

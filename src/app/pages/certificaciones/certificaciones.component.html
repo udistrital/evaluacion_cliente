@@ -1,21 +1,59 @@
 <div class="container">
     <div class="col-xl ">
-        <div *ngIf="this.rolActual === 'ORDENADOR_DEL_GASTO' ">
+        <div *ngIf="this.rolActual === 'ORDENADOR_DEL_GASTO'   ">
             <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false&&this.componenteRealizarCertificacion==false">
                 <!-- Evalua los compoenentes para mostrarlos en el div anterior -->
                 <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
-                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)"></ngx-tabla-busqueda-certificacion>
+                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)">
+                </ngx-tabla-busqueda-certificacion>
             </div>
-            <ngx-crear-certificacion [dataContrato]="this.data" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
-            <ngx-crear-certificacion-sin-novedad [dataContrato]="this.data" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizarCertificacion==true"></ngx-crear-certificacion-sin-novedad>
-            <ngx-ver-certificacion [dataContrato]="this.data" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteVer==true"></ngx-ver-certificacion>
+            <ngx-crear-certificacion [dataContrato]="this.datosContratoAEvaluar" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+            <ngx-crear-certificacion-sin-novedad [dataContrato]="this.datosContratoAEvaluar" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizarCertificacion==true"></ngx-crear-certificacion-sin-novedad>
+            <ngx-ver-certificacion [dataContrato]="this.datosContratoAVer" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteVer==true"></ngx-ver-certificacion>
         </div>
         <div class="col-xl " *ngIf="this.rolActual === 'CONTRATISTA' ">
             <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false">
-                <ngx-certificacion (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-certificacion>
+
+                <ngx-certificacion (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo>
+                </ngx-certificacion>
                 <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)"></ngx-tabla-busqueda-certificacion>
             </div>
-            <ngx-crear-certificacion [dataContrato]="this.data" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+
+            <ngx-crear-certificacion [dataContrato]="this.data" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+
+
+        </div>
+        <div *ngIf="this.rolActual === 'ASISTENTE_JURIDICA' ">
+            <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false&&this.componenteRealizarCertificacion==false">
+                <!-- Evalua los compoenentes para mostrarlos en el div anterior -->
+                <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
+                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)">
+                </ngx-tabla-busqueda-certificacion>
+            </div>
+            <ngx-crear-certificacion [dataContrato]="this.datosContratoAEvaluar" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+
+            <ngx-ver-certificacion [dataContrato]="this.datosContratoAVer" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteVer==true"></ngx-ver-certificacion>
+        </div>
+        <div *ngIf="this.rolActual === 'ASISTENTE_COMPRAS' ">
+            <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false&&this.componenteRealizarCertificacion==false">
+                <!-- Evalua los compoenentes para mostrarlos en el div anterior -->
+                <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
+                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)">
+                </ngx-tabla-busqueda-certificacion>
+            </div>
+
+            <ngx-crear-certificacion-sin-novedad [dataContrato]="this.datosContratoAEvaluar" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizarCertificacion==true"></ngx-crear-certificacion-sin-novedad>
+            <ngx-ver-certificacion [dataContrato]="this.datosContratoAVer" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteVer==true"></ngx-ver-certificacion>
+        </div>
+        <div *ngIf="this.rolActual === 'OPS' ">
+            <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false&&this.componenteRealizarCertificacion==false">
+                <!-- Evalua los compoenentes para mostrarlos en el div anterior -->
+                <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
+                <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)">
+                </ngx-tabla-busqueda-certificacion>
+            </div>
+            <ngx-crear-certificacion [dataContrato]="this.datosContratoAEvaluar" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+            <ngx-crear-certificacion-sin-novedad [dataContrato]="this.datosContratoAEvaluar" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizarCertificacion==true"></ngx-crear-certificacion-sin-novedad>
 
         </div>
 

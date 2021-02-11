@@ -4,9 +4,9 @@
             <h1>Certificacion</h1>
             <br>
             <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
-          <i class="fas fa-arrow-alt-circle-left"></i>
-          Regresar
-        </button>
+                <i class="fas fa-arrow-alt-circle-left"></i>
+                Regresar
+            </button>
 
         </div>
 
@@ -27,16 +27,14 @@
             </div>
             <!-- Div para los datos del contrato   -->
             <div class="row">
-                <div class="col-4">
+                <div class="col-4" *ngIf="this.rol=='ORDENADOR_DEL_GASTO'||this.rol=='ASISTENTE_JURIDICA'">
                     <p>Novedades.</p>
                     <div class="col text-center">
                         <mat-form-field appearance="fill">
                             <mat-label>Novedades</mat-label>
                             <mat-select [(ngModel)]="novedad">
-                                <mat-option value="sin novedad">SIN NOVEDAD</mat-option>
-                                <mat-option value="terminacion y liquidacion">TERMINACIÓN Y LIQUIDACIÓN</mat-option>
-                                <mat-option value="suspension">SUSPENSIÓN</mat-option>
-                                <mat-option value="cesion">CESIÓN</mat-option>
+                                <mat-option *ngFor="let novedades of datosNovedades ; let i = index" [value]="i">{{novedades}}</mat-option>
+
 
                             </mat-select>
                         </mat-form-field>
@@ -125,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-4" *ngIf="this.rol=='ORDENADOR_DEL_GASTO'||this.rol=='ASISTENTE_JURIDICA'">
 
                     <div class="col text-center">
                         <div class="col text-center">
@@ -167,8 +165,8 @@
 
     <div class="col text-center">
         <button (click)="crearPdf()" nbButton status="download" class="btn-flotante">
-        
-        
-        <i class="fas fa-file-alt"></i>
-        Crear Certificado
-      </button>
+
+
+            <i class="fas fa-file-alt"></i>
+            Crear Certificado
+        </button>

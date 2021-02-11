@@ -3,6 +3,7 @@ import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 
 
+
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -15,6 +16,7 @@ interface CardSettings {
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnDestroy {
+  rolActual: any;
 
   private alive = true;
 
@@ -87,4 +89,5 @@ export class DashboardComponent implements OnDestroy {
   ngOnDestroy() {
     this.alive = false;
   }
+  
 }

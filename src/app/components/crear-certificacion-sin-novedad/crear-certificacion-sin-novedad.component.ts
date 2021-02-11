@@ -15,7 +15,8 @@ import { Txt } from "pdfmake-wrapper";
 import { EvaluacionmidService } from "../../@core/data/evaluacionmid.service";
 import { NbWindowService } from "@nebular/theme";
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
-import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
+import { EvaluacioncrudService } from "../../@core/data/evaluacioncrud.service";
+import { AdministrativaamazonService } from "../../@core/data/admistrativaamazon.service";
 
 // Set the fonts to use
 
@@ -28,6 +29,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   @ViewChild("contentTemplate", { read: false })
   contentTemplate: TemplateRef<any>;
   @Output() volverFiltro: EventEmitter<Boolean>;
+  @Input() rol: string;
   @Input() dataContrato: any = [];
   uidDocumento: string;
   idDocumento: number;
@@ -38,22 +40,28 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   actividadEspecifica: string;
   valorContrato: string;
   nombre: string;
+  //los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_Contrato: string;
   duracion_Contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
   fecha_suscrip: string;
   duracion_contrato: string;
+  //************************************************************************ */
   evaluacionRealizada: any;
   fechaEvaluacion: Date;
- 
-  
+  duracionContrato: string = "";
+  idContrato: string = "";
+  fechaInicio: string = "";
+  fechaFin: string = " ";
+
   constructor(
     private nuxeoService: NuxeoService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
     private evaluacionCrudService: EvaluacioncrudService,
+    private AdministrativaAmazon: AdministrativaamazonService
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -61,27 +69,53 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.evaluacionCrudService.get('evaluacion?query=ContratoSuscrito:' + this.dataContrato[0].ContratoSuscrito +
-      ',Vigencia:' + this.dataContrato[0].Vigencia).subscribe((res_evaluacion) => {
-        if (Object.keys(res_evaluacion[0]).length !== 0) {
-          this.evaluacionCrudService.getEvaluacion('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion[0].Id + ',Activo:true');
-          this.evaluacionCrudService.get('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion[0].Id + ',Activo:true')
-            .subscribe((res_resultado_eva) => {
-              if (res_resultado_eva !== null) {
-                this.evaluacionRealizada = JSON.parse(res_resultado_eva[0].ResultadoEvaluacion);
-                this.fechaEvaluacion = new Date(res_resultado_eva[0].FechaCreacion.substr(0, 16));
-                
-              }
-            }, (error_service) => {
-              this.openWindow(error_service.message);
-            });
-        } else {
-          this.regresarFiltro();
-          this.openWindow('El contrato no ha sido evaluado.');
+    
+    this.evaluacionCrudService
+      .get(
+        "evaluacion?query=ContratoSuscrito:" +
+          this.dataContrato[0].ContratoSuscrito +
+          ",Vigencia:" +
+          this.dataContrato[0].Vigencia
+      )
+      .subscribe(
+        (res_evaluacion) => {
+          if (Object.keys(res_evaluacion[0]).length !== 0) {
+            this.evaluacionCrudService.getEvaluacion(
+              "resultado_evaluacion?query=IdEvaluacion:" +
+                res_evaluacion[0].Id +
+                ",Activo:true"
+            );
+            this.evaluacionCrudService
+              .get(
+                "resultado_evaluacion?query=IdEvaluacion:" +
+                  res_evaluacion[0].Id +
+                  ",Activo:true"
+              )
+              .subscribe(
+                (res_resultado_eva) => {
+                  if (res_resultado_eva !== null) {
+                    this.evaluacionRealizada = JSON.parse(
+                      res_resultado_eva[0].ResultadoEvaluacion
+                    );
+                    this.fechaEvaluacion = new Date(
+                      res_resultado_eva[0].FechaCreacion.substr(0, 16)
+                    );
+                  }
+                },
+                (error_service) => {
+                  this.openWindow(error_service.message);
+                }
+              );
+          } else {
+            this.regresarFiltro();
+            this.openWindow("El contrato no ha sido evaluado.");
+          }
+        },
+        (error_service) => {
+          this.openWindow(error_service.message);
         }
-      }, (error_service) => {
-        this.openWindow(error_service.message);
-      });
+      );
+
     //console.log("Modulo de certificaciones sin novedades");
     this.consultarDatosContrato();
   }
@@ -93,15 +127,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     var cadena1 = "QUE EL SEÑOR(A) ";
     var cadena2 = " IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ";
     var cadena3 = " , CUMPLIO A SATISFACCIÓN CON LAS SIGUIENTES ORDENES ";
-    
 
     PdfMakeWrapper.setFonts(pdfFonts, {
       myCustom: {
-        normal: "Calibrilight.ttf",
-        bold:
-          "https://db.onlinewebfonts.com/t/8415cddd12851fb7439d5fa5c23ea4d5.ttf",
-        italics: "Calibrilight.ttf",
-        bolditalics: "Calibrilight.ttf",
+        normal: "calibri-light-2.ttf",
+        bold: "calibri-bold-2.ttf",
+        italics: "calibri-light-2.ttf",
+        bolditalics: "calibri-light-2.ttf",
       },
     });
     PdfMakeWrapper.useFont("myCustom");
@@ -186,7 +218,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
-            { text: "6 meses", style: "body" },
+            { text: this.duracionContrato, style: "body" },
           ],
         },
       ],
@@ -194,7 +226,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE INICIO:  ", style: "body1", bold: true },
-            { text: "24/09/2020", style: "body" },
+            { text: this.fechaInicio, style: "body" },
           ],
         },
       ],
@@ -202,7 +234,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE FINALIZACION:  ", style: "body1", bold: true },
-            { text: "23/03/2021", style: "body" },
+            { text: this.fechaFin, style: "body" },
           ],
         },
       ],
@@ -221,19 +253,20 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             { text: this.getCalificacion(), style: "body" },
           ],
         },
-        
       ],
       footer: [
         {
           text: [
-            { text: "PBX: 3239300 Ext: 1911 – 1919 – 1912 \n Carrera 7 No. 40 B – 53 Piso 9°  Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016 ", style: "body1", bold: true },
+            {
+              text:
+                "PBX: 3239300 Ext: 1911 – 1919 – 1912 \n Carrera 7 No. 40 B – 53 Piso 9°  Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016 ",
+              style: "body1",
+              bold: true,
+            },
             { text: this.fecha_suscrip, style: "body" },
           ],
         },
-        
       ],
-
-
     };
 
     //-------------------------------------------------------------------------------------
@@ -251,15 +284,11 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         pdf.add("\n");
 
         pdf.add(
-          new Txt("EL SUSCRITO JEFE DE LA SECCIÓN DE COMPRAS DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS").style(
-            "Title"
-          ).end
+          new Txt(
+            "EL SUSCRITO JEFE DE LA SECCIÓN DE COMPRAS DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS"
+          ).style("Title").end
         );
-        pdf.add(
-          new Txt("NIT: 899.999.230-7").style(
-            "Title"
-          ).end
-        );
+        pdf.add(new Txt("NIT: 899.999.230-7").style("Title").end);
         pdf.add("\n");
         pdf.add("\n");
         pdf.add(new Txt("CERTIFICA").style("Title").end);
@@ -277,7 +306,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
         pdf.add("\n");
 
-        
         if (this.valor_Contrato == "1") {
           pdf.add(docDefinition.valorContra);
         }
@@ -295,7 +323,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           pdf.add(docDefinition.fechafin);
         }
         pdf.add("\n\n");
-        pdf.add(docDefinition.resultadoEva)
+        pdf.add(docDefinition.resultadoEva);
         pdf.add("\n\n");
 
         pdf.add("\n\n");
@@ -309,51 +337,47 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             .alignment("center")
             .bold().end
         );
+        let arreglo = [];
+        
+
+        pdf.create().getBlob((blob) => {
+          const file = {
+            IdDocumento: 16,
+            file: blob,
+            nombre: "",
+          };
+          arreglo.push(file);
+          arreglo.forEach((file) => {
+            (file.Id = file.nombre),
+              (file.nombre =
+                "certificacion_" +
+                file.Id +
+                this.numeroContrato +
+                "__" +
+                this.cedula+"_ops");
+            file.key = file.Id;
+          });
+          this.nuxeoService
+            .getDocumentos$(arreglo, this.documentoService)
+            .subscribe(
+              (response) => {
+                console.log(response);
+                
+                pdf.add(new Txt(response["Enlace"]).color('blue').bold().alignment('center').end);
+    
+                pdf
+                  .create()
+                  .download(
+                    "Certificacion_" + this.numeroContrato + "__" + this.cedula+"cps"
+                  );
+              },
+              (error) => {}
+            );
+        });
       });
-
-    // pdf.header();
-    pdf
-      .create()
-      .download("Certificacion_" + this.numeroContrato + "__" + this.cedula);
-
-    //-------------------------------------------------------------------------------------
-
-    //this.postSoporteNuxeo([{Id:5, nombre:"frederick"}]);
-    let arreglo = [];
-    pdf.create().getBlob((blob) => {
-      const file = {
-        IdDocumento: 16,
-        file: blob,
-        nombre: 1014250554,
-      };
-      arreglo.push(file);
-      //subida de archivo a nuxeo
-      //this.uploadFilesToMetadaData(arreglo, []);
-    });
   }
 
-  uploadFilesToMetadaData(files, respuestas) {
-    console.log("subiendo archivos");
-    return new Promise((resolve, reject) => {
-      files.forEach((file) => {
-        (file.Id = file.nombre),
-          (file.nombre = "soporte_" + file.Id + "_prod_" + 1014250554);
-        file.key = file.Id;
-      });
-      this.nuxeoService.getDocumentos$(files, this.documentoService).subscribe(
-        (response) => {
-          console.info("uploadFilesToMetadata - Resp nuxeo: ", response);
-          if (Object.keys(response).length === files.length) {
-            
-            resolve(true);
-          }
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
-  }
+
   consultarDatosContrato() {
     this.evaluacionMidService
       .get(
@@ -363,7 +387,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           this.dataContrato[0].Vigencia
       )
       .subscribe((res_contrato) => {
-        console.log("aca esta el contrato", res_contrato);
+        //console.log("aca esta el contrato", res_contrato);
         this.objeto = res_contrato[0].contrato_general.ObjetoContrato;
         this.valorContrato = res_contrato[0].contrato_general.ValorContrato;
         this.cedula = res_contrato[0].informacion_proveedor.NumDocumento;
@@ -372,6 +396,18 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
         this.fecha_suscrip =
           res_contrato[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
+
+          this.duracionContrato = res_contrato[0].contrato_general.PlazoEjecucion;
+          this.idContrato =
+            res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id; 
+
+
+          this.AdministrativaAmazon.get(
+            "acta_inicio?query=NumeroContrato:" + this.idContrato
+          ).subscribe((res_Contrato) => {
+            this.fechaInicio = res_Contrato[0].FechaInicio;
+            this.fechaFin = res_Contrato[0].FechaFin;
+          });
       }),
       (error_service) => {
         this.openWindow(error_service.message);
@@ -380,14 +416,19 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   }
   openWindow(mensaje) {
     this.windowService.open(this.contentTemplate, {
-      title: "Alerta",
+      title: "Alertaaa",
       context: { text: mensaje },
     });
+    //mostrar alerta
   }
   getCalificacion() {
     for (let i = 0; i < this.evaluacionRealizada.Clasificaciones.length; i++) {
-      if (this.evaluacionRealizada.ValorFinal >= this.evaluacionRealizada.Clasificaciones[i].LimiteInferior
-        && this.evaluacionRealizada.ValorFinal <= this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior) {
+      if (
+        this.evaluacionRealizada.ValorFinal >=
+          this.evaluacionRealizada.Clasificaciones[i].LimiteInferior &&
+        this.evaluacionRealizada.ValorFinal <=
+          this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior
+      ) {
         return this.evaluacionRealizada.Clasificaciones[i].Nombre;
       }
     }
