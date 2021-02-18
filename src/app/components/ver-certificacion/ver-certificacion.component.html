@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h1>Certificacion</h1>
+            <br>
+            <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
+                <i class="fas fa-arrow-alt-circle-left"></i>
+                Regresar
+            </button>
+
+            <form class="form-inline">
+
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="inputPassword2" class="sr-only">ID Documento</label>
+                    <input type="text" [(ngModel)]="codigoDocumento" class="form-control col-md-50" placeholder="IDDOCUMENT" name="something">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2" (click)="buscarId()">Buscar Llave Unica</button>
+            </form>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<br>
+<div>
+    <div class="card card-margin">
+        <div class="card-body">
+
+
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+
+                        <th scope="col">Fecha de creacion</th>
+                        <th scope="col">Codigo unico</th>
+
+                        <th scope="col">Descargar</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let contratos of datosCertficiaciones ; let i = index">
+                        <th scope="row">{{i+1}}</th>
+
+
+                        <td>{{contratos.Nombre}}</td>
+
+                        <td>{{contratos.FechaCreacion.slice(0, 10)}}</td>
+                        <td>{{contratos.Enlace}}</td>
+
+                        <td>
+                            <button type="button" (click)="descargarCertificacion(contratos)" class="btn-i" title="Descargar Certificado">
+                                    
+                            <i class="fas fa-download"></i>
+                          </button>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+</div>

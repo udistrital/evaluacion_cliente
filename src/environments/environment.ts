@@ -11,7 +11,19 @@
 export const environment = {
   production: false,
   NUXEO: {
-    PATH: 'https://documental.udistrital.edu.co/nuxeo/',
+
+    PATH: 'https://documental.portaloas.udistrital.edu.co/nuxeo/',
+    CREDENTIALS: {
+      USERNAME: 'Administrator',
+      PASS: 'S1st3m4s04S=Fr331P4',
+      //Administrator---S1st3m4s04S=Fr331P4
+      /*
+      
+      USERNAME: 'desarrollooas',
+      PASS: 'desarrollooas2019',
+      
+      */
+    },
   },
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
   //NOTIFICACION_SERVICE: 'ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws',
@@ -19,6 +31,8 @@ export const environment = {
   EVALUACIONMID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_mid/v1/',
   EVALUACIONCRUD_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_crud/v1/',
   ADMINISTRIVA_AMAZON: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/',
+  DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
+  
 
   SPAGOBI: {
     PROTOCOL: 'https',
