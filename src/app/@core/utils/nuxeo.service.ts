@@ -46,6 +46,7 @@ export class NuxeoService {
   }
   public getDocumentoOne$(Id, documentoService): Observable<object[]> {
     this.getOneFile(Id, documentoService, this);
+    
     return this.blobDocument$.asObservable();
   }
 
@@ -59,10 +60,10 @@ export class NuxeoService {
     this.documentos = {};
     nuxeoservice.documentos = {};
     NuxeoService.nuxeo.connect().then(function (client) {
-      
+      files.forEach(file => {
         
         documentoService
-          .get("tipo_documento/" + files[0].IdDocumento)
+          .get("tipo_documento/" + file.IdDocumento)
           .subscribe((res) => {
             if (res !== null) {
               const tipoDocumento = <TipoDocumento>res;
@@ -71,19 +72,19 @@ export class NuxeoService {
                 .operation("Document.Create")
                 .params({
                   type: tipoDocumento.TipoDocumentoNuxeo,
-                  name: files[0].nombre,
-                  properties: "dc:title=" + files[0].nombre,
+                  name: file.nombre,
+                  properties: "dc:title=" + file.nombre,
                 })
                 .input(tipoDocumento.Workspace)
                 .execute()
                 .then(function (doc) {
-                  const nuxeoBlob = new Nuxeo.Blob({ content: files[0].file });
+                  const nuxeoBlob = new Nuxeo.Blob({ content: file.file });
                   
                   NuxeoService.nuxeo
                     .batchUpload()
                     .upload(nuxeoBlob)
                     .then(function (response) {
-                      files[0].uid = doc.uid;
+                      file.uid = doc.uid;
                       NuxeoService.nuxeo
                         .operation("Blob.AttachOnDocument")
                         .param("document", doc.uid)
@@ -91,15 +92,15 @@ export class NuxeoService {
                         .execute()
                         .then(function (respuesta) {
                           const documentoPost = new Documento();
-                          documentoPost.Enlace = files[0].uid;
-                          documentoPost.Nombre = files[0].nombre;
+                          documentoPost.Enlace = file.uid;
+                          documentoPost.Nombre = file.nombre;
                           documentoPost.TipoDocumento = tipoDocumento;
                           documentoService
                             .post("documento", documentoPost)
                             .subscribe((resuestaPost) => {
                               
                               
-                              nuxeoservice.documentos[files[0].key] =
+                              nuxeoservice.documentos[file.key] =
                                 resuestaPost.Body;
                               nuxeoservice.documentos$.next(
                                 resuestaPost
@@ -120,16 +121,16 @@ export class NuxeoService {
             }
           });
       });
-    
+    });
   }
   
 
-  updateFile(file, documentoService, nuxeoservice) {
-    console.log(1)
+  updateFile(files, documentoService, nuxeoservice) {
+    
     
     this.updateDoc = {};
     nuxeoservice.updateDoc = {};
-    
+    files.forEach(file => {
       if (file.file !== undefined) {
         const nuxeoBlob = new Nuxeo.Blob({ content: file.file });
         documentoService
@@ -168,7 +169,7 @@ export class NuxeoService {
             }
           });
       }
-    
+    });
   }
 
   getFile(files, documentoService, nuxeoservice) {
@@ -206,6 +207,7 @@ export class NuxeoService {
     this.blobDocument = {};
     nuxeoservice.blobDocument = {};
     
+    
       documentoService.get("documento/?query=Enlace:" + file.Id).subscribe((res) => {
         //console.log("esta es la primera respuesta",res[0].Enlace)
         if (res !== null) {
@@ -224,10 +226,15 @@ export class NuxeoService {
                       const url = URL.createObjectURL(responseblob);
                                       
                       nuxeoservice.blobDocument[file.key] = url;
-                                        
+                      
+                      //this.someObservable = of([]);
+                      
                       nuxeoservice.blobDocument$.next(
                         nuxeoservice.blobDocument
+                        
                       );
+                      
+
                     });
                   })
                   .catch(function (response2) {});

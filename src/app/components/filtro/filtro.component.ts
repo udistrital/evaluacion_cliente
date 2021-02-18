@@ -38,7 +38,8 @@ export class FiltroComponent implements OnInit {
 
     this.autentication_data = this.authService.getPayload();
     this.documento ="19483708" ;
-    console.log(this.documento)
+    //this.documento = this.autentication_data.documento;
+    //console.log(this.documento)
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {

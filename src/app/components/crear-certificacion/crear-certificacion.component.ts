@@ -46,6 +46,10 @@ export class CrearCertificacionComponent implements OnInit {
   fecha_Inicio: string;
   fecha_final: string;
   nuevo_texto: boolean = false;
+  novedadCesion: boolean = false;
+  novedadOtro: boolean = false;
+  novedadSuspension: boolean = false;
+  novedadTerminacion: boolean = false;
   //----------------------------------------------------------------------------------
   tituloNovedad: string = "";
   textoNovedad: string = "";
@@ -56,6 +60,16 @@ export class CrearCertificacionComponent implements OnInit {
   fechaFin: string = " ";
   datosNovedades: string[] = [];
   allNovedades: any[] = [];
+  tituloCesion: string = "";
+  numeroNovedades: number;
+  numeroNovedadesArr: string[] = [];
+  novedadesCesion: string[] = [];
+
+  duracionOtroSi: string[] = [];
+  valorOtroSi: string[] = [];
+  fechaInicialSupension = new Date();
+  fechaFinalSuspension = new Date();
+  fechaTerminacion = new Date();
 
   constructor(
     private nuxeoService: NuxeoService,
@@ -77,7 +91,6 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   crearPdf() {
-    
     var cadena1 =
       "QUE, REVISADA LA BASE DE DATOS DE CONTRATACIÓN, SE ENCONTRÓ QUE ";
     var cadena2 = " IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ";
@@ -263,6 +276,93 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
+      novedadAdicion: [
+        {
+          text: [
+            {
+              text:
+                "OTROSÍ N°1 DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO." +
+                this.dataContrato[0].ContratoSuscrito +
+                "-" +
+                this.dataContrato[0].Vigencia,
+              style: "body1",
+              bold: true,
+            },
+          ],
+        },
+      ],
+      novedadContraTerminacion: [
+        {
+          text: [
+            {
+              text: "NOVEDAD CONTRACTUAL:",
+              style: "body1",
+              bold: true,
+            },
+            {
+              text:
+                "ACTA DE TERMINACIÓN Y LIQUIDACIÓN BILATERAL" +
+                this.fechaTerminacion,
+              style: "body",
+              bold: true,
+            },
+          ],
+        },
+      ],
+      novedadContraSuspension: [
+        {
+          text: [
+            {
+              text: "NOVEDAD CONTRACTUAL:",
+              style: "body1",
+              bold: true,
+            },
+            {
+              text:
+                "ACTA DE SUSPENSIÓN DE " +
+                this.diasFecha(
+                  this.fechaInicialSupension,
+                  this.fechaFinalSuspension
+                ) +
+                " DIAS" +
+                "DESDE " +
+                this.fechaInicialSupension +
+                " HASTA " +
+                this.fechaFinalSuspension,
+              style: "body",
+              bold: true,
+            },
+          ],
+        },
+      ],
+      novedadContraOtroSi: [
+        {
+          text: [
+            { text: "DURACION:  ", style: "body1", bold: true },
+            { text: " DIAS", style: "body" },
+            { text: "\n VALOR: $", style: "body1", bold: true },
+          ],
+        },
+      ],
+      contrato: [
+        {
+          text: [
+            {
+              text: "CONTRATO DE PRESTACIÓN DE SERVICIOS NO. :  ",
+              style: "body1",
+              bold: true,
+            },
+            {
+              text:
+                this.dataContrato[0].ContratoSuscrito +
+                "-" +
+                this.dataContrato[0].Vigencia,
+              style: "body",
+            },
+          ],
+        },
+      ],
+
       firmaImagen: [
         {
           image:
@@ -282,92 +382,25 @@ export class CrearCertificacionComponent implements OnInit {
     };
     //-------------------------------------------------------------------------------------
 
-    //console.log("esta es la novedad",this.novedad)
+    //console.log("esta es la novedad", this.novedadesCesion);
+    //console.log("esta es la novedad",this.valorOtroSi);
+    //console.log("esta es la novedad",this.duracionOtroSi)
 
     //-------------------------------------------------------------------------------------
 
     let arreglo = [];
     let arreglo2 = [];
+    let novedadesCesion = [];
+    let novedadesAdicionPro = [];
 
-    pdf.add(
-      new Table([[docDefinition.escudoImagen, docDefinition.valorCabe]]).layout(
-        "noBorders"
-      ).end
-    );
-    pdf.add("\n");
-    pdf.add("\n");
-    pdf.add("\n");
-
-    pdf.add(
-      new Txt("EL SUSCRITO JEFE DE LA OFICINA ASESORA JURIDICA").style("Title")
-        .end
-    );
-    pdf.add("\n");
-    pdf.add("\n");
-    pdf.add(new Txt("CERTIFICA").style("Title").end);
-
-    pdf.add("\n");
-    //------------------------------ se arma el primer parrafo
-    pdf.add(docDefinition.content[0]);
-    pdf.add(docDefinition.line);
-
-    pdf.add("\n");
-
-    if (this.allNovedades[this.novedad].TipoNovedad == "219") {
-      pdf.add("\n");
-      pdf.add(docDefinition.novedadCesion);
-    } else {
-      pdf.add(
-        new Txt(
-          "CONTRATO DE PRESTACIÓN DE SERVICIOS NO." +
-            this.dataContrato[0].ContratoSuscrito +
-            "-" +
-            this.dataContrato[0].Vigencia
-        ).bold().end
-      );
+    for (var i = 0; i < this.novedad.length; i++) {
+      if (this.novedad[i] == "Cesion") {
+        novedadesCesion.push(this.novedad[i]);
+      } else if (this.novedad[i] == "Adicion Prorroga") {
+        novedadesAdicionPro.push(this.novedad[i]);
+      }
     }
-    pdf.add("\n\n");
-    pdf.add(docDefinition.fechaSub);
-
-    if (this.fecha_Inicio == "1") {
-      pdf.add("\n\n");
-      pdf.add(docDefinition.fechainicio);
-    }
-    if (this.fecha_final == "1") {
-      pdf.add("\n\n");
-      pdf.add(docDefinition.fechafin);
-    }
-
-    pdf.add("\n\n");
-    pdf.add(docDefinition.content2);
-    pdf.add("\n\n");
-    pdf.add(docDefinition.content3);
-    pdf.add("\n\n");
-
-    if (this.duracion_contrato == "1") {
-      pdf.add(docDefinition.duraContra);
-    }
-    if (this.valor_contrato == "1") {
-      pdf.add(docDefinition.valorContra);
-    }
-
-    if (this.nuevo_texto == true) {
-      pdf.add("\n\n");
-      pdf.add(docDefinition.texTituloNovedad);
-      pdf.add("\n\n");
-    }
-    pdf.add("\n\n");
-    pdf.add("\n\n");
-    pdf.add(docDefinition.firmaImagen);
-    pdf.add(docDefinition.firmaPagina);
-
-    pdf.footer(
-      new Txt(
-        "Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016"
-      )
-        .alignment("center")
-        .bold().end
-    );
+    //console.log("esta es la novedad", this.novedad[1]);
 
     pdf.create().getBlob((blob) => {
       const file = {
@@ -384,79 +417,190 @@ export class CrearCertificacionComponent implements OnInit {
             this.numeroContrato +
             "__" +
             this.cedula +
-            "_cps");
+            "_contractual");
         file.key = file.Id;
       });
-      var cont = 1;
-      console.log("este es el problema",this.documentoService)
-      this.nuxeoService
-        .getDocumentos$(arreglo,  this.documentoService)
-        .subscribe(
-          (response) => {
-            if(cont=1){
-              console.log("esta es la respuesta de nuxeo",response["Enlace"]);
-
-            pdf.add(
-              new Txt(response["Enlace"])
-                .color("blue")
-                .bold()
-                .alignment("center").end
-            );
-            pdf.create().getBlob((blob) => {
-              const file2 = {
-                IdDocumento: 16,
-                file: blob,
-                nombre: "",
-                documento:response["Enlace"],
-              };
-              arreglo2.push(file2);
-              arreglo2.forEach((file) => {
-                (file.Id = file.nombre),
-                  (file.nombre =
-                    "certificacion_" +
-                    file.Id +
-                    this.numeroContrato +
-                    "__" +
-                    this.cedula +
-                    "_cps");
-                file.key = file.Id;
-              });
-              console.log("este es el arreglo",arreglo2)
-
-              this.nuxeoService
-                .updateDocument$(arreglo2, this.documentoService)
-                .subscribe((response) => {
-                  if(cont=1){
-                    console.log("Esta es la respuesta de la actualizacion de nuxeo",response)
-
-                  }
-                  
-                });
-            });
-
-            pdf
-              .create()
-              .download(
-                "Certificacion_" +
-                  this.numeroContrato +
-                  "__" +
-                  this.cedula +
-                  "cps"
-              );
-
-            }
-            cont=cont+1;
-            arreglo2.length = 0;
-            arreglo.length = 0;
-            return false
-            
-            
-          },
-          (error) => {
-            this.openWindow(error);
-          }
-        );
     });
+
+    this.nuxeoService.getDocumentos$(arreglo, this.documentoService).subscribe(
+      (response) => {
+        //console.log("esta es la respuesta de nuxeo", response["Enlace"]);
+        pdf.header(
+          new Txt(response["Enlace"]).bold().alignment("right").fontSize(10).end
+        );
+        pdf.add(
+          new Table([
+            [docDefinition.escudoImagen, docDefinition.valorCabe],
+          ]).layout("noBorders").end
+        );
+        pdf.add("\n");
+
+        pdf.add(
+          new Txt("EL SUSCRITO JEFE DE LA OFICINA ASESORA JURIDICA").style(
+            "Title"
+          ).end
+        );
+        pdf.add("\n");
+
+        pdf.add(new Txt("CERTIFICA").style("Title").end);
+
+        pdf.add("\n");
+        //------------------------------ se arma el primer parrafo
+        pdf.add(docDefinition.content[0]);
+        pdf.add(docDefinition.line);
+
+        pdf.add("\n");
+        if (this.novedadesCesion.length != 0) {
+          for (var i = 0; i < this.novedadesCesion.length; i++) {
+            pdf.add(new Txt(this.novedadesCesion[i].toUpperCase()).bold().end);
+          }
+        }
+
+        if (novedadesCesion.length != 0) {
+          for (var i = 0; i < novedadesCesion.length; i++) {
+            pdf.add(docDefinition.novedadCesion);
+          }
+        }
+        if (this.novedad == "Sin novedades") {
+          pdf.add(docDefinition.contrato);
+        }
+
+        pdf.add("\n");
+        pdf.add(docDefinition.fechaSub);
+
+        if (this.fecha_Inicio == "1") {
+          pdf.add("\n");
+          pdf.add(docDefinition.fechainicio);
+        }
+        if (this.fecha_final == "1") {
+          pdf.add("\n");
+          pdf.add(docDefinition.fechafin);
+        }
+
+        pdf.add("\n");
+        pdf.add(docDefinition.content2);
+        pdf.add("\n");
+        pdf.add(docDefinition.content3);
+        pdf.add("\n");
+        if (this.novedadTerminacion == true) {
+          pdf.add(docDefinition.novedadContraTerminacion);
+        }
+        if (this.novedadSuspension == true) {
+          pdf.add(docDefinition.novedadContraSuspension);
+        }
+
+        if (this.duracion_contrato == "1") {
+          pdf.add(docDefinition.duraContra);
+        }
+        if (this.valor_contrato == "1") {
+          pdf.add(docDefinition.valorContra);
+        }
+        pdf.add("\n");
+
+        if (this.novedadOtro == true) {
+          for (var i = 0; i < this.duracionOtroSi.length; i++) {
+            var contador = i + 1;
+            pdf.add(
+              new Txt(
+                "OTROSÍ N° " +
+                  contador +
+                  " DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO " +
+                  this.dataContrato[0].ContratoSuscrito +
+                  "-" +
+                  this.dataContrato[0].Vigencia
+              ).bold().end
+            );
+            
+            pdf.add(
+              new Txt("DURACIÓN:" + this.duracionOtroSi[i] + " DIAS").bold().end
+            );
+
+            pdf.add(new Txt("VALOR: $" + this.valorOtroSi[i]).bold().end);
+          }
+          pdf.add("\n");
+        }
+        if (novedadesAdicionPro.length != 0) {
+          //console.log("esta es la novedad", this.novedad);
+          pdf.add("\n");
+          for (var i = 0; i < novedadesAdicionPro.length; i++) {
+            pdf.add(docDefinition.novedadAdicion);
+            pdf.add(
+              new Txt(
+                "DURACION: " +
+                  this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                    .PlazoEjecucion +
+                  " Dias"
+              ).bold().end
+            );
+            pdf.add(
+              new Txt(
+                "VALOR: " +
+                  this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                    .ValorNovedad
+              ).bold().end
+            );
+          }
+
+          //-------------------------------------
+        }
+
+        pdf.add("\n\n");
+
+        pdf.add(docDefinition.firmaImagen);
+        pdf.add(docDefinition.firmaPagina);
+
+        pdf.footer(
+          new Txt(
+            "Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016"
+          )
+            .alignment("center")
+            .bold().end
+        );
+
+        pdf.create().getBlob((blob) => {
+          const file2 = {
+            IdDocumento: 16,
+            file: blob,
+            nombre: "",
+            documento: response["Enlace"],
+          };
+          arreglo2.push(file2);
+          arreglo2.forEach((file) => {
+            (file.Id = file.nombre),
+              (file.nombre =
+                "certificacion_" +
+                file.Id +
+                this.numeroContrato +
+                "__" +
+                this.cedula +
+                "_contractual");
+            file.key = file.Id;
+          });
+
+          this.nuxeoService
+            .updateDocument$(arreglo2, this.documentoService)
+            .subscribe((response) => {
+              /*console.log(
+                "Esta es la respuesta de la actualizacion de nuxeo",
+                response
+              );*/
+            });
+        });
+
+        pdf
+          .create()
+          .download(
+            "Certificacion_" +
+              this.numeroContrato +
+              "__" +
+              this.cedula +
+              "_contractual"
+          );
+      },
+      (error) => {
+        this.openWindow(error);
+      }
+    );
   }
 
   consultarDatosContrato() {
@@ -482,13 +626,19 @@ export class CrearCertificacionComponent implements OnInit {
           res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
 
         this.consultarNovedades();
-
+        //console.log(this.idContrato);
         this.AdministrativaAmazon.get(
           "acta_inicio?query=NumeroContrato:" + this.idContrato
-        ).subscribe((res_Contrato) => {
-          this.fechaInicio = res_Contrato[0].FechaInicio;
-          this.fechaFin = res_Contrato[0].FechaFin;
-        });
+        ).subscribe(
+          (res_Contrato) => {
+            this.fechaInicio = res_Contrato[0].FechaInicio;
+            this.fechaFin = res_Contrato[0].FechaFin;
+          },
+          (err) => {
+            this.fechaInicio = "23/10/20";
+            this.fechaFin = "27/03/21";
+          }
+        );
       }),
       (error_service) => {
         this.openWindow(error_service);
@@ -501,22 +651,35 @@ export class CrearCertificacionComponent implements OnInit {
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
+
         for (var i = 0; i < data.length; i++) {
           if (data[i].TipoNovedad == "219") {
-            this.datosNovedades.push(
-              i + "-Cesion-" + data[i].FechaRegistro.slice(0, 10)
-            );
+            this.datosNovedades.push("Cesion");
           } else if (data[i].TipoNovedad == "220") {
-            this.datosNovedades.push(
-              i + "-Adicion Prorroga-" + data[i].FechaRegistro.slice(0, 10)
-            );
+            this.datosNovedades.push("Adicion Prorroga");
           }
         }
+        this.datosNovedades.push("Sin novedades");
       },
       (err) => {
         this.datosNovedades.push("Sin novedades");
       }
     );
+  }
+  diasFecha(fecha1, fecha2) {
+    var date_1 = new Date(fecha1.toString()).getTime();
+    var date_2 = new Date(fecha2.toString()).getTime();
+    //console.log(date_1, date_2);
+    if (date_2 < date_1) {
+      this.openWindow(
+        "Error la fecha de finalizacion siempre debe ser mayor a la fecha de inicio"
+      );
+      this.regresarFiltro();
+    } else {
+      var diff = date_2 - date_1;
+
+      return diff / (1000 * 60 * 60 * 24);
+    }
   }
   openWindow(mensaje) {
     const Swal = require("sweetalert2");
@@ -525,5 +688,13 @@ export class CrearCertificacionComponent implements OnInit {
       title: "ERROR",
       text: mensaje,
     });
+  }
+
+  crearNovedades() {
+    this.numeroNovedadesArr.length = 0;
+    for (var i = 0; i < this.numeroNovedades; i++) {
+      //console.log(i);
+      this.numeroNovedadesArr.push("");
+    }
   }
 }

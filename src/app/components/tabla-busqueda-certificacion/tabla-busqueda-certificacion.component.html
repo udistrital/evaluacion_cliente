@@ -37,6 +37,10 @@
 
                                     <i class="fas fa-edit"></i>
                                 </button>
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
+                                </button>
                             </div>
                             <!-- Rol de Juridica -->
                             <div *ngIf="logueado && this.rolActual === 'ASISTENTE_JURIDICA'" class="col-md-auto">
@@ -63,11 +67,10 @@
                             </div>
                             <!-- Rol de OPS -->
                             <div *ngIf="logueado && this.rolActual === 'OPS'" class="col-md-auto">
-                                <button type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear  Certificacion Contractual">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" (click)="relizarCertificacionSinNovedad(contrato)" class="btn-i" data-toggle="tooltip" title="Crear certificacion de cumplimiento">
-                                    <i class="fas fa-edit"></i>
+
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
                                 </button>
 
 

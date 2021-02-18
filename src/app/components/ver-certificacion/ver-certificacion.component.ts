@@ -65,9 +65,9 @@ export class VerCertificacionComponent implements OnInit {
   }
 
   consultarIdCertificaciones() {
-    
+    //console.log("rol",this.rol)
     if(this.rol == "CONTRATISTA" || this.rol == "ASISTENTE_JURIDICA"){
-      this.tipoCertificacion ="cps"
+      this.tipoCertificacion ="cumplimiento"
       this.documentoService
       .get(
         "documento/?query=Nombre:certificacion_" +
@@ -88,7 +88,7 @@ export class VerCertificacionComponent implements OnInit {
         }
       });
     }else if( this.rol == "ASISTENTE_COMPRAS"){
-      this.tipoCertificacion ="ops"
+      this.tipoCertificacion ="contractual"
       this.documentoService
       .get(
         "documento/?query=Nombre:certificacion_" +
@@ -112,18 +112,18 @@ export class VerCertificacionComponent implements OnInit {
       });     
 
     }else if(this.rol == "ORDENADOR_DEL_GASTO" || this.rol == "OPS"){
-      console.log("este es el rol",this.rol)
+      //console.log("este es el rol",this.rol)
       this.documentoService
       .get(
         "documento/?query=Nombre:certificacion_" +
           this.numeroContrato +
           "__" +
           this.cedula +
-          "_ops"+",Nombre:certificacion_" +
+          "_contractual"+",Nombre:certificacion_" +
           this.numeroContrato +
           "__" +
           this.cedula +
-          "_cps"+
+          "_cumplimiento"+
           "&limit=-1"
       )
       .subscribe((data: any) => {
@@ -150,20 +150,26 @@ export class VerCertificacionComponent implements OnInit {
       Id: contrato.Enlace,
       key: "prueba",
     };
+    
+
 
     this.nuxeoService
       .getDocumentoOne$(anObject, this.documentoService)
       .subscribe((response) => {
-        console.log("respuesta", response["prueba"]);
+        //console.log("respuesta", response["prueba"]);
 
         this.download(response["prueba"], "", 1000, 1000);
+        
       }),
       (error_service) => {
         this.openWindow('No se pudo descargar la certificacion');
         this.regresarFiltro();
       };
+      
+      
   }
   download(url, title, w, h) {
+    
     const left = screen.width / 2 - w / 2;
     const top = screen.height / 2 - h / 2;
     window.open(
@@ -191,7 +197,7 @@ export class VerCertificacionComponent implements OnInit {
         "documento/?query=Enlace:" +this.codigoDocumento
       )
       .subscribe((data: any) => {
-        console.log("datos de el id",data)
+        //console.log("datos de el id",data)
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
