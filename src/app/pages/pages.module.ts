@@ -11,6 +11,7 @@ import { NbStepperModule } from '@nebular/theme';
 import {MatTabsModule} from '@angular/material/tabs';
 
 
+
 const PAGES_COMPONENTS = [
   PagesComponent,
 ];
@@ -29,6 +30,7 @@ const PAGES_COMPONENTS = [
   ],
   declarations: [
     PAGES_COMPONENTS,
+    
   ],
 })
 export class PagesModule {

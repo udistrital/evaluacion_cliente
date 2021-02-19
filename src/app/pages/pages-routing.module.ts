@@ -45,6 +45,12 @@ const routes: Routes = [{
       canActivate: [AuthGuard],
     },
     {
+      path: 'certificaciones',
+      loadChildren: './certificaciones/certificaciones.module#CertificacionesModule',
+      canActivate: [AuthGuard],
+      
+    },
+    {
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full',

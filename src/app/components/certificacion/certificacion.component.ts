@@ -3,14 +3,14 @@ import { NbWindowService } from '@nebular/theme';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { ImplicitAutenticationService } from '../../@core/utils/implicit_autentication.service';
 
-
 @Component({
-  selector: 'ngx-filtro',
-  templateUrl: './filtro.component.html',
-  styleUrls: ['./filtro.component.scss'],
+  selector: 'ngx-certificacion',
+  templateUrl: './certificacion.component.html',
+  styleUrls: ['./certificacion.component.scss']
 })
-export class FiltroComponent implements OnInit {
+export class CertificacionComponent implements OnInit {
 
+  
   @Output() dataResponse: EventEmitter<any>;
   @Input() nombreTitulo : String;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
@@ -35,11 +35,10 @@ export class FiltroComponent implements OnInit {
   }
 
   filtro() {
-
+    
     this.autentication_data = this.authService.getPayload();
     this.documento ="19483708" ;
-    //this.documento = this.autentication_data.documento;
-    //console.log(this.documento)
+    this.identificacion_proveedor=this.autentication_data.documento;
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {
@@ -55,7 +54,6 @@ export class FiltroComponent implements OnInit {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&SupID=' + String(this.documento))
         .subscribe((res) => {
           if (res !== null) {
-            
             this.dataResponse.emit(res);
           }
         }, (error_service) => {
@@ -69,7 +67,6 @@ export class FiltroComponent implements OnInit {
          + '&SupID=' + String(this.documento))
           .subscribe((res) => {
             if (res !== null) {
-              
               this.dataResponse.emit(res);
             }
           }, (error_service) => {
@@ -82,7 +79,6 @@ export class FiltroComponent implements OnInit {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento))
             .subscribe((res) => {
               if (res !== null) {
-                
                 this.dataResponse.emit(res);
               }
             }, (error_service) => {
@@ -95,7 +91,6 @@ export class FiltroComponent implements OnInit {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia='
               + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
                 if (res !== null) {
-                  
                   this.dataResponse.emit(res);
                 }
               }, (error_service) => {
@@ -108,8 +103,6 @@ export class FiltroComponent implements OnInit {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento)).subscribe((res) => {
                   if (res !== null) {
-                   
-
                     this.dataResponse.emit(res);
                   }
                 }, (error_service) => {

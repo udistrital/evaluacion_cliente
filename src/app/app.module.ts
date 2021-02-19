@@ -67,6 +67,12 @@ import { NbToastrModule } from '@nebular/theme';
 import { ListService } from './@core/store/services/list.service';
 import { Store, StoreModule } from '@ngrx/store';
 import { rootReducer } from './@core/store/rootReducer';
+
+
+
+
+
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -122,7 +128,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatTooltipModule,
     MatTreeModule,
   ],
-  declarations: [ ],
+  declarations: [],
 })
 export class MaterialModule {}
 
@@ -135,6 +141,7 @@ export class MaterialModule {}
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+   
     AppRoutingModule,
     MaterialModule,
     ToasterModule.forRoot(),

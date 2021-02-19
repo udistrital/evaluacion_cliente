@@ -14,9 +14,7 @@ export class TablaBusquedaComponent implements OnInit {
   logueado: boolean = false;
 
 
-  constructor(
-    private authGuard: AuthGuard,
-  ) {
+  constructor(private authGuard: AuthGuard) {
     this.dataToDo = new EventEmitter();
     this.dataView = new EventEmitter();
 
@@ -27,13 +25,14 @@ export class TablaBusquedaComponent implements OnInit {
       this.logueado = true;
     }
   }
-
   realizarEvaluacion(data: any) {
     this.dataToDo.emit(data);
   }
 
   verEvaluacion(data: any) {
     this.dataView.emit(data);
-  }
+  } 
+
+  
 
 }
