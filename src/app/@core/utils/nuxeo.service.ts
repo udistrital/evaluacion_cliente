@@ -209,7 +209,7 @@ export class NuxeoService {
     
     
       documentoService.get("documento/?query=Enlace:" + file.Id).subscribe((res) => {
-        //console.log("esta es la primera respuesta",res[0].Enlace)
+        console.log("esta es la primera respuesta ",res)
         if (res !== null) {
           //console.log("esta es la segunda respuesta",res.Enlace)
           if (res[0].Enlace != null) {
@@ -234,7 +234,6 @@ export class NuxeoService {
                         
                       );
                       
-
                     });
                   })
                   .catch(function (response2) {});

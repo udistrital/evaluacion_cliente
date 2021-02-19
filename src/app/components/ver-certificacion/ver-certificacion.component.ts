@@ -18,6 +18,7 @@ import { NbWindowService } from "@nebular/theme";
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
 import { EvaluacioncrudService } from "../../@core/data/evaluacioncrud.service";
 import Swal from 'sweetalert2';
+import { Subscription } from "rxjs";
 
 
 
@@ -41,7 +42,7 @@ export class VerCertificacionComponent implements OnInit {
   cedula: string;
   numeroContrato: string;
   tipoCertificacion:string;
-
+  subscription: Subscription;
   nombre: string;
 
   duracion_contrato: string;
@@ -151,12 +152,15 @@ export class VerCertificacionComponent implements OnInit {
       key: "prueba",
     };
     
+    console.log("des");
 
+    const serv = this.nuxeoService
+    .getDocumentoOne$(anObject, this.documentoService)
+    
+    this.subscription = serv.subscribe((response) => {
+        console.log("respuesta 1", response);
 
-    this.nuxeoService
-      .getDocumentoOne$(anObject, this.documentoService)
-      .subscribe((response) => {
-        //console.log("respuesta", response["prueba"]);
+        console.log("respuesta", response["prueba"]);
 
         this.download(response["prueba"], "", 1000, 1000);
         
@@ -187,6 +191,7 @@ export class VerCertificacionComponent implements OnInit {
         ", left=" +
         left
     );
+    this.subscription.unsubscribe()
   }
 
   buscarId(){
