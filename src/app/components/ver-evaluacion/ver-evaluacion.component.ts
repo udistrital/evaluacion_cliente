@@ -46,9 +46,8 @@ export class VerEvaluacionComponent implements OnInit {
     this.jsonPDF = [];
   }
 
-  ngOnInit() {
-    
-    //console.log(this.dataContrato)
+  ngOnInit() {    
+    // console.log(this.dataContrato)
     this.realizar = false;
     this.consultarDatosContrato();
     // Se verifica si se ha realizado una evaluación
@@ -145,9 +144,7 @@ export class VerEvaluacionComponent implements OnInit {
         this.dependencia = res_contrato[0].dependencia_SIC.ESFDEPENCARGADA;
         this.proveedor = res_contrato[0].informacion_proveedor;
         this.contratoCompleto = res_contrato[0].contrato_general;
-        this.supervisor = this.contratoCompleto.Supervisor;
-
-        
+        this.supervisor = this.contratoCompleto.Supervisor;        
         /*this.administrativaAmazonService.get('supervisor_contrato?query=Documento:' + this.supervisor.Documento
           + ',DependenciaSupervisor:' + this.contratoCompleto.DependenciaSolicitante).subscribe((response) => {
             console.info(response[0].Cargo)

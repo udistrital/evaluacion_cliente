@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthGuard } from "../../@core/_guards/auth.guard";
+import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from '../../@core/_guards/auth.guard';
 
 @Component({
-  selector: "ngx-certificaciones",
-  templateUrl: "./certificaciones.component.html",
-  styleUrls: ["./certificaciones.component.scss"],
+  selector: 'ngx-certificaciones',
+  templateUrl: './certificaciones.component.html',
+  styleUrls: ['./certificaciones.component.scss'],
 })
 export class CertificacionesComponent implements OnInit {
-  titulo: string = "Certificaciones";
+  titulo: string = 'Certificaciones';
   /* se guarda el rol actual*/
   rolActual: any;
 
@@ -50,10 +50,9 @@ export class CertificacionesComponent implements OnInit {
   /*Guarda los datos de la fila selecionada en el componente tabla-busqueda en la variable datosContratoAVer
    y habilita el componente realizar-certificacion*/
   relizarCertificacion(data: any) {
-    //console.log("esta es la data", data);
+    // console.log("esta es la data", data);
 
-    this.datosContratoAEvaluar[0] = data;
-    
+    this.datosContratoAEvaluar[0] = data;    
     this.componenteRealizar = true;
   }
   relizarCertificacionSinNovedad(data: any) {

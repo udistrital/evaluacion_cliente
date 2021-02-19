@@ -41,14 +41,14 @@ export class VerCertificacionComponent implements OnInit {
   objeto: string;
   cedula: string;
   numeroContrato: string;
-  tipoCertificacion:string;
+  tipoCertificacion: string;
   subscription: Subscription;
   nombre: string;
 
   duracion_contrato: string;
 
   datosCertficiaciones: any[] = [];
-  codigoDocumento:string;
+  codigoDocumento: string;
 
   constructor(
     private nuxeoService: NuxeoService,
@@ -67,28 +67,28 @@ export class VerCertificacionComponent implements OnInit {
 
   consultarIdCertificaciones() {
     //console.log("rol",this.rol)
-    if(this.rol == "CONTRATISTA" || this.rol == "ASISTENTE_JURIDICA"){
-      this.tipoCertificacion ="cumplimiento"
+    if (this.rol == "CONTRATISTA" || this.rol == "ASISTENTE_JURIDICA"){
+      this.tipoCertificacion = "cumplimiento"
       this.documentoService
       .get(
         "documento/?query=Nombre:certificacion_" +
           this.numeroContrato +
           "__" +
           this.cedula +
-          "_"+this.tipoCertificacion+
+          "_" + this.tipoCertificacion +
           "&limit=-1"
       )
       .subscribe((data: any) => {
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow('El numero del contrato '+this.numeroContrato+" No contiene Certificaciones") 
+          this.openWindow('El numero del contrato '+this.numeroContrato + " No contiene Certificaciones") 
 
           this.regresarFiltro();
           
         }
       });
-    }else if( this.rol == "ASISTENTE_COMPRAS"){
+    }else if ( this.rol == "ASISTENTE_COMPRAS"){
       this.tipoCertificacion ="contractual"
       this.documentoService
       .get(
@@ -104,7 +104,7 @@ export class VerCertificacionComponent implements OnInit {
           this.datosCertficiaciones = data;
         } else {
           
-          this.openWindow('El numero del contrato '+this.numeroContrato+" No contiene Certificaciones") 
+          this.openWindow('El numero del contrato ' + this.numeroContrato + " No contiene Certificaciones");
           
 
           this.regresarFiltro();
@@ -112,7 +112,7 @@ export class VerCertificacionComponent implements OnInit {
         }
       });     
 
-    }else if(this.rol == "ORDENADOR_DEL_GASTO" || this.rol == "OPS"){
+    }else if (this.rol == "ORDENADOR_DEL_GASTO" || this.rol == "OPS"){
       //console.log("este es el rol",this.rol)
       this.documentoService
       .get(
@@ -120,18 +120,18 @@ export class VerCertificacionComponent implements OnInit {
           this.numeroContrato +
           "__" +
           this.cedula +
-          "_contractual"+",Nombre:certificacion_" +
+          "_contractual" + ",Nombre:certificacion_" +
           this.numeroContrato +
           "__" +
           this.cedula +
-          "_cumplimiento"+
+          "_cumplimiento" +
           "&limit=-1"
       )
       .subscribe((data: any) => {
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow('El numero del contrato '+this.numeroContrato+" No contiene Certificaciones") 
+          this.openWindow('El numero del contrato ' + this.numeroContrato + " No contiene Certificaciones");
           
           
 
@@ -155,7 +155,7 @@ export class VerCertificacionComponent implements OnInit {
     console.log("des");
 
     const serv = this.nuxeoService
-    .getDocumentoOne$(anObject, this.documentoService)
+    .getDocumentoOne$(anObject, this.documentoService);
     
     this.subscription = serv.subscribe((response) => {
         console.log("respuesta 1", response);
@@ -182,16 +182,16 @@ export class VerCertificacionComponent implements OnInit {
       "toolbar=no," +
         "location=no, directories=no, status=no, menubar=no," +
         "scrollbars=no, resizable=no, copyhistory=no, " +
-        "width=" +
+        'width=' +
         w +
-        ", height=" +
+        ', height=' +
         h +
         ", top=" +
         top +
         ", left=" +
         left
     );
-    this.subscription.unsubscribe()
+    this.subscription.unsubscribe();
   }
 
   buscarId(){
@@ -199,14 +199,14 @@ export class VerCertificacionComponent implements OnInit {
 
     this.documentoService
       .get(
-        "documento/?query=Enlace:" +this.codigoDocumento
+        "documento/?query=Enlace:" + this.codigoDocumento
       )
       .subscribe((data: any) => {
         //console.log("datos de el id",data)
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow('El id'+this.numeroContrato+" No contiene Certificaciones asociadas") 
+          this.openWindow('El id' + this.numeroContrato + ' No contiene Certificaciones asociadas');
 
           
           
@@ -218,9 +218,9 @@ export class VerCertificacionComponent implements OnInit {
   consultarDatosContrato() {
     this.evaluacionMidService
       .get(
-        "datosContrato?NumContrato=" +
+        'datosContrato?NumContrato=' +
           this.dataContrato[0].ContratoSuscrito +
-          "&VigenciaContrato=" +
+          '&VigenciaContrato=' +
           this.dataContrato[0].Vigencia
       )
       .subscribe((res_contrato) => {
@@ -247,6 +247,6 @@ export class VerCertificacionComponent implements OnInit {
       title: 'ERROR',
       text: mensaje,
       
-    })
+    });
   }
 }
