@@ -1,0 +1,285 @@
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h1>Certificacion</h1>
+            <br>
+            <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
+          <i class="fas fa-arrow-alt-circle-left"></i>
+          Regresar
+        </button>
+
+        </div>
+
+    </div>
+
+
+</div>
+<br>
+<div class="font-black" id="pdf">
+    <div class="card card-margin">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-9">
+                    <H1>Información General De Certificaciones De Cumplimiento</H1>
+                </div>
+                <div class="col-3">
+                </div>
+            </div>
+            <!-- Div para los datos del contrato   -->
+            <div class="row">
+                <div class="col-4">
+                    <p>Valor del contrato</p>
+                    <div class="col text-center">
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Valor Contrato</mat-label>
+                                <mat-select [(ngModel)]="valor_Contrato">
+                                    <mat-option value="1">SI</mat-option>
+                                    <mat-option value="0">NO</mat-option>
+
+
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-4">
+                    <p>Duracion del contrato(meses)</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Duracion del contrato(meses)</mat-label>
+                                    <mat-select [(ngModel)]="duracion_Contrato">
+                                        <mat-option value="1">SI</mat-option>
+                                        <mat-option value="0">NO</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-4">
+                    <p>Fecha de inicio</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Fecha de inicio</mat-label>
+                                    <mat-select [(ngModel)]="fecha_Inicio">
+                                        <mat-option value="1">SI</mat-option>
+                                        <mat-option value="0">NO</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <p>Fecha de Finalizacion</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Fecha de finalizacion</mat-label>
+                                    <mat-select [(ngModel)]="fecha_final">
+                                        <mat-option value="1">SI</mat-option>
+                                        <mat-option value="0">NO</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-4">
+
+
+
+                    <div class="card" style="width: 18rem;" *ngIf="this.rol=='ASISTENTE_COMPRAS'">
+                        <div class="card-body">
+                            <h5 class="card-title">Novedades</h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="novedadCesion" value="True">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Novedades Cesión</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="novedadOtro" value="True">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Novedades Otro si </label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="novedadSuspension" value="True">
+                                <label class="form-check-label" for="flexSwitchCheckDisabled">Novedades de Suspensión</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="novedadTerminacion" value="True">
+                                <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">Novedad de Terminacion y Liquidacion</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="nuevo_texto" value="True">
+                                <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">Añadir Observacion</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<br>
+<br>
+<!-- Novedad de cesion -->
+<div class="font-black" id="novedad" *ngIf="novedadCesion==true">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <div class="col">
+                    <input class="form-control" type="text" [(ngModel)]="numeroNovedades" placeholder="Novedades de cesion" style="text-transform: uppercase;" required>
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Agregar Novedades de cesion</button>
+                </div>
+
+            </div>
+            <br>
+            <div class="form-group w-50 align-center">
+
+                <br>
+                <input class="form-control" type="text" *ngFor="let numero of numeroNovedadesArr ; let i = index" [(ngModel)]="novedadesCesion[i]" placeholder="Novedades de cesion" style="text-transform: uppercase;">
+                <br>
+            </div>
+        </div>
+    </div>
+
+</div>
+<br>
+<!-- Novedad de Otro si -->
+<div class="font-black" id="novedad" *ngIf="novedadOtro==true">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <div class="col">
+                    <input class="form-control" type="text" [(ngModel)]="numeroNovedades2" placeholder="Novedades de Otro Si" style="text-transform: uppercase;" required>
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades2()">Agregar Novedades de Otro Si </button>
+                </div>
+
+            </div>
+            <div class="card-body" *ngFor="let numero of numeroNovedadesArr2 ; let i = index">
+                <br>
+                <label for="validationCustom01" class="form-label">Dias De La Novedad</label>
+                <input type="text" class="form-control" [(ngModel)]="duracionOtroSi[i]" required>
+                <br>
+
+                <label for="validationCustom01" class="form-label">Valor De La Novedad</label>
+                <input type="text" class="form-control" [(ngModel)]="valorOtroSi[i]" required>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<br>
+<div class="font-black" id="novedad" *ngIf="novedadSuspension==true">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
+
+            <input class="form-control" type="text" [(ngModel)]="tituloNovedad" placeholder="Titulo Novedad" style="text-transform: uppercase;">
+            <!-- Div para  el cuadro de texto  -->
+            <br>
+            <div class="form-group row">
+                <label for="example-date-input" class="col-2 col-form-label">Fecha De inicio de la suspensión</label>
+                <div class="col-10">
+                    <input class="form-control" type="date" [(ngModel)]="fechaInicialSupension" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="example-date-input" class="col-2 col-form-label">Fecha Final de la suspensión</label>
+                <div class="col-10">
+                    <input class="form-control" type="date" [(ngModel)]="fechaFinalSuspension" required>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<br>
+<div class="font-black" id="novedad" *ngIf="novedadTerminacion==true">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
+
+            <div class="form-group row">
+                <label for="example-date-input" class="col-2 col-form-label">Fecha De Terminacion</label>
+                <div class="col-10">
+                    <input class="form-control" type="date" [(ngModel)]="fechaTerminacion" required>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<br>
+
+
+
+
+<div class="font-black" id="novedad" *ngIf="this.nuevo_texto==true">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
+
+            <input class="form-control" type="text" [(ngModel)]="tituloNovedad" placeholder="Titulo De la Observacion" style="text-transform: uppercase;" required>
+            <!-- Div para  el cuadro de texto  -->
+            <br>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Texto De la Observacion</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" [(ngModel)]="textoNovedad"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="col text-center">
+    <button (click)="crearPdf()" nbButton status="download" class="btn-flotante">
+        
+        
+        <i class="fas fa-file-alt"></i>
+        Crear Certificado
+      </button>

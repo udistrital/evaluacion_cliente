@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./evaluacion.component.scss'],
 })
 export class EvaluacionComponent implements OnInit {
+  titulo: string = 'Lista Provedores';
   /*Se guarda los datos que envía el componente filtro*/
   data: any;
   /*Variables que guardan los datos que envía el componente tabla-busqueda*/
