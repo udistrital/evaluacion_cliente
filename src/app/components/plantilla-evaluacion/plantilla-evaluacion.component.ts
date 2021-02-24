@@ -29,10 +29,10 @@ export class PlantillaEvaluacionComponent {
       .subscribe((response: any) => {
         if (response.length === 0) {
           this.json = {};
-        } else if (Object.keys(response[0]).length === 0) {
+        } else if (Object.keys(response.Data[0]).length === 0) {
           this.CargarUltimaPlantilla();
-        } else if (response.length !== 0 && Object.keys(response[0]).length !== 0) {
-          this.json = JSON.parse(response[0].ResultadoEvaluacion);
+        } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
+          this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
           this.evaRealizada = true;
         }
       });
