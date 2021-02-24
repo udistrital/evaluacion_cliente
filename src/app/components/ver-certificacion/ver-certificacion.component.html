@@ -1,7 +1,7 @@
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <h1>Certificacion</h1>
+            <h1>Certificación</h1>
             <br>
             <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
                 <i class="fas fa-arrow-alt-circle-left"></i>
@@ -21,7 +21,6 @@
 
     </div>
 
-
 </div>
 
 <br>
@@ -30,15 +29,14 @@
         <div class="card-body">
 
 
-
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
 
-                        <th scope="col">Fecha de creacion</th>
-                        <th scope="col">Codigo unico</th>
+                        <th scope="col">Fecha de creación</th>
+                        <th scope="col">Código único</th>
 
                         <th scope="col">Descargar</th>
 
@@ -47,7 +45,6 @@
                 <tbody>
                     <tr *ngFor="let contratos of datosCertficiaciones ; let i = index">
                         <th scope="row">{{i+1}}</th>
-
 
                         <td>{{contratos.Nombre}}</td>
 
@@ -65,7 +62,6 @@
 
                 </tbody>
             </table>
-
 
         </div>
     </div>

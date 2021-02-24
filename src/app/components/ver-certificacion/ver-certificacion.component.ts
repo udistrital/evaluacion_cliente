@@ -68,7 +68,7 @@ export class VerCertificacionComponent implements OnInit {
   consultarIdCertificaciones() {
     //console.log("rol",this.rol)
     if (this.rol == "CONTRATISTA" || this.rol == "ASISTENTE_JURIDICA"){
-      this.tipoCertificacion = "cumplimiento"
+      this.tipoCertificacion = "contractual"
       this.documentoService
       .get(
         "documento/?query=Nombre:certificacion_" +
@@ -89,7 +89,7 @@ export class VerCertificacionComponent implements OnInit {
         }
       });
     }else if ( this.rol == "ASISTENTE_COMPRAS"){
-      this.tipoCertificacion ="contractual"
+      this.tipoCertificacion ="cumplimiento"
       this.documentoService
       .get(
         "documento/?query=Nombre:certificacion_" +
@@ -158,9 +158,9 @@ export class VerCertificacionComponent implements OnInit {
     .getDocumentoOne$(anObject, this.documentoService);
     
     this.subscription = serv.subscribe((response) => {
-        console.log("respuesta 1", response);
+        //console.log("respuesta 1", response);
 
-        console.log("respuesta", response["prueba"]);
+        //console.log("respuesta", response["prueba"]);
 
         this.download(response["prueba"], "", 1000, 1000);
         
