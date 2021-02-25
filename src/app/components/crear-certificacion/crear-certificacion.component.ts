@@ -17,6 +17,7 @@ import { EvaluacionmidService } from "../../@core/data/evaluacionmid.service";
 import { NbWindowService } from "@nebular/theme";
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
 import { AdministrativaamazonService } from "../../@core/data/admistrativaamazon.service";
+import { AdministrativajbpmService } from "../../@core/data/administrativajbpm.service";
 import { Subscription } from "rxjs";
 import { take } from "rxjs/operators";
 
@@ -82,8 +83,9 @@ export class CrearCertificacionComponent implements OnInit {
     private nuxeoService: NuxeoService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
-    private windowService: NbWindowService,
-    private AdministrativaAmazon: AdministrativaamazonService
+    
+    private AdministrativaAmazon: AdministrativaamazonService,
+    private AdministrativaJbpm: AdministrativajbpmService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -105,8 +107,7 @@ export class CrearCertificacionComponent implements OnInit {
       " , SUSCRIBIÓ CON LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS LOS SIGUIENTES CONTRATOS:  ";
     var date = new Date();
 
-    this.actividadEspecifica =
-      " 1.  COLABORAR EN LA ELABORACIÓN DE (HORARIOS, INSCRIPCIONES, ADICIONES, CANCELACIONES, CARGA ACADÉMICA REGISTROS Y TRANSFERENCIAS). 2. CONTRIBUIR CON EL APOYO A LA GENERACIÓN DEL, PLAN DE ACCIÓN, PLANES DE TRABAJO, INFORMES DE GESTIÓN,  3. Y DEMÁS FUNCIONES CONEXAS Y COMPLEMENTARIAS  A LA NATURALEZA DEL OBJETO DEL CONTRATO.";
+    
 
     PdfMakeWrapper.setFonts(pdfFonts, {
       myCustom: {
@@ -661,16 +662,18 @@ export class CrearCertificacionComponent implements OnInit {
 
         this.consultarNovedades();
         //console.log(this.idContrato);
-        this.AdministrativaAmazon.get(
-          "acta_inicio?query=NumeroContrato:" + this.idContrato
+        this.AdministrativaJbpm.get(
+          "actividades/"+this.cedula+"/" +this.dataContrato[0].Vigencia+"/"+this.dataContrato[0].ContratoSuscrito
         ).subscribe(
           (res_Contrato) => {
-            this.fechaInicio = res_Contrato[0].FechaInicio;
-            this.fechaFin = res_Contrato[0].FechaFin;
+            //console.log("esta es la nueva respuesta",res_Contrato);
+            this.actividadEspecifica =  res_Contrato.contratos.actividades[0].actividades
+            this.fechaInicio = res_Contrato.contratos.actividades[0].fecha_inicio;
+            this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
+
           },
           (err) => {
-            this.fechaInicio = "23/10/20";
-            this.fechaFin = "27/03/21";
+            
           }
         );
       }),

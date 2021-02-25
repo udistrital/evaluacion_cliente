@@ -17,6 +17,7 @@ import { NbWindowService } from "@nebular/theme";
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
 import { EvaluacioncrudService } from "../../@core/data/evaluacioncrud.service";
 import { AdministrativaamazonService } from "../../@core/data/admistrativaamazon.service";
+import { AdministrativajbpmService } from "../../@core/data/administrativajbpm.service";
 import { take } from "rxjs/operators";
 
 // Set the fonts to use
@@ -86,7 +87,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
     private evaluacionCrudService: EvaluacioncrudService,
-    private AdministrativaAmazon: AdministrativaamazonService
+    private AdministrativaAmazon: AdministrativaamazonService,
+    private AdministrativaJbpm: AdministrativajbpmService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -607,11 +609,14 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.idContrato =
           res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
 
-        this.AdministrativaAmazon.get(
-          "acta_inicio?query=NumeroContrato:" + this.idContrato
-        ).subscribe((res_Contrato) => {
-          this.fechaInicio = res_Contrato[0].FechaInicio;
-          this.fechaFin = res_Contrato[0].FechaFin;
+          this.AdministrativaJbpm.get(
+            "actividades/"+this.cedula+"/" +this.dataContrato[0].Vigencia+"/"+this.dataContrato[0].ContratoSuscrito
+          ).subscribe(
+            (res_Contrato) => {
+              //console.log("esta es la nueva respuesta",res_Contrato);
+              this.actividadEspecifica =  res_Contrato.contratos.actividades[0].actividades
+              this.fechaInicio = res_Contrato.contratos.actividades[0].fecha_inicio;
+              this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
         });
       }),
       (error_service) => {
