@@ -82,7 +82,7 @@ export class VerCertificacionComponent implements OnInit {
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow('El numero del contrato '+this.numeroContrato + " No contiene Certificaciones") 
+          this.openWindow('El número del contrato '+this.numeroContrato + " No contiene Certificaciones") 
 
           this.regresarFiltro();
           
@@ -104,7 +104,7 @@ export class VerCertificacionComponent implements OnInit {
           this.datosCertficiaciones = data;
         } else {
           
-          this.openWindow('El numero del contrato ' + this.numeroContrato + " No contiene Certificaciones");
+          this.openWindow('El número del contrato ' + this.numeroContrato + " No contiene Certificaciones");
           
 
           this.regresarFiltro();
@@ -131,7 +131,7 @@ export class VerCertificacionComponent implements OnInit {
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow('El numero del contrato ' + this.numeroContrato + " No contiene Certificaciones");
+          this.openWindow('El número del contrato ' + this.numeroContrato + " No contiene Certificaciones");
           
           
 
