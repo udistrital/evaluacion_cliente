@@ -17,6 +17,8 @@ import { NbWindowService } from "@nebular/theme";
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
 import { EvaluacioncrudService } from "../../@core/data/evaluacioncrud.service";
 import { AdministrativaamazonService } from "../../@core/data/admistrativaamazon.service";
+import { AdministrativajbpmService } from "../../@core/data/administrativajbpm.service";
+import { take } from "rxjs/operators";
 
 // Set the fonts to use
 
@@ -69,12 +71,15 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   fechaInicialSupension = new Date();
   fechaFinalSuspension = new Date();
   fechaTerminacion = new Date();
+  numeroNovedadesCesion: number;
+  numeroNovedadesOtro: number;
   numeroNovedadesArr: string[] = [];
-  numeroNovedadesArr2: string[] = [];
+  numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
 
   duracionOtroSi: string[] = [];
   valorOtroSi: string[] = [];
+  listaNovedades: string;
 
   constructor(
     private nuxeoService: NuxeoService,
@@ -82,7 +87,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
     private evaluacionCrudService: EvaluacioncrudService,
-    private AdministrativaAmazon: AdministrativaamazonService
+    private AdministrativaAmazon: AdministrativaamazonService,
+    private AdministrativaJbpm: AdministrativajbpmService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -99,26 +105,25 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       )
       .subscribe(
         (res_evaluacion) => {
-          if (Object.keys(res_evaluacion[0]).length !== 0) {
-            this.evaluacionCrudService.getEvaluacion(
-              "resultado_evaluacion?query=IdEvaluacion:" +
-                res_evaluacion[0].Id +
-                ",Activo:true"
-            );
+          //console.log("este es el nuevo objeto",res_evaluacion)
+          if (res_evaluacion.Data[0].length !== 0) {
+            console.log("este es el nuevo objeto", res_evaluacion);
+
             this.evaluacionCrudService
               .get(
                 "resultado_evaluacion?query=IdEvaluacion:" +
-                  res_evaluacion[0].Id +
+                  res_evaluacion.Data[0].Id +
                   ",Activo:true"
               )
               .subscribe(
                 (res_resultado_eva) => {
+                  console.log("este es el nuevo objeto2", res_resultado_eva);
                   if (res_resultado_eva !== null) {
                     this.evaluacionRealizada = JSON.parse(
-                      res_resultado_eva[0].ResultadoEvaluacion
+                      res_resultado_eva.Data[0].ResultadoEvaluacion
                     );
                     this.fechaEvaluacion = new Date(
-                      res_resultado_eva[0].FechaCreacion.substr(0, 16)
+                      res_resultado_eva.Data[0].FechaCreacion.substr(0, 16)
                     );
                   }
                 },
@@ -291,7 +296,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             {
-              text: this.tituloNovedad.toUpperCase() + ": ",
+              text: "Observaciones" + ": ",
               style: "body1",
               bold: true,
             },
@@ -376,6 +381,28 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
     let arreglo = [];
     let arreglo2 = [];
+    if(this.listaNovedades!=null){
+      for (var i = 0; i < this.listaNovedades.length; i++) {
+        if (this.listaNovedades[i] == "cesion") {
+          this.novedadCesion = true;
+        }
+        if (this.listaNovedades[i] == "otroSi") {
+          this.novedadOtro = true;
+        }
+        if (this.listaNovedades[i] == "suspension") {
+          this.novedadSuspension = true;
+        }
+        if (this.listaNovedades[i] == "terminacionLiquidacion") {
+          this.novedadTerminacion = true;
+        }
+        if (this.listaNovedades[i] == "observaciones") {
+          this.nuevo_texto = true;
+        }
+        
+      }
+
+    }
+    
 
     pdf.create().getBlob((blob) => {
       const file = {
@@ -396,18 +423,21 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         file.key = file.Id;
       });
       this.nuxeoService
-        .getDocumentos$(arreglo, this.documentoService)
+        .getDocumentos$(arreglo, this.documentoService).pipe(take(1))
         .subscribe(
           (response) => {
             //console.log(response);
-            pdf.header(
-              new Txt(response["Enlace"]).bold().alignment("right").fontSize(10)
-                .end
-            );
 
             pdf.add(
               new Table([
-                [docDefinition.escudoImagen, docDefinition.valorCabe],
+                [
+                  docDefinition.escudoImagen,
+                  docDefinition.valorCabe,
+                  new Txt("código de autenticidad:" + response["Enlace"])
+                    .bold()
+                    .alignment("right")
+                    .fontSize(9).end,
+                ],
               ]).layout("noBorders").end
             );
             pdf.add("\n");
@@ -579,11 +609,14 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.idContrato =
           res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
 
-        this.AdministrativaAmazon.get(
-          "acta_inicio?query=NumeroContrato:" + this.idContrato
-        ).subscribe((res_Contrato) => {
-          this.fechaInicio = res_Contrato[0].FechaInicio;
-          this.fechaFin = res_Contrato[0].FechaFin;
+          this.AdministrativaJbpm.get(
+            "actividades/"+this.cedula+"/" +this.dataContrato[0].Vigencia+"/"+this.dataContrato[0].ContratoSuscrito
+          ).subscribe(
+            (res_Contrato) => {
+              //console.log("esta es la nueva respuesta",res_Contrato);
+              this.actividadEspecifica =  res_Contrato.contratos.actividades[0].actividades
+              this.fechaInicio = res_Contrato.contratos.actividades[0].fecha_inicio;
+              this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
         });
       }),
       (error_service) => {
@@ -613,17 +646,14 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   }
   crearNovedades() {
     this.numeroNovedadesArr.length = 0;
-    for (var i = 0; i < this.numeroNovedades; i++) {
+    for (var i = 0; i < this.numeroNovedadesCesion; i++) {
       //console.log(i);
       this.numeroNovedadesArr.push("");
     }
-  }
-
-  crearNovedades2() {
-    this.numeroNovedadesArr.length = 0;
-    for (var i = 0; i < this.numeroNovedades2; i++) {
+    this.numeroNovedadesArrOtro.length = 0;
+    for (var i = 0; i < this.numeroNovedadesOtro; i++) {
       //console.log(i);
-      this.numeroNovedadesArr2.push("");
+      this.numeroNovedadesArrOtro.push("");
     }
   }
   diasFecha(fecha1, fecha2) {
