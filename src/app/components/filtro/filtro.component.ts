@@ -54,9 +54,11 @@ export class FiltroComponent implements OnInit {
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&SupID=' + String(this.documento))
         .subscribe((res) => {
-          if (res !== null) {
+          //console.log("respuesta del filtro",res)
+          
+          if (res.Data !== null) {
             
-            this.dataResponse.emit(res);
+            this.dataResponse.emit(res.Data);
           }
         }, (error_service) => {
           this.openWindow(error_service['body'][1]['Error']);
@@ -68,9 +70,9 @@ export class FiltroComponent implements OnInit {
         this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&Vigencia=' + this.vigencia
          + '&SupID=' + String(this.documento))
           .subscribe((res) => {
-            if (res !== null) {
+            if (res.Data !== null) {
               
-              this.dataResponse.emit(res);
+              this.dataResponse.emit(res.Data);
             }
           }, (error_service) => {
             this.openWindow(error_service['body'][1]['Error']);
@@ -81,9 +83,9 @@ export class FiltroComponent implements OnInit {
           && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento))
             .subscribe((res) => {
-              if (res !== null) {
+              if (res.Data !== null) {
                 
-                this.dataResponse.emit(res);
+                this.dataResponse.emit(res.Data);
               }
             }, (error_service) => {
               this.openWindow(error_service['body'][1]['Error']);
@@ -94,9 +96,9 @@ export class FiltroComponent implements OnInit {
             && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia='
               + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
-                if (res !== null) {
+                if (res.Data !== null) {
                   
-                  this.dataResponse.emit(res);
+                  this.dataResponse.emit(res.Data);
                 }
               }, (error_service) => {
                 this.openWindow(error_service['body'][1]['Error']);
@@ -107,10 +109,10 @@ export class FiltroComponent implements OnInit {
               && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento)).subscribe((res) => {
-                  if (res !== null) {
+                  if (res.Data !== null) {
                    
 
-                    this.dataResponse.emit(res);
+                    this.dataResponse.emit(res.Data);
                   }
                 }, (error_service) => {
                   this.openWindow(error_service['body'][1]['Error']);
@@ -121,8 +123,8 @@ export class FiltroComponent implements OnInit {
                 && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
                 this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                   + this.numero_contrato + '&Vigencia=' + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
-                    if (res !== null) {
-                      this.dataResponse.emit(res);
+                    if (res.Data !== null) {
+                      this.dataResponse.emit(res.Data);
                     }
                   }, (error_service) => {
                     this.openWindow(error_service['body'][1]['Error']);

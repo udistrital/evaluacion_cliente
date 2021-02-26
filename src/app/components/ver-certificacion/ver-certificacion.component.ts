@@ -225,13 +225,13 @@ export class VerCertificacionComponent implements OnInit {
       )
       .subscribe((res_contrato) => {
         //console.log("aca esta el contrato", res_contrato); contrato
-        this.objeto = res_contrato[0].contrato_general.ObjetoContrato;
+        this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
 
-        this.cedula = res_contrato[0].informacion_proveedor.NumDocumento;
+        this.cedula = res_contrato.Data[0].informacion_proveedor.NumDocumento;
         //console.log("aca esta la cedula",this.cedula); cedula
-        this.nombre = res_contrato[0].informacion_proveedor.NomProveedor;
+        this.nombre = res_contrato.Data[0].informacion_proveedor.NomProveedor;
         this.numeroContrato =
-          res_contrato[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
+          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
 
         this.consultarIdCertificaciones();
       }),

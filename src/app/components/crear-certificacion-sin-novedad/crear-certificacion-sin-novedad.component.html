@@ -109,16 +109,16 @@
 
 
                 <div class="col-4" *ngIf="this.rol=='ASISTENTE_COMPRAS'||this.rol=='ORDENADOR_DEL_GASTO' ">
-                    <p>Nuevas Novedades.</p>
+                    <p>Novedades.</p>
                     <div class="col text-center">
                         <div>
                             <mat-form-field appearance="fill">
                                 <mat-label>Novedades</mat-label>
                                 <mat-select multiple required [(ngModel)]="listaNovedades">
 
-                                    <mat-option style="text-transform: uppercase;" value="cesion">Novedades Cesión</mat-option>
-                                    <mat-option style="text-transform: uppercase;" value="otroSi">Novedades Otro si</mat-option>
-                                    <mat-option style="text-transform: uppercase;" value="suspension">Novedades de Suspensión</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="cesion">Cesión</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="otroSi">Otro si</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="suspension">Suspensión</mat-option>
                                     <mat-option style="text-transform: uppercase;" value="terminacionLiquidacion">Novedad de Terminación y Liquidación</mat-option>
                                     <mat-option style="text-transform: uppercase;" value="observaciones">Observaciones</mat-option>
 
@@ -152,7 +152,7 @@
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <div class="col">
                         <label class="form-check-label" for="flexSwitchCheckDisabled">Número de novedades de cesión</label>
-                        <input class="form-control" type="text" [(ngModel)]="numeroNovedades" placeholder="Novedades de cesion">
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesCesion" placeholder="Novedades de cesion">
                     </div>
                     <div class="col">
                         <br>
@@ -179,22 +179,23 @@
                 <br>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <div class="col">
-                        <label class="form-check-label" for="flexSwitchCheckDisabled">Numero de novedades de Otro Si</label>
-                        <input class="form-control" type="text" [(ngModel)]="numeroNovedades" placeholder="Novedades de Otro Si" style="text-transform: uppercase;" required>
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de novedades de Otro Si</label>
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesOtro" placeholder="Novedades de Otro Si" style="text-transform: uppercase;" required>
                     </div>
                     <div class="col">
+                        <br>
                         <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Novedades de Otro Si </button>
                     </div>
 
                 </div>
-                <div class="card-body" *ngFor="let numero of numeroNovedadesArr ; let i = index">
+                <div class="card-body" *ngFor="let numero of numeroNovedadesArrOtro   ; let i = index">
                     <br>
                     <label for="validationCustom01" class="form-label">Dias De La Novedad</label>
-                    <input type="text" class="form-control" [(ngModel)]="duracionOtroSi[i]" required>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="duracionOtroSi[i]" required>
                     <br>
 
                     <label for="validationCustom01" class="form-label">Valor De La Novedad</label>
-                    <input type="text" class="form-control" [(ngModel)]="valorOtroSi[i]" required>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="valorOtroSi[i]" required>
 
                 </div>
             </div>
@@ -207,7 +208,7 @@
             <div class="card-body">
                 <br>
 
-                <input class="form-control" type="text" [(ngModel)]="tituloNovedad" placeholder="Titulo Novedad" style="text-transform: uppercase;">
+
                 <!-- Div para  el cuadro de texto  -->
                 <br>
                 <div class="form-group row">
