@@ -45,8 +45,8 @@ export class ConsultaEvaluacionComponent implements OnInit {
   ngOnInit() {
     this.evaluacionMidService.get(`filtroProveedor?ProvID=${this.identificacionProveedor}&SupID=0` )
         .subscribe((res) => {
-          if (res !== null) {
-            this.data = res;
+          if (res.Data !== null) {
+            this.data = res.Data;
           }
         }, (error_service) => {
           this.openWindow(error_service['body'][1]['Error']);
