@@ -8,6 +8,8 @@ import { RequestManager } from '../../managers/requestManager';
 const httpOptions = {
   headers: new HttpHeaders({
     'Accept': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache'
   }),
 };
 
