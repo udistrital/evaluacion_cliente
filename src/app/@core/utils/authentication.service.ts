@@ -19,7 +19,8 @@ export class AutenticationService {
                 'authorization': 'Basic ' + btoa(environment.TOKEN.CLIENTE_ID + ':',
                     //    + Config.LOCAL.TOKEN.CLIENT_SECRET
                 ),
-                'cache-control': 'no-cache',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
             }),
         };
         this.logOut = '';
