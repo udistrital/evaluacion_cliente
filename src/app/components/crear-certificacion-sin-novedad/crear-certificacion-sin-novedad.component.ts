@@ -61,6 +61,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   nuevo_texto: boolean = false;
   novedadCesion: boolean = false;
   novedadOtro: boolean = false;
+  novedadProrroga: boolean = false;
+  novedadAdiccion: boolean = false;
   novedadSuspension: boolean = false;
   novedadTerminacion: boolean = false;
   notaEvaluacionManual: boolean = false;
@@ -75,12 +77,17 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   fechaTerminacion = new Date();
   numeroNovedadesCesion: number;
   numeroNovedadesOtro: number;
+  numeroNovedadesProrroga: number;
+  numeroNovedadesAddiccion: number;
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
+  numeroNovedadesArrProrroga: string[] = [];
+  numeroNovedadesArrAdiccion: string[] = [];
   novedadesCesion: string[] = [];
 
-  duracionOtroSi: string[] = [];
-  valorOtroSi: string[] = [];
+  diasProrroga: string[] = [];
+  mesesProrroga: string[] = [];
+  valorAdicion: string[] = [];
   listaNovedades: string;
 
   constructor(
@@ -90,7 +97,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private windowService: NbWindowService,
     private evaluacionCrudService: EvaluacioncrudService,
     private AdministrativaAmazon: AdministrativaamazonService,
-    private AdministrativaJbpm: AdministrativajbpmService,
+    private AdministrativaJbpm: AdministrativajbpmService
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -107,13 +114,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       )
       .subscribe(
         (res_evaluacion) => {
-          console.log("este es el nuevo objeto50",res_evaluacion)
-          console.log("este es el nuevo objeto51", Object.entries(res_evaluacion.Data[0]).length);
-          console.log("este es el nuevo objeto52", typeof (res_evaluacion));
-          
           if (Object.entries(res_evaluacion.Data[0]).length !== 0) {
-            
-
             this.evaluacionCrudService
               .get(
                 "resultado_evaluacion?query=IdEvaluacion:" +
@@ -123,12 +124,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               .subscribe(
                 (res_resultado_eva) => {
                   this.notaEvaluacionManual = false;
-                  
+
                   if (res_resultado_eva !== null) {
                     this.evaluacionRealizada = JSON.parse(
                       res_resultado_eva.Data[0].ResultadoEvaluacion
                     );
-                    
+
                     this.fechaEvaluacion = new Date(
                       res_resultado_eva.Data[0].FechaCreacion.substr(0, 16)
                     );
@@ -139,10 +140,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 }
               );
           } else {
-            
-            this.openWindow("El contrato no ha sido evaluado Por este motivo se habilitó para añadir la calificación manual.");
+            this.openWindow(
+              "El contrato no ha sido evaluado Por este motivo se habilitó para añadir la calificación manual."
+            );
             this.notaEvaluacionManual = true;
-
           }
         },
         (error_service) => {
@@ -224,7 +225,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: "ACTIVIDAD ESPECÍFICA: ", style: "body1", bold: true },
-            { text: this.actividadEspecifica , style: "body" },
+            { text: this.actividadEspecifica, style: "body" },
           ],
         },
       ],
@@ -390,13 +391,16 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
     let arreglo = [];
     let arreglo2 = [];
-    if(this.listaNovedades!=null){
+    if (this.listaNovedades != null) {
       for (var i = 0; i < this.listaNovedades.length; i++) {
         if (this.listaNovedades[i] == "cesion") {
           this.novedadCesion = true;
         }
-        if (this.listaNovedades[i] == "otroSi") {
-          this.novedadOtro = true;
+        if (this.listaNovedades[i] == "adicion") {
+          this.novedadAdiccion = true;
+        }
+        if (this.listaNovedades[i] == "prorroga") {
+          this.novedadProrroga = true;
         }
         if (this.listaNovedades[i] == "suspension") {
           this.novedadSuspension = true;
@@ -407,11 +411,25 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         if (this.listaNovedades[i] == "observaciones") {
           this.nuevo_texto = true;
         }
-        
       }
-
     }
-    
+
+    if (this.novedadAdiccion == true) {
+      for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
+        if (
+          parseInt(this.valorAdicion[i], 10) >
+          parseInt(this.valorContrato, 10) * 0.5
+        ) {
+          
+            this.openWindow(
+              "El Valor de la addición no puede ser mayor a la mitadas del valor total del contrato"
+            );
+            return 0;
+
+           
+        }
+      }
+    }
 
     pdf.create().getBlob((blob) => {
       const file = {
@@ -432,7 +450,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         file.key = file.Id;
       });
       this.nuxeoService
-        .getDocumentos$(arreglo, this.documentoService).pipe(take(1))
+        .getDocumentos$(arreglo, this.documentoService)
+        .pipe(take(1))
         .subscribe(
           (response) => {
             //console.log(response);
@@ -506,12 +525,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 );
               }
             }
-            if (this.novedadOtro == true) {
-              for (var i = 0; i < this.duracionOtroSi.length; i++) {
+            if (this.novedadAdiccion == true) {
+              for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
                 var contador = i + 1;
                 pdf.add(
                   new Txt(
-                    "OTROSÍ N° " +
+                    "ADDICIÓN N° " +
                       contador +
                       " DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO " +
                       this.dataContrato[0].ContratoSuscrito +
@@ -520,12 +539,55 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   ).bold().end
                 );
 
+                pdf.add(new Txt("VALOR: $" + this.valorAdicion[i]).bold().end);
+              }
+              pdf.add("\n");
+            }
+            if (this.novedadProrroga == true) {
+              for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
+                var contador = i + 1;
                 pdf.add(
-                  new Txt("DURACIÓN:" + this.duracionOtroSi[i] + " DIAS").bold()
-                    .end
+                  new Txt(
+                    "Prorroga N° " +
+                      contador +
+                      " DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO " +
+                      this.dataContrato[0].ContratoSuscrito +
+                      "-" +
+                      this.dataContrato[0].Vigencia
+                  ).bold().end
                 );
-
-                pdf.add(new Txt("VALOR: $" + this.valorOtroSi[i]).bold().end);
+                if (this.diasProrroga[i].length == 0) {
+                  pdf.add(
+                    new Txt(
+                      "DURACIÓN:" + this.mesesProrroga[i] + " Meses"
+                    ).bold().end
+                  );
+                } else if (this.mesesProrroga[i].length == 0) {
+                  pdf.add(
+                    new Txt("DURACIÓN:" + this.diasProrroga[i] + " DIAS").bold()
+                      .end
+                  );
+                } else if (this.mesesProrroga[i] == "1") {
+                  pdf.add(
+                    new Txt(
+                      "DURACIÓN:" +
+                        this.diasProrroga[i] +
+                        " DIAS Y " +
+                        this.mesesProrroga[i] +
+                        " Mes"
+                    ).bold().end
+                  );
+                } else {
+                  pdf.add(
+                    new Txt(
+                      "DURACIÓN:" +
+                        this.diasProrroga[i] +
+                        " DIAS Y " +
+                        this.mesesProrroga[i] +
+                        " Meses"
+                    ).bold().end
+                  );
+                }
               }
               pdf.add("\n");
             }
@@ -606,7 +668,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       .subscribe((res_contrato) => {
         console.log("aca esta el contrato", res_contrato);
         this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
-        this.valorContrato = res_contrato.Data[0].contrato_general.ValorContrato;
+        this.valorContrato =
+          res_contrato.Data[0].contrato_general.ValorContrato;
         this.cedula = res_contrato.Data[0].informacion_proveedor.NumDocumento;
         this.nombre = res_contrato.Data[0].informacion_proveedor.NomProveedor;
         this.numeroContrato =
@@ -614,37 +677,36 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.fecha_suscrip =
           res_contrato.Data[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
 
-        this.duracionContrato = res_contrato.Data[0].contrato_general.PlazoEjecucion;
+        this.duracionContrato =
+          res_contrato.Data[0].contrato_general.PlazoEjecucion;
         this.idContrato =
           res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
 
-          this.AdministrativaJbpm.get(
-            "actividades/"+this.cedula+"/" +this.dataContrato[0].Vigencia+"/"+this.dataContrato[0].ContratoSuscrito
-          ).subscribe(
-            (res_Contrato) => {
-              //console.log("esta es la nueva respuesta",res_Contrato);
-              if(res_Contrato == null){
-                
-                this.openWindow("Error no se encuentran datos del contrato");
-                this.regresarFiltro();
-
-              }else{
-                this.fechaInicio = res_Contrato.contratos.actividades[0].fecha_inicio;
-                this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
-
-              }(error_service) => {
-                console.log("esta es la nueva respuesta",res_Contrato);
-                this.openWindow(error_service.message);
-                
-              };
-              
-              
-              
+        this.AdministrativaJbpm.get(
+          "actividades/" +
+            this.cedula +
+            "/" +
+            this.dataContrato[0].Vigencia +
+            "/" +
+            this.dataContrato[0].ContratoSuscrito
+        ).subscribe((res_Contrato) => {
+          //console.log("esta es la nueva respuesta",res_Contrato);
+          if (res_Contrato == null) {
+            this.openWindow("Error no se encuentran datos del contrato");
+            this.regresarFiltro();
+          } else {
+            this.fechaInicio =
+              res_Contrato.contratos.actividades[0].fecha_inicio;
+            this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
+          }
+          (error_service) => {
+            console.log("esta es la nueva respuesta", res_Contrato);
+            this.openWindow(error_service.message);
+          };
         });
       }),
       (error_service) => {
         this.openWindow(error_service.message);
-        
       };
   }
   openWindow(mensaje) {
@@ -656,26 +718,24 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     });
   }
   getCalificacion() {
-    
-    if(Object.entries(this.evaluacionRealizada).length == 0){
+    if (Object.entries(this.evaluacionRealizada).length == 0) {
       return this.calificacionManual;
-
-    }else{
-      for (let i = 0; i < this.evaluacionRealizada.Clasificaciones.length; i++) {
+    } else {
+      for (
+        let i = 0;
+        i < this.evaluacionRealizada.Clasificaciones.length;
+        i++
+      ) {
         if (
           this.evaluacionRealizada.ValorFinal >=
             this.evaluacionRealizada.Clasificaciones[i].LimiteInferior &&
           this.evaluacionRealizada.ValorFinal <=
             this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior
         ) {
-          
-          
           return this.evaluacionRealizada.Clasificaciones[i].Nombre;
         }
       }
-      
     }
-    
   }
   crearNovedades() {
     this.numeroNovedadesArr.length = 0;
@@ -683,10 +743,23 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       //console.log(i);
       this.numeroNovedadesArr.push("");
     }
-    this.numeroNovedadesArrOtro.length = 0;
+    /*Guardothis.numeroNovedadesArrOtro.length = 0;
     for (var i = 0; i < this.numeroNovedadesOtro; i++) {
       //console.log(i);
       this.numeroNovedadesArrOtro.push("");
+    }*/
+    this.numeroNovedadesArrProrroga.length = 0;
+    for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
+      //console.log(i);
+      this.numeroNovedadesArrProrroga.push("");
+    }
+    console.log("aca entro", this.numeroNovedadesAddiccion);
+
+    this.numeroNovedadesArrAdiccion.length = 0;
+    for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
+      console.log("aca entro");
+
+      this.numeroNovedadesArrAdiccion.push("");
     }
   }
   diasFecha(fecha1, fecha2) {

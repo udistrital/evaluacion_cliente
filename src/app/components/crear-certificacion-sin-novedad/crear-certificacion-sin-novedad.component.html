@@ -138,7 +138,8 @@
                                 <mat-select multiple required [(ngModel)]="listaNovedades">
 
                                     <mat-option style="text-transform: uppercase;" value="cesion">Cesión</mat-option>
-                                    <mat-option style="text-transform: uppercase;" value="otroSi">Otro si</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="adicion">Adición</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="prorroga">Prórroga</mat-option>
                                     <mat-option style="text-transform: uppercase;" value="suspension">Suspensión</mat-option>
                                     <mat-option style="text-transform: uppercase;" value="terminacionLiquidacion">Novedad de Terminación y Liquidación</mat-option>
                                     <mat-option style="text-transform: uppercase;" value="observaciones">Observaciones</mat-option>
@@ -194,29 +195,55 @@
     </div>
 
     <!-- Novedad de Otro si -->
-    <div class="font-black" id="novedad" *ngIf="novedades=='otroSi'">
+    <div class="font-black" id="novedad" *ngIf="novedades=='adicion'">
         <div class="card card-margin">
             <div class="card-body">
                 <br>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <div class="col">
-                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de novedades de Otro Si</label>
-                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesOtro" placeholder="Novedades de Otro Si" style="text-transform: uppercase;" required>
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de Adiciones</label>
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesAddiccion" placeholder="Novedades de Otro Si" style="text-transform: uppercase;" required>
                     </div>
                     <div class="col">
                         <br>
-                        <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Novedades de Otro Si </button>
+                        <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Adición </button>
                     </div>
 
                 </div>
-                <div class="card-body" *ngFor="let numero of numeroNovedadesArrOtro   ; let i = index">
+                <div class="card-body" *ngFor="let numero of numeroNovedadesArrAdiccion; let i = index">
+
+
+                    <label for="validationCustom01" class="form-label">Valor De La Adición</label>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="valorAdicion[i]" required>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="font-black" id="novedad" *ngIf="novedades=='prorroga'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <div class="col">
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de novedades Prorroga</label>
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesProrroga" placeholder="Novedades de Prorroga" style="text-transform: uppercase;" required>
+                    </div>
+                    <div class="col">
+                        <br>
+                        <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Novedades de Prorroga </button>
+                    </div>
+
+                </div>
+                <div class="card-body" *ngFor="let numero of numeroNovedadesArrProrroga   ; let i = index">
+
                     <br>
                     <label for="validationCustom01" class="form-label">Dias De La Novedad</label>
-                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="duracionOtroSi[i]" required>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="diasProrroga[i]" required>
                     <br>
-
-                    <label for="validationCustom01" class="form-label">Valor De La Novedad</label>
-                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="valorOtroSi[i]" required>
+                    <label for="validationCustom01" class="form-label">Meses De La Novedad</label>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="mesesProrroga[i]" required>
 
                 </div>
             </div>
