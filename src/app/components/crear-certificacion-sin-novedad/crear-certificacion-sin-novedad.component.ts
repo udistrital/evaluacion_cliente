@@ -55,6 +55,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   fechaEvaluacion: Date;
   calificacionManual: string = "";
   duracionContrato: string = "";
+  horaCreacion: string = "";
   idContrato: string = "";
   fechaInicio: string = "";
   fechaFin: string = " ";
@@ -420,13 +421,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           parseInt(this.valorAdicion[i], 10) >
           parseInt(this.valorContrato, 10) * 0.5
         ) {
-          
-            this.openWindow(
-              "El Valor de la addición no puede ser mayor a la mitadas del valor total del contrato"
-            );
-            return 0;
-
-           
+          this.openWindow(
+            "El Valor de la adición no puede exceder el 50% del valor total del contrato"
+          );
+          return 0;
         }
       }
     }
@@ -454,14 +452,22 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (response) => {
-            //console.log(response);
-
+            console.log(response);
+            this.horaCreacion = response["FechaCreacion"];
+            
             pdf.add(
               new Table([
                 [
                   docDefinition.escudoImagen,
                   docDefinition.valorCabe,
-                  new Txt("código de autenticidad:" + response["Enlace"])
+                  new Txt(
+                    "Código de autenticidad:" +
+                      response["Enlace"] +
+                      "\n Fecha  y Hora de creación:" +
+                      this.horaCreacion.slice(0, 10) +
+                      " - " +
+                      this.horaCreacion.slice(11, 19)
+                  )
                     .bold()
                     .alignment("right")
                     .fontSize(9).end,
@@ -526,7 +532,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               }
             }
             if (this.novedadAdiccion == true) {
-              for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
+              for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
+                console.log("prueba novedad addicion");
                 var contador = i + 1;
                 pdf.add(
                   new Txt(
@@ -753,12 +760,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       //console.log(i);
       this.numeroNovedadesArrProrroga.push("");
     }
-    console.log("aca entro", this.numeroNovedadesAddiccion);
 
     this.numeroNovedadesArrAdiccion.length = 0;
     for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
-      console.log("aca entro");
-
       this.numeroNovedadesArrAdiccion.push("");
     }
   }

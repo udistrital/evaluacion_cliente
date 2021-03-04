@@ -95,6 +95,7 @@ export class NuxeoService {
                           documentoPost.Enlace = file.uid;
                           documentoPost.Nombre = file.nombre;
                           documentoPost.TipoDocumento = tipoDocumento;
+                          documentoPost.Activo = true
                           documentoService
                             .post("documento", documentoPost)
                             .subscribe((resuestaPost) => {
@@ -138,7 +139,7 @@ export class NuxeoService {
           .subscribe((res) => {
             if (res !== null) {
               const documento_temp = <any>res[0];
-              console.info(this.documentos);
+              
               NuxeoService.nuxeo.connect();
               NuxeoService.nuxeo
                 .batchUpload()

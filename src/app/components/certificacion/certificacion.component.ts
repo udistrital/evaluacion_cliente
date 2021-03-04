@@ -32,6 +32,10 @@ export class CertificacionComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.autentication_data = this.authService.getPayload();
+    this.documento ="19483708" ;
+    this.identificacion_proveedor=this.autentication_data.documento;
+    this.RealizarPeticion();
   }
 
   filtro() {
