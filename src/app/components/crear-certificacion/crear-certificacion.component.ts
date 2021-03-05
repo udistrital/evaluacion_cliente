@@ -101,6 +101,8 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   crearPdf() {
+    const conversor = require('numero-a-letras');
+    
     var cadena1 =
       "QUE, REVISADA LA BASE DE DATOS DE CONTRATACIÓN, SE ENCONTRÓ QUE ";
     var cadena2 = " IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ";
@@ -183,7 +185,10 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "VALOR: $ ", style: "body1", bold: true },
-            { text: this.valorContrato, style: "body" },
+            { text: "("+this.valorContrato+") ", style: "body" },
+            { text: conversor.NumerosALetras(parseInt(this.valorContrato)), style: "body1" },
+
+            
           ],
         },
       ],
@@ -203,7 +208,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
-            { text: this.duracionContrato + " meses", style: "body" },
+            { text: conversor.NumerosALetras(parseInt(this.duracionContrato)).slice(0, -5)+" "+this.duracionContrato + " meses", style: "body" },
           ],
         },
       ],
@@ -386,6 +391,7 @@ export class CrearCertificacionComponent implements OnInit {
       ],
     };
     //-------------------------------------------------------------------------------------
+    
 
     //console.log("esta es la novedad", this.novedadCesion);
     //console.log("esta es la novedad", this.listaNovedades);
@@ -393,6 +399,7 @@ export class CrearCertificacionComponent implements OnInit {
     //console.log("esta es la novedad",this.duracionOtroSi)
 
     //-------------------------------------------------------------------------------------
+    
 
     let arreglo = [];
     let arreglo2 = [];
@@ -545,6 +552,7 @@ export class CrearCertificacionComponent implements OnInit {
           }
           if (this.valor_contrato == "1") {
             pdf.add(docDefinition.valorContra);
+            
           }
           pdf.add("\n");
 
@@ -563,11 +571,11 @@ export class CrearCertificacionComponent implements OnInit {
               );
 
               pdf.add(
-                new Txt("DURACIÓN:" + this.duracionOtroSi[i] + " DIAS").bold()
+                new Txt("DURACIÓN: "+conversor.NumerosALetras(parseInt(this.duracionOtroSi[i])).slice(0, -5) + this.duracionOtroSi[i] + " DIAS").bold()
                   .end
               );
 
-              pdf.add(new Txt("VALOR: $" + this.valorOtroSi[i]).bold().end);
+              pdf.add(new Txt("VALOR: $" + this.valorOtroSi[i]+" "+conversor.NumerosALetras(parseInt(this.valorOtroSi[i]))).bold().end);
             }
             pdf.add("\n");
           }
@@ -578,9 +586,10 @@ export class CrearCertificacionComponent implements OnInit {
               pdf.add(docDefinition.novedadAdicion);
               pdf.add(
                 new Txt(
-                  "DURACION: " +
+                  "DURACION: "+conversor.NumerosALetras(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                  .PlazoEjecucion)).slice(0, -5) +" ("+
                     this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
-                      .PlazoEjecucion +
+                      .PlazoEjecucion +")"+
                     " Dias"
                 ).bold().end
               );
@@ -588,7 +597,8 @@ export class CrearCertificacionComponent implements OnInit {
                 new Txt(
                   "VALOR: " +
                     this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
-                      .ValorNovedad
+                      .ValorNovedad+"  "+conversor.NumerosALetras(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                      .ValorNovedad))
                 ).bold().end
               );
             }

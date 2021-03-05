@@ -143,12 +143,20 @@ export class VerCertificacionComponent implements OnInit {
             )
             .subscribe((data2: any) => {
               this.datosCertficiacionesCumplimento = data2;
+              
+              
+              
 
               if (Object.keys(data[0]).length !== 0) {
-                this.datosCertficiaciones = this.datosCertficiacionesContractual.concat(
-                  this.datosCertficiacionesCumplimento
-                );
-              } else {
+                this.datosCertficiaciones = data
+                
+              } if (Object.keys(data2[0]).length !== 0) {
+                this.datosCertficiaciones = data2
+
+              } if (Object.keys(data2[0]).length !== 0 && Object.keys(data[0]).length !== 0) {
+                this.datosCertficiaciones = this.datosCertficiacionesCumplimento.concat(this.datosCertficiacionesContractual);
+
+              }else if (Object.keys(data2[0]).length == 0 && Object.keys(data[0]).length == 0){
                 this.openWindow(
                   "El número del contrato " +
                     this.numeroContrato +
@@ -165,12 +173,21 @@ export class VerCertificacionComponent implements OnInit {
     this.volverFiltro.emit(true);
   }
   eliminarCertifacion(contrato: any) {
+    
+
     contrato.Activo = false;
     this.documentoService.put("documento", contrato).subscribe((data) => {});
+    const Swal = require("sweetalert2");
+    Swal.fire({
+      icon: "error",
+      title: "EXITO",
+      text: "La certificación ha sido eliminada con exitó",
+    });
+    
     this.consultarIdCertificaciones();
   }
   descargarCertificacion(contrato: any) {
-    //console.log("este es el id del certificacion")
+    
     const anObject = {
       Id: contrato.Enlace,
       key: "prueba",

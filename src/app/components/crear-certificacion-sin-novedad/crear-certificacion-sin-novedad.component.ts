@@ -160,6 +160,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   }
 
   crearPdf() {
+    const conversor = require('numero-a-letras');
     var cadena1 = "QUE EL SEÑOR(A) ";
     var cadena2 = " IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ";
     var cadena3 = " , CUMPLIO A SATISFACCIÓN CON LAS SIGUIENTES ORDENES ";
@@ -235,6 +236,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           text: [
             { text: "VALOR: $ ", style: "body1", bold: true },
             { text: this.valorContrato, style: "body" },
+            { text: " "+conversor.NumerosALetras(parseInt(this.valorContrato)), style: "body1" },
           ],
         },
       ],
@@ -254,7 +256,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
-            { text: this.duracionContrato, style: "body" },
+            { text: conversor.NumerosALetras(parseInt(this.duracionContrato)).slice(0, -5)+" "+this.duracionContrato+" Meses", style: "body" },
           ],
         },
       ],
@@ -533,7 +535,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             }
             if (this.novedadAdiccion == true) {
               for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
-                console.log("prueba novedad addicion");
+                
                 var contador = i + 1;
                 pdf.add(
                   new Txt(
@@ -546,7 +548,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   ).bold().end
                 );
 
-                pdf.add(new Txt("VALOR: $" + this.valorAdicion[i]).bold().end);
+                pdf.add(new Txt("VALOR: $" + this.valorAdicion[i]+" "+conversor.NumerosALetras(parseInt(this.valorAdicion[i]))).bold().end);
               }
               pdf.add("\n");
             }
@@ -566,12 +568,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 if (this.diasProrroga[i].length == 0) {
                   pdf.add(
                     new Txt(
-                      "DURACIÓN:" + this.mesesProrroga[i] + " Meses"
+                      "DURACIÓN:"+ conversor.NumerosALetras(parseInt(this.mesesProrroga[i])).slice(0, -5)+""+ this.mesesProrroga[i] + " Meses"
                     ).bold().end
                   );
                 } else if (this.mesesProrroga[i].length == 0) {
                   pdf.add(
-                    new Txt("DURACIÓN:" + this.diasProrroga[i] + " DIAS").bold()
+                    new Txt("DURACIÓN:" + conversor.NumerosALetras(parseInt(this.diasProrroga[i])).slice(0, -5)+""+ this.diasProrroga[i] + " DIAS").bold()
                       .end
                   );
                 } else if (this.mesesProrroga[i] == "1") {
