@@ -31,6 +31,7 @@ export class CertificacionesComponent implements OnInit {
 
   ngOnInit() {
     this.rolActual = this.authGuard.rolActual();
+    //console.log("Este es el rol",this.rolActual)
     this.componenteVer = false;
     this.componenteRealizar = false;
     this.componenteRealizarCertificacion = false;

@@ -185,7 +185,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "VALOR: $ ", style: "body1", bold: true },
-            { text: "("+this.valorContrato+") ", style: "body" },
+            { text: "("+this.numeromiles(this.valorContrato)+") ", style: "body" },
             { text: conversor.NumerosALetras(parseInt(this.valorContrato)), style: "body1" },
 
             
@@ -468,12 +468,7 @@ export class CrearCertificacionComponent implements OnInit {
                 docDefinition.valorCabe,
                 new Txt(
                   "Código de autenticidad:" +
-                    response["Enlace"] +
-                    "\n Fecha  y Hora de creación:" +
-                    this.horaCreacion.slice(0, 10) +
-                    " - " +
-                    this.horaCreacion.slice(11, 19)
-                )
+                    response["Enlace"] )
                   .bold()
                   .alignment("right")
                   .fontSize(9).end,
@@ -575,7 +570,7 @@ export class CrearCertificacionComponent implements OnInit {
                   .end
               );
 
-              pdf.add(new Txt("VALOR: $" + this.valorOtroSi[i]+" "+conversor.NumerosALetras(parseInt(this.valorOtroSi[i]))).bold().end);
+              pdf.add(new Txt("VALOR: $" + this.numeromiles(this.valorOtroSi[i])+" "+conversor.NumerosALetras(parseInt(this.valorOtroSi[i]))).bold().end);
             }
             pdf.add("\n");
           }
@@ -595,9 +590,9 @@ export class CrearCertificacionComponent implements OnInit {
               );
               pdf.add(
                 new Txt(
-                  "VALOR: " +
+                  "VALOR: " +this.numeromiles(
                     this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
-                      .ValorNovedad+"  "+conversor.NumerosALetras(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                      .ValorNovedad)+"  "+conversor.NumerosALetras(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
                       .ValorNovedad))
                 ).bold().end
               );
@@ -614,6 +609,14 @@ export class CrearCertificacionComponent implements OnInit {
 
           pdf.add(docDefinition.firmaImagen);
           pdf.add(docDefinition.firmaPagina);
+          pdf.add(new Txt("PARA CONSTANCIA SE AÑADE LA FECHA Y HORA DE CREACIÓN:" +
+                this.horaCreacion.slice(0, 10) +
+                " - " +
+                this.horaCreacion.slice(11, 19)
+            )
+              .bold()
+              .alignment("center").absolutePosition(75,780)
+              .fontSize(8).end,);
 
           pdf.footer(
             new Txt(
@@ -667,6 +670,18 @@ export class CrearCertificacionComponent implements OnInit {
           this.openWindow(error);
         }
       );
+      this.regresarInicio()
+  }
+  regresarInicio(){
+    const Swal = require("sweetalert2");
+    Swal.fire({
+      icon: "success",
+      title: "CERTIFICACIÓN CREADA",
+      text: "La certificación fue creada con exito",
+      footer: 'La certificacion fue creada para: '+this.nombre
+    });
+    this.regresarFiltro();
+
   }
 
   consultarDatosContrato() {
@@ -775,5 +790,13 @@ export class CrearCertificacionComponent implements OnInit {
       //console.log(i);
       this.numeroNovedadesArrOtro.push("");
     }
+  }
+
+  numeromiles(num){
+    num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+    num = num.split('').reverse().join('').replace(/^[\.]/,'');
+    return num;
+
+
   }
 }
