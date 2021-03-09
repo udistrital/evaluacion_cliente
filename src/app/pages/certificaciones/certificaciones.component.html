@@ -19,7 +19,7 @@
                 <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)"></ngx-tabla-busqueda-certificacion>
             </div>
 
-            <ngx-crear-certificacion [dataContrato]="this.data" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteRealizar==true"></ngx-crear-certificacion>
+
             <ngx-ver-certificacion [dataContrato]="this.datosContratoAVer" [rol]="this.rolActual" (volverFiltro)="habilitarFiltro($event)" *ngIf="this.componenteVer==true"></ngx-ver-certificacion>
 
         </div>
@@ -48,7 +48,9 @@
         <div *ngIf="this.rolActual === 'OPS' ">
             <div *ngIf="this.componenteVer==false&&this.componenteRealizar==false&&this.componenteRealizarCertificacion==false">
                 <!-- Evalua los compoenentes para mostrarlos en el div anterior -->
-                <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
+
+                <ngx-certificacion (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo>
+                </ngx-certificacion>
                 <ngx-tabla-busqueda-certificacion [dataContratos]="this.data" (dataView)="verCertificacion($event)" (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)">
                 </ngx-tabla-busqueda-certificacion>
             </div>

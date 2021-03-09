@@ -61,7 +61,7 @@ export class FiltroComponent implements OnInit {
             this.dataResponse.emit(res.Data);
           }
         }, (error_service) => {
-          this.openWindow(error_service['body'][1]['Error']);
+          this.openWindow(error_service);
           this.dataResponse.emit([]);
         });
     } else {
@@ -75,7 +75,7 @@ export class FiltroComponent implements OnInit {
               this.dataResponse.emit(res.Data);
             }
           }, (error_service) => {
-            this.openWindow(error_service['body'][1]['Error']);
+            this.openWindow(error_service);
             this.dataResponse.emit([]);
           });
       } else {
@@ -88,7 +88,7 @@ export class FiltroComponent implements OnInit {
                 this.dataResponse.emit(res.Data);
               }
             }, (error_service) => {
-              this.openWindow(error_service['body'][1]['Error']);
+              this.openWindow(error_service);
               this.dataResponse.emit([]);
             });
         } else {
@@ -101,7 +101,7 @@ export class FiltroComponent implements OnInit {
                   this.dataResponse.emit(res.Data);
                 }
               }, (error_service) => {
-                this.openWindow(error_service['body'][1]['Error']);
+                this.openWindow(error_service);
                 this.dataResponse.emit([]);
               });
           } else {
@@ -115,7 +115,7 @@ export class FiltroComponent implements OnInit {
                     this.dataResponse.emit(res.Data);
                   }
                 }, (error_service) => {
-                  this.openWindow(error_service['body'][1]['Error']);
+                  this.openWindow(error_service);
                   this.dataResponse.emit([]);
                 });
             } else {
@@ -127,7 +127,7 @@ export class FiltroComponent implements OnInit {
                       this.dataResponse.emit(res.Data);
                     }
                   }, (error_service) => {
-                    this.openWindow(error_service['body'][1]['Error']);
+                    this.openWindow(error_service);
                     this.dataResponse.emit([]);
                   });
               }
@@ -139,10 +139,12 @@ export class FiltroComponent implements OnInit {
   }
 
   openWindow(mensaje) {
-    this.windowService.open(
-      this.contentTemplate,
-      { title: 'Alerta', context: { text: mensaje } },
-    );
+    const Swal = require("sweetalert2");
+    Swal.fire({
+      icon: "error",
+      title: "ERROR",
+      text: mensaje,
+    });
   }
 
   limpiarfiltro() {
