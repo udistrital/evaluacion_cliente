@@ -58,8 +58,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   duracionContrato: string = "";
   horaCreacion: string = "";
   idContrato: string = "";
-  fechaInicio: string = "";
-  fechaFin: string = " ";
+  
   nuevo_texto: boolean = false;
   novedadCesion: boolean = false;
   novedadOtro: boolean = false;
@@ -288,22 +287,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           ],
         },
       ],
-      fechainicio: [
-        {
-          text: [
-            { text: "FECHA DE INICIO:  ", style: "body1", bold: true },
-            { text: this.fechaInicio.slice(0, 10), style: "body" },
-          ],
-        },
-      ],
-      fechafin: [
-        {
-          text: [
-            { text: "FECHA DE FINALIZACION:  ", style: "body1", bold: true },
-            { text: this.fechaFin.slice(0, 10), style: "body" },
-          ],
-        },
-      ],
+      
+      
       fechaSub: [
         {
           text: [
@@ -540,14 +525,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               pdf.add(docDefinition.duraContra);
             }
             pdf.add("\n");
-            if (this.fecha_Inicio == "1") {
-              pdf.add(docDefinition.fechainicio);
-            }
-            pdf.add("\n");
-            if (this.fecha_final == "1") {
-              pdf.add(docDefinition.fechafin);
-            }
-            pdf.add("\n");
+            
+            
             pdf.add(docDefinition.resultadoEva);
             pdf.add("\n");
             if (this.nuevo_texto == true) {
@@ -756,7 +735,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           this.dataContrato[0].Vigencia
       )
       .subscribe((res_contrato) => {
-        console.log("aca esta el contrato", res_contrato);
+        //console.log("aca esta el contrato", res_contrato);
         this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
         this.valorContrato =
           res_contrato.Data[0].contrato_general.ValorContrato;
@@ -776,28 +755,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.tipoPersona=res_contrato.Data[0].informacion_proveedor.Tipopersona;
         
 
-        this.AdministrativaJbpm.get(
-          "actividades/" +
-            this.cedula +
-            "/" +
-            this.dataContrato[0].Vigencia +
-            "/" +
-            this.dataContrato[0].ContratoSuscrito
-        ).subscribe((res_Contrato) => {
-          //console.log("esta es la nueva respuesta",res_Contrato);
-          if (res_Contrato == null) {
-            this.openWindow("Error no se encuentran datos del contrato");
-            this.regresarFiltro();
-          } else {
-            this.fechaInicio =
-              res_Contrato.contratos.actividades[0].fecha_inicio;
-            this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
-          }
-          (error_service) => {
-           //console.log("esta es la nueva respuesta", res_Contrato);
-            this.openWindow(error_service.message);
-          };
-        });
+        
       }),
       (error_service) => {
         this.openWindow(error_service.message);

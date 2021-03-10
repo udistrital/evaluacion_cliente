@@ -14,8 +14,10 @@ export const environment = {
 
     PATH: 'https://documental.portaloas.udistrital.edu.co/nuxeo/',
     CREDENTIALS: {
-      USERNAME: 'Administrator',
-      PASS: 'S1st3m4s04S=Fr331P4',
+      USERNAME: 'desarrollooas',
+      PASS: 'desarrollooas2019',
+      //USERNAME: 'Administrator',
+      //PASS: 'S1st3m4s04S=Fr331P4',
       //Administrator---S1st3m4s04S=Fr331P4
       /*
       
@@ -45,11 +47,11 @@ export const environment = {
   },
   TOKEN: {
     AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
-    CLIENTE_ID: 'e36v1MPQk2jbz9KM4SmKhk8Cyw0a',
+    CLIENTE_ID: '49uZfYyUZfSsonRKp9HTybXOLjYa',
     RESPONSE_TYPE: 'id_token token',
     SCOPE: 'openid email role documento',
-    REDIRECT_URL: 'http://localhost:4200/',
+    REDIRECT_URL: 'https://evaluacion.portaloas.udistrital.edu.co',
     SIGN_OUT_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oidc/logout',
-    SIGN_OUT_REDIRECT_URL: 'http://localhost:4200/',
+    SIGN_OUT_REDIRECT_URL: 'https://evaluacion.portaloas.udistrital.edu.co',
   },
 };
