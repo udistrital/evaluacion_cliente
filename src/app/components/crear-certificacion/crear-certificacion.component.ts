@@ -216,7 +216,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE INICIO:  ", style: "body1", bold: true },
-            { text: this.fechaInicio.slice(0, 10), style: "body" },
+            { text: this.formato(this.fechaInicio.slice(0, 10)), style: "body" },
           ],
         },
       ],
@@ -224,7 +224,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE FINALIZACION:  ", style: "body1", bold: true },
-            { text: this.fechaFin.slice(0, 10), style: "body" },
+            { text: this.formato(this.fechaFin.slice(0, 10)), style: "body" },
           ],
         },
       ],
@@ -232,7 +232,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "FECHA DE SUSCRIPCIÓN:  ", style: "body1", bold: true },
-            { text: this.fechaSuscrip.slice(0, 10), style: "body" },
+            { text: this.formato(this.fechaSuscrip.slice(0, 10)), style: "body" },
           ],
         },
       ],
@@ -311,7 +311,7 @@ export class CrearCertificacionComponent implements OnInit {
             {
               text:
                 "ACTA DE TERMINACIÓN Y LIQUIDACIÓN BILATERAL " +
-                this.fechaTerminacion,
+                this.formato(this.fechaTerminacion),
               style: "body",
               bold: true,
             },
@@ -798,5 +798,8 @@ export class CrearCertificacionComponent implements OnInit {
     return num;
 
 
+  }
+  formato(texto){
+    return texto.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
   }
 }
