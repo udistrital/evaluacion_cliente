@@ -18,17 +18,23 @@ export class RequestManager {
   private path: string;
   public httpOptions: any;
   public httpOptions2: any;
+  public httpOptions3: any;
   constructor(private http: HttpClient, private errManager: HttpErrorManager) {
     this.httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       }),
     };
     this.httpOptions2 = {
       headers: new HttpHeaders({
         'Content-Type': 'multipart/form-data',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       }),
     };
+    
   }
 
 

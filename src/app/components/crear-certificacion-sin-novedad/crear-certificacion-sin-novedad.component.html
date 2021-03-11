@@ -1,0 +1,290 @@
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h1>Certificación</h1>
+            <br>
+            <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
+          <i class="fas fa-arrow-alt-circle-left"></i>
+          Regresar
+        </button>
+
+        </div>
+
+    </div>
+
+</div>
+<br>
+<div class="font-black" id="pdf">
+    <div class="card card-margin">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-9">
+                    <H1>Información General De Certificaciones De Cumplimiento</H1>
+                </div>
+                <div class="col-3">
+                </div>
+            </div>
+            <!-- Div para los datos del contrato   -->
+            <div class="row">
+                <div class="col-4">
+                    <p>Valor del contrato</p>
+                    <div class="col text-center">
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Valor Contrato</mat-label>
+                                <mat-select [(ngModel)]="valor_Contrato">
+                                    <mat-option value="1">SI</mat-option>
+                                    <mat-option value="0">NO</mat-option>
+
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-4">
+                    <p>Duración del contrato(meses)</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Duración del contrato(meses)</mat-label>
+                                    <mat-select [(ngModel)]="duracion_Contrato">
+                                        <mat-option value="1">SI</mat-option>
+                                        <mat-option value="0">NO</mat-option>
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="col-4" *ngIf="this.notaEvaluacionManual== true ">
+                    <p>Evaluacion</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Calificación</mat-label>
+                                    <mat-select [(ngModel)]="calificacionManual">
+                                        <mat-option value="Excelente">Excelente</mat-option>
+                                        <mat-option value="Bueno">Bueno</mat-option>
+                                        <mat-option value="Malo">Malo</mat-option>
+
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-4" *ngIf="this.rol=='ASISTENTE_COMPRAS'||this.rol=='ORDENADOR_DEL_GASTO' ">
+                    <p>Novedades.</p>
+                    <div class="col text-center">
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Novedades</mat-label>
+                                <mat-select multiple required [(ngModel)]="listaNovedades">
+
+                                    <mat-option style="text-transform: uppercase;" value="cesion">Cesión</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="adicion">Adición</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="prorroga">Prórroga</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="suspension">Suspensión</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="terminacionLiquidacion">Terminación y Liquidación</mat-option>
+                                    <mat-option style="text-transform: uppercase;" value="observaciones">Observaciones</mat-option>
+
+
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<br>
+<div *ngFor="let novedades of listaNovedades">
+    <div class="font-black" id="novedad" *ngIf="novedades=='cesion'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <div class="col">
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de novedades de cesión</label>
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesCesion" placeholder="Novedades de cesion">
+                    </div>
+                    <div class="col">
+                        <br>
+                        <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Novedades de cesión</button>
+                    </div>
+
+                </div>
+                <br>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Novedad de Otro si -->
+    <div class="font-black" id="novedad" *ngIf="novedades=='adicion'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <div class="col">
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de Adiciones</label>
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesAddiccion" placeholder="Novedades de Otro Si" style="text-transform: uppercase;" required>
+                    </div>
+                    <div class="col">
+                        <br>
+                        <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Adición </button>
+                    </div>
+
+                </div>
+                <div class="card-body" *ngFor="let numero of numeroNovedadesArrAdiccion; let i = index">
+
+
+                    <label for="validationCustom01" class="form-label">Valor De La Adición</label>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="valorAdicion[i]" required>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="font-black" id="novedad" *ngIf="novedades=='prorroga'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <div class="col">
+                        <label class="form-check-label" for="flexSwitchCheckDisabled">Número de novedades Prorroga</label>
+                        <input class="form-control" type="number" min="1" pattern="^[0-9]+" [(ngModel)]="numeroNovedadesProrroga" placeholder="Novedades de Prorroga" style="text-transform: uppercase;" required>
+                    </div>
+                    <div class="col">
+                        <br>
+                        <button class="btn btn-primary me-md-2" type="button" (click)="crearNovedades()">Crear Novedades de Prorroga </button>
+                    </div>
+
+                </div>
+                <div class="card-body" *ngFor="let numero of numeroNovedadesArrProrroga   ; let i = index">
+
+                    <br>
+                    <label for="validationCustom01" class="form-label">Dias De La Novedad</label>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="diasProrroga[i]" required>
+                    <br>
+                    <label for="validationCustom01" class="form-label">Meses De La Novedad</label>
+                    <input type="number" min="1" pattern="^[0-9]+" class="form-control" [(ngModel)]="mesesProrroga[i]" required>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="font-black" id="novedad" *ngIf="novedades=='suspension'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+
+
+                <!-- Div para  el cuadro de texto  -->
+                <br>
+                <div class="form-group row">
+                    <label for="example-date-input" class="col-2 col-form-label">Fecha De inicio de la suspensión</label>
+                    <div class="col-10">
+                        <input class="form-control" type="date" [(ngModel)]="fechaInicialSupension" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="example-date-input" class="col-2 col-form-label">Fecha Final de la suspensión</label>
+                    <div class="col-10">
+                        <input class="form-control" type="date" [(ngModel)]="fechaFinalSuspension" required>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="font-black" id="novedad" *ngIf="novedades=='terminacionLiquidacion'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+
+                <div class="form-group row">
+                    <label for="example-date-input" class="col-2 col-form-label">Fecha De Terminación</label>
+                    <div class="col-10">
+                        <input class="form-control" type="date" [(ngModel)]="fechaTerminacion" required>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <br>
+    <div class="font-black" id="novedad" *ngIf="novedades=='observaciones'">
+        <div class="card card-margin">
+            <div class="card-body">
+                <br>
+
+                <div class="form-group row">
+                    <label for="example-date-input" class="col-2 col-form-label">Observaciones</label>
+                    <div class="col-10">
+                        <input class="form-control" type="text" [(ngModel)]="textoNovedad" placeholder="Observación">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <br>
+
+</div>
+
+
+
+
+<div class="col text-center">
+    <button (click)="crearPdf()" nbButton status="download" class="btn-flotante">
+        
+        
+        <i class="fas fa-file-alt"></i>
+        Crear Certificado
+    </button>
+
+
+
+</div>

@@ -2,6 +2,9 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NuxeoService } from "../@core/utils/nuxeo.service";
+
+
 
 import {
   MatAutocompleteModule,
@@ -132,10 +135,15 @@ import {
   SelectComponent,
   NuxeoComponent,
   FiltroComponent,
+  TablaBusquedaCertificacionComponent,
   TablaBusquedaComponent,
   VerEvaluacionComponent,
   PlantillaEvaluacionComponent,
   RealizarEvaluacionComponent,
+  CertificacionComponent,
+  CrearCertificacionComponent,
+  CrearCertificacionSinNovedadComponent, 
+  VerCertificacionComponent, 
 } from './components';
 import {
   CapitalizePipe,
@@ -225,11 +233,16 @@ const COMPONENTS = [
   SelectComponent,
   NuxeoComponent,
   SelectDirective,
-  FiltroComponent,
+   FiltroComponent,
   TablaBusquedaComponent,
+  TablaBusquedaCertificacionComponent,
   VerEvaluacionComponent,
   PlantillaEvaluacionComponent,
   RealizarEvaluacionComponent,
+  CertificacionComponent,
+  CrearCertificacionComponent,
+  CrearCertificacionSinNovedadComponent,
+  VerCertificacionComponent
 ];
 
 const ENTRY_COMPONENTS = [
@@ -267,6 +280,7 @@ const NB_THEME_PROVIDERS = [
   exports: [...BASE_MODULES, ...NB_MODULES, MAT_MODULES, ...COMPONENTS, ...PIPES],
   declarations: [...COMPONENTS, ...PIPES],
   entryComponents: [...ENTRY_COMPONENTS],
+  providers:[NuxeoService],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders {

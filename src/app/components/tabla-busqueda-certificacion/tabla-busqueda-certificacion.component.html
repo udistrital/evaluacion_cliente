@@ -1,0 +1,85 @@
+<div class="card card-table" *ngIf="this.dataContratos.length>0">
+    <div class="card-body card-body-table">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col">Proveedor</th>
+                    <th scope="col">Contrato</th>
+                    <th scope="col">Vigencia</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let contrato of this.dataContratos; let i=index">
+                    <td>{{contrato.NombreProveedor}}</td>
+                    <td class="text-center">{{contrato.ContratoSuscrito}}</td>
+                    <td class="text-center">{{contrato.Vigencia}}</td>
+
+                    <td>
+                        <div class="row justify-content-md-center">
+                            <!-- Rol de pruebas -->
+                            <div *ngIf="logueado && this.rolActual === 'ORDENADOR_DEL_GASTO'" class="col-md-auto">
+                                <button type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear  Certificacion Contractual">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" (click)="relizarCertificacionSinNovedad(contrato)" class="btn-i" data-toggle="tooltip" title="Crear certificacion de cumplimiento">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                            <!-- Rol de Contratista-->
+                            <div class="col-md-auto" *ngIf="this.rolActual === 'CONTRATISTA'  ">
+
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                            <!-- Rol de Juridica -->
+                            <div *ngIf="logueado && this.rolActual === 'ASISTENTE_JURIDICA'" class="col-md-auto">
+                                <button type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear  Certificacion Contractual">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                            <!-- Rol de Compras -->
+                            <div *ngIf="logueado && this.rolActual === 'ASISTENTE_COMPRAS'" class="col-md-auto">
+
+                                <button type="button" (click)="relizarCertificacionSinNovedad(contrato)" class="btn-i" data-toggle="tooltip" title="Crear certificacion de cumplimiento">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                            <!-- Rol de OPS -->
+                            <div *ngIf="logueado && this.rolActual === 'OPS'" class="col-md-auto">
+
+                                <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificacion">
+
+                                    <i class="fas fa-download"></i>
+                                </button>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

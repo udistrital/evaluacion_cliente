@@ -21,6 +21,8 @@ export class ImplicitAutenticationService {
             headers: new HttpHeaders({
                 'Accept': 'application/json',
                 'authorization': 'Bearer ' + window.localStorage.getItem('access_token'),
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
             }),
         };
         auth.setGeneral(environment.TOKEN);

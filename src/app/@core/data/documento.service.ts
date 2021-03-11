@@ -8,10 +8,12 @@ import { catchError } from 'rxjs/operators';
 const httpOptions = {
     headers: new HttpHeaders({
         'Accept': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
     }),
 };
 
-const path = environment;
+const path = environment.DOCUMENTO_SERVICE;
 
 @Injectable()
 export class DocumentoService {
