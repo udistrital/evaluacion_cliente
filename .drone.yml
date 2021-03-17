@@ -96,7 +96,7 @@ steps:
   - node --version
   - npm cache clean --force
   - npm i
-  - npm run build:test
+  - npm run build:prod
   when:
     branch:
     - master
