@@ -14,10 +14,11 @@ import { DocumentoService } from "../../@core/data/documento.service";
 import { PdfMakeWrapper, Img, Columns, Table, Cell } from "pdfmake-wrapper";
 import { Txt } from "pdfmake-wrapper";
 import { EvaluacionmidService } from "../../@core/data/evaluacionmid.service";
-import { NbWindowService } from "@nebular/theme";
+
 import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
 import { AdministrativaamazonService } from "../../@core/data/admistrativaamazon.service";
 import { AdministrativajbpmService } from "../../@core/data/administrativajbpm.service";
+import { NumerosAletrasService } from "../../@core/data/numeros-aletras.service";
 import { Subscription } from "rxjs";
 import { take } from "rxjs/operators";
 
@@ -84,7 +85,7 @@ export class CrearCertificacionComponent implements OnInit {
     private nuxeoService: NuxeoService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
-
+    private NumerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
     private AdministrativaJbpm: AdministrativajbpmService
   ) {
@@ -101,7 +102,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   crearPdf() {
-    const conversor = require('numero-a-letras');
+    
     
     var cadena1 =
       "QUE, REVISADA LA BASE DE DATOS DE CONTRATACIÓN, SE ENCONTRÓ QUE ";
@@ -186,7 +187,7 @@ export class CrearCertificacionComponent implements OnInit {
           text: [
             { text: "VALOR: $ ", style: "body1", bold: true },
             { text: "("+this.numeromiles(this.valorContrato)+") ", style: "body" },
-            { text: conversor.NumerosALetras(parseInt(this.valorContrato)), style: "body1" },
+            { text: this.NumerosAletrasService.convertir(parseInt(this.valorContrato)), style: "body1" },
 
             
           ],
@@ -208,7 +209,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
-            { text: conversor.NumerosALetras(parseInt(this.duracionContrato)).slice(0, -5)+" "+this.duracionContrato + " meses", style: "body" },
+            { text: this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7)+""+this.duracionContrato + " MESES", style: "body" },
           ],
         },
       ],
@@ -334,10 +335,10 @@ export class CrearCertificacionComponent implements OnInit {
                   this.fechaFinalSuspension
                 ) +
                 " DIAS" +
-                "DESDE " +
-                this.fechaInicialSupension +
+                " DESDE " +
+                this.formato(this.fechaInicialSupension) +
                 " HASTA " +
-                this.fechaFinalSuspension,
+                this.formato(this.fechaFinalSuspension),
               style: "body",
               bold: true,
             },
@@ -348,7 +349,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
-            { text: " DIAS", style: "body" },
+            { text: " DIAS ", style: "body" },
             { text: "\n VALOR: $", style: "body1", bold: true },
           ],
         },
@@ -566,11 +567,11 @@ export class CrearCertificacionComponent implements OnInit {
               );
 
               pdf.add(
-                new Txt("DURACIÓN: "+conversor.NumerosALetras(parseInt(this.duracionOtroSi[i])).slice(0, -5) + this.duracionOtroSi[i] + " DIAS").bold()
+                new Txt("DURACIÓN: "+this.NumerosAletrasService.convertir(parseInt(this.duracionOtroSi[i])).slice(0, -5) + this.duracionOtroSi[i] + " DIAS").bold()
                   .end
               );
 
-              pdf.add(new Txt("VALOR: $" + this.numeromiles(this.valorOtroSi[i])+" "+conversor.NumerosALetras(parseInt(this.valorOtroSi[i]))).bold().end);
+              pdf.add(new Txt("VALOR: $" + this.numeromiles(this.valorOtroSi[i])+" "+this.NumerosAletrasService.convertir(parseInt(this.valorOtroSi[i]))).bold().end);
             }
             pdf.add("\n");
           }
@@ -581,7 +582,7 @@ export class CrearCertificacionComponent implements OnInit {
               pdf.add(docDefinition.novedadAdicion);
               pdf.add(
                 new Txt(
-                  "DURACION: "+conversor.NumerosALetras(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                  "DURACION: "+this.NumerosAletrasService.convertir(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
                   .PlazoEjecucion)).slice(0, -5) +" ("+
                     this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
                       .PlazoEjecucion +")"+
@@ -592,7 +593,7 @@ export class CrearCertificacionComponent implements OnInit {
                 new Txt(
                   "VALOR: " +this.numeromiles(
                     this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
-                      .ValorNovedad)+"  "+conversor.NumerosALetras(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
+                      .ValorNovedad)+"  "+this.NumerosAletrasService.convertir(parseInt(this.allNovedades[this.novedad.indexOf("Adicion Prorroga")]
                       .ValorNovedad))
                 ).bold().end
               );
@@ -725,7 +726,7 @@ export class CrearCertificacionComponent implements OnInit {
             this.fechaInicio =
               res_Contrato.contratos.actividades[0].fecha_inicio;
             this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
-          },
+          }, 
           (err) => {}
         );
       }),
@@ -770,6 +771,9 @@ export class CrearCertificacionComponent implements OnInit {
       return diff / (1000 * 60 * 60 * 24);
     }
   }
+  formato(texto){
+    return texto.toString().replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
+  }
   openWindow(mensaje) {
     const Swal = require("sweetalert2");
     Swal.fire({
@@ -799,7 +803,6 @@ export class CrearCertificacionComponent implements OnInit {
 
 
   }
-  formato(texto){
-    return texto.replace(/^(\d{4})-(\d{2})-(\d{2})$/g,'$3/$2/$1');
-  }
+  
+  
 }

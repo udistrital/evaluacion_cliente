@@ -76,6 +76,7 @@ export class VerCertificacionComponent implements OnInit {
             this.cedula +
             "_" +
             this.tipoCertificacion +
+            ",Activo:true" +
             "&limit=-1"
         )
         .subscribe((data: any) => {
@@ -101,6 +102,7 @@ export class VerCertificacionComponent implements OnInit {
             this.cedula +
             "_" +
             this.tipoCertificacion +
+            ",Activo:true" +
             "&limit=-1"
         )
         .subscribe((data: any) => {
@@ -193,7 +195,7 @@ export class VerCertificacionComponent implements OnInit {
       key: "prueba",
     };
 
-    console.log("des");
+    
 
     const serv = this.nuxeoService.getDocumentoOne$(
       anObject,

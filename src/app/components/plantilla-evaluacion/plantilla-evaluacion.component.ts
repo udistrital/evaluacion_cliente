@@ -27,6 +27,7 @@ export class PlantillaEvaluacionComponent {
     this.evaluacionCompleta = true;
     this.evaluacioncrudService.evaluacionRealizada$
       .subscribe((response: any) => {
+        //console.log("esta es la data",response);
         if (response.length === 0) {
           this.json = {};
         } else if (Object.keys(response.Data[0]).length === 0) {
