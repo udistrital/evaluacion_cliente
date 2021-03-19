@@ -42,7 +42,7 @@ export class CrearCertificacionComponent implements OnInit {
   objeto: string;
   cedula: string;
   numeroContrato: string;
-  actividadEspecifica: string;
+  actividadEspecifica: string = "";
   valorContrato: string;
   nombre: string;
   //los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
