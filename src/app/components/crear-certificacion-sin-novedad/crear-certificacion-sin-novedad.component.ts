@@ -45,6 +45,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   valorContrato: string;
   nombre: string;
   tipoPersona: string;
+  idTipoContrato: number;
   //los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_Contrato: string;
   duracion_Contrato: string;
@@ -59,7 +60,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   duracionContrato: string = "";
   horaCreacion: string = "";
   idContrato: string = "";
-
+  fechaInicio: string = "";
+  fechaFin: string = " ";
   nuevo_texto: boolean = false;
   novedadCesion: boolean = false;
   novedadOtro: boolean = false;
@@ -174,8 +176,21 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       },
     });
     PdfMakeWrapper.useFont("myCustom");
+    var tipoContrato="";
 
     var pdf = new PdfMakeWrapper();
+    if(this.idTipoContrato == 14){
+      tipoContrato = 'ORDEN DE SERVICIO';
+
+    }else if(this.idTipoContrato == 6){
+      
+      tipoContrato = 'PRESTACIÓN DE SERVICIOS';
+
+    }else if(this.idTipoContrato == 7){
+      tipoContrato = 'ORDEN DE VENTA';
+      
+
+    }
 
     pdf.pageMargins([80, 10, 60, 30]);
     pdf.styles({
@@ -230,7 +245,31 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       numContrato: [
         {
           text: [
-            { text: "ORDEN DE SERVICIO NRO. ", style: "body1", bold: true },
+            { text: "CONTRATO DE ORDEN DE SERVICIO NRO. ", style: "body1", bold: true },
+            { text: this.numeroContrato, style: "body1" },
+            {
+              text: " DE " + this.formato(this.fecha_suscrip.slice(0, 10)),
+              style: "body1",
+            },
+          ],
+        },
+      ],
+      numContrato2: [
+        {
+          text: [
+            { text: `CONTRATO DE ${tipoContrato} NO. `, style: "body1", bold: true },
+            { text: this.numeroContrato, style: "body1" },
+            {
+              text: " DE " + this.formato(this.fecha_suscrip.slice(0, 10)),
+              style: "body1",
+            },
+          ],
+        },
+      ],
+      numContrato3: [
+        {
+          text: [
+            { text: "CONTRATO DE ORDEN DE VENTA NRO ", style: "body1", bold: true },
             { text: this.numeroContrato, style: "body1" },
             {
               text: " DE " + this.formato(this.fecha_suscrip.slice(0, 10)),
@@ -283,7 +322,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           ],
         },
       ],
-      duraContra: [
+      duraContraDias: [
         {
           text: [
             { text: "DURACION:  ", style: "body1", bold: true },
@@ -292,15 +331,31 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 this.NumerosAletrasService.convertir(
                   parseInt(this.duracionContrato)
                 ).slice(0, -7) +
-                "(" +
+                "" +
                 this.duracionContrato +
-                ") Meses",
+                " DIAS",
               style: "body",
             },
           ],
         },
       ],
-
+      duraContraMes: [
+        {
+          text: [
+            { text: "DURACION:  ", style: "body1", bold: true },
+            {
+              text:
+                this.NumerosAletrasService.convertir(
+                  parseInt(this.duracionContrato)
+                ).slice(0, -7) +
+                "" +
+                this.duracionContrato +
+                " MESES",
+              style: "body",
+            },
+          ],
+        },
+      ],
       fechaSub: [
         {
           text: [
@@ -341,6 +396,25 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               bold: true,
             },
             { text: this.textoNovedad.toUpperCase(), style: "body" },
+          ],
+        },
+      ],
+      fechainicio: [
+        {
+          text: [
+            { text: "FECHA DE INICIO:  ", style: "body1", bold: true },
+            {
+              text: this.formato(this.fechaInicio.slice(0, 10)),
+              style: "body",
+            },
+          ],
+        },
+      ],
+      fechafin: [
+        {
+          text: [
+            { text: "FECHA DE FINALIZACION:  ", style: "body1", bold: true },
+            { text: this.formato(this.fechaFin.slice(0, 10)), style: "body" },
           ],
         },
       ],
@@ -517,7 +591,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             pdf.add(docDefinition.line);
             pdf.add("\n");
             //--------------- numero de contrato
-            pdf.add(docDefinition.numContrato);
+            
+            
+            
             pdf.add("\n");
             //-------------------------------- Objeto
             pdf.add(docDefinition.content2);
@@ -531,9 +607,26 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               pdf.add(docDefinition.valorContra);
             }
             pdf.add("\n");
+            
 
-            if (this.duracion_Contrato == "1") {
-              pdf.add(docDefinition.duraContra);
+            if (this.duracion_contrato == "1") {
+              
+              if(parseInt(this.duracionContrato)>12){
+                pdf.add(docDefinition.duraContraDias);
+  
+              }else if(parseInt(this.duracionContrato)<12){
+                pdf.add(docDefinition.duraContraMes);
+              
+              }
+              
+            }
+            if (this.fecha_Inicio == "1") {
+              pdf.add("\n");
+              pdf.add(docDefinition.fechainicio);
+            }
+            if (this.fecha_final == "1") {
+              pdf.add("\n");
+              pdf.add(docDefinition.fechafin);
             }
             pdf.add("\n");
 
@@ -552,7 +645,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   new Txt(
                     "CESIÓN N° " +
                       contador +
-                      " DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO " +
+                      `DEL CONTRATO DE ${tipoContrato} NO`    +
                       this.dataContrato[0].ContratoSuscrito +
                       "-" +
                       this.dataContrato[0].Vigencia
@@ -567,7 +660,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   new Txt(
                     "ADDICIÓN N° " +
                       contador +
-                      " DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO " +
+                      ` DEL CONTRATO DE ${tipoContrato}  NO ` +
                       this.dataContrato[0].ContratoSuscrito +
                       "-" +
                       this.dataContrato[0].Vigencia
@@ -594,7 +687,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   new Txt(
                     "Prorroga N° " +
                       contador +
-                      " DEL CONTRATO DE PRESTACIÓN DE SERVICIOS NO " +
+                      ` DEL CONTRATO DE ${tipoContrato} NO ` +
                       this.dataContrato[0].ContratoSuscrito +
                       "-" +
                       this.dataContrato[0].Vigencia
@@ -606,7 +699,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                       "DURACIÓN:" +
                         this.NumerosAletrasService.convertir(
                           parseInt(this.mesesProrroga[i])
-                        ).slice(0, -5) +
+                        ).slice(0, -7) +
                         "" +
                         this.mesesProrroga[i] +
                         " Meses"
@@ -618,7 +711,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                       "DURACIÓN:" +
                         this.NumerosAletrasService.convertir(
                           parseInt(this.diasProrroga[i])
-                        ).slice(0, -5) +
+                        ).slice(0, -7) +
                         "" +
                         this.diasProrroga[i] +
                         " DIAS"
@@ -764,6 +857,25 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
         this.tipoPersona =
           res_contrato.Data[0].informacion_proveedor.Tipopersona;
+
+        this.idTipoContrato =
+          res_contrato.Data[0].contrato_general.TipoContrato.Id;
+
+        this.AdministrativaJbpm.get(
+          "actividades/" +
+            this.cedula +
+            "/" +
+            this.dataContrato[0].Vigencia +
+            "/" +
+            this.dataContrato[0].ContratoSuscrito
+        ).subscribe(
+          (res_Contrato) => {
+            this.fechaInicio =
+              res_Contrato.contratos.actividades[0].fecha_inicio;
+            this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
+          },
+          (err) => {}
+        );
       }),
       (error_service) => {
         this.openWindow(error_service.message);

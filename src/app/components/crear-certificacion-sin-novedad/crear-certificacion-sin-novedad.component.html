@@ -52,7 +52,7 @@
                             <div>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Duración del contrato(meses)</mat-label>
-                                    <mat-select [(ngModel)]="duracion_Contrato">
+                                    <mat-select [(ngModel)]="duracion_contrato">
                                         <mat-option value="1">SI</mat-option>
                                         <mat-option value="0">NO</mat-option>
 
@@ -64,6 +64,45 @@
                         </div>
                     </div>
 
+                </div>
+                <div class="col-4">
+                    <p>Fecha de inicio</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Fecha de inicio</mat-label>
+                                    <mat-select [(ngModel)]="fecha_Inicio">
+                                        <mat-option value="1">SI</mat-option>
+                                        <mat-option value="0">NO</mat-option>
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <p>Fecha de Finalización</p>
+                    <div class="col text-center">
+                        <div class="col text-center">
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Fecha de finalización</mat-label>
+                                    <mat-select [(ngModel)]="fecha_final">
+                                        <mat-option value="1">SI</mat-option>
+                                        <mat-option value="0">NO</mat-option>
+
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
 
