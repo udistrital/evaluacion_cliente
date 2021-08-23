@@ -75,7 +75,7 @@ export class AuthInterceptor implements HttpInterceptor {
         },
           (error: any) => {
             console.info(error);
-            //this.pUpManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
+            // this.pUpManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
           },
         ),
         finalize(() => this.loaderService.hide()));

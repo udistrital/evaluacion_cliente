@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   Router,
-} from "@angular/router";
-import { Observable } from "rxjs";
+} from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
   rol: any;
@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(
     route?: ActivatedRouteSnapshot,
-    state?: RouterStateSnapshot
+    state?: RouterStateSnapshot,
   ): Observable<boolean> {
     return Observable.of(this.validacion());
     // return valid;
@@ -24,18 +24,18 @@ export class AuthGuard implements CanActivate {
 
   validacion(): boolean {
     let valid: boolean = false;
-    const id_token = window.localStorage.getItem("id_token").split(".");
+    const id_token = window.localStorage.getItem('id_token').split('.');
     const payload = JSON.parse(atob(id_token[1]));
 
     if (payload && payload.role) {
       for (let i = 0; i < payload.role.length; i++) {
         if (
-          payload.role[i] === "ORDENADOR_DEL_GASTO" ||
-          payload.role[i] === "SUPERVISOR" ||
-          payload.role[i] === "CONTRATISTA" || 
-          payload.role[i] === "ASISTENTE_JURIDICA" ||
-          payload.role[i] === "ASISTENTE_COMPRAS" ||
-          payload.role[i] === "OPS"
+          payload.role[i] === 'ORDENADOR_DEL_GASTO' ||
+          payload.role[i] === 'SUPERVISOR' ||
+          payload.role[i] === 'CONTRATISTA' ||
+          payload.role[i] === 'ASISTENTE_JURIDICA' ||
+          payload.role[i] === 'ASISTENTE_COMPRAS' ||
+          payload.role[i] === 'OPS'
         ) {
           this.rol = payload.role[i];
 
@@ -48,17 +48,17 @@ export class AuthGuard implements CanActivate {
   }
 
   rolActual(): any {
-    const id_token = window.localStorage.getItem("id_token").split(".");
+    const id_token = window.localStorage.getItem('id_token').split('.');
     const payload = JSON.parse(atob(id_token[1]));
     if (payload && payload.role) {
       for (let i = 0; i < payload.role.length; i++) {
         if (
-          payload.role[i] === "ORDENADOR_DEL_GASTO" ||
-          payload.role[i] === "SUPERVISOR" ||
-          payload.role[i] === "CONTRATISTA" ||
-          payload.role[i] === "ASISTENTE_JURIDICA" ||
-          payload.role[i] === "ASISTENTE_COMPRAS" ||
-          payload.role[i] === "OPS"
+          payload.role[i] === 'ORDENADOR_DEL_GASTO' ||
+          payload.role[i] === 'SUPERVISOR' ||
+          payload.role[i] === 'CONTRATISTA' ||
+          payload.role[i] === 'ASISTENTE_JURIDICA' ||
+          payload.role[i] === 'ASISTENTE_COMPRAS' ||
+          payload.role[i] === 'OPS'
         ) {
           return payload.role[i];
         }

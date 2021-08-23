@@ -2,7 +2,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NuxeoService } from "../@core/utils/nuxeo.service";
+import { NuxeoService } from '../@core/utils/nuxeo.service';
 
 
 
@@ -142,8 +142,8 @@ import {
   RealizarEvaluacionComponent,
   CertificacionComponent,
   CrearCertificacionComponent,
-  CrearCertificacionSinNovedadComponent, 
-  VerCertificacionComponent, 
+  CrearCertificacionSinNovedadComponent,
+  VerCertificacionComponent,
 } from './components';
 import {
   CapitalizePipe,
@@ -242,7 +242,7 @@ const COMPONENTS = [
   CertificacionComponent,
   CrearCertificacionComponent,
   CrearCertificacionSinNovedadComponent,
-  VerCertificacionComponent
+  VerCertificacionComponent,
 ];
 
 const ENTRY_COMPONENTS = [
@@ -280,7 +280,9 @@ const NB_THEME_PROVIDERS = [
   exports: [...BASE_MODULES, ...NB_MODULES, MAT_MODULES, ...COMPONENTS, ...PIPES],
   declarations: [...COMPONENTS, ...PIPES],
   entryComponents: [...ENTRY_COMPONENTS],
-  providers:[NuxeoService],
+  providers:[
+    NuxeoService
+  ],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders {

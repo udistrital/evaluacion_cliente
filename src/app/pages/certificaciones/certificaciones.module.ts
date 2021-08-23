@@ -10,7 +10,7 @@ import { ThemeModule } from '../../@theme/theme.module';
   imports: [
     CommonModule,
     CertificacionesRoutingModule,
-    ThemeModule
-  ]
+    ThemeModule,
+  ],
 })
 export class CertificacionesModule { }

@@ -60,7 +60,6 @@ export class NotificacionesService {
         if (this.autenticacion.live() && production) {
             this.payload = this.autenticacion.getPayload();
             this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role).filter((data: any) => (data.indexOf('/') === -1));
-            
             this.messagesSubject
                 .pipe(
                     map((msn) => {
