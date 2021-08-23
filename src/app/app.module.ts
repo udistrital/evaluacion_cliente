@@ -141,7 +141,6 @@ export class MaterialModule {}
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-   
     AppRoutingModule,
     MaterialModule,
     ToasterModule.forRoot(),

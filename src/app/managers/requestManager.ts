@@ -24,17 +24,16 @@ export class RequestManager {
       headers: new HttpHeaders({
         'Accept': 'application/json',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
+        'Pragma': 'no-cache',
       }),
     };
     this.httpOptions2 = {
       headers: new HttpHeaders({
         'Content-Type': 'multipart/form-data',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
+        'Pragma': 'no-cache',
       }),
     };
-    
   }
 
 
