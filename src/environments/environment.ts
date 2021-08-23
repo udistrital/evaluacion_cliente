@@ -32,8 +32,8 @@ export const environment = {
   EVALUACIONCRUD_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_crud/v1/',
   ADMINISTRIVA_AMAZON: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/',
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
-  ADMINISTRIVA_JBPM:'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/',
-  
+  //ADMINISTRIVA_JBPM:'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/',
+  ADMINISTRIVA_JBPM:'http://api.intranetoas.udistrital.edu.co:8104/v1/',
 
   SPAGOBI: {
     PROTOCOL: 'https',

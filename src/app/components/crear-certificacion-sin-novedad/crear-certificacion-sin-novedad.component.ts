@@ -348,9 +348,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 this.NumerosAletrasService.convertir(
                   parseInt(this.duracionContrato)
                 ).slice(0, -7) +
-                "" +
+                "(" +
                 this.duracionContrato +
-                " MESES",
+                ") MESES",
               style: "body",
             },
           ],
@@ -860,22 +860,27 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
         this.idTipoContrato =
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
+          this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
 
-        this.AdministrativaJbpm.get(
-          "actividades/" +
-            this.cedula +
-            "/" +
-            this.dataContrato[0].Vigencia +
-            "/" +
-            this.dataContrato[0].ContratoSuscrito
-        ).subscribe(
-          (res_Contrato) => {
-            this.fechaInicio =
-              res_Contrato.contratos.actividades[0].fecha_inicio;
-            this.fechaFin = res_Contrato.contratos.actividades[0].fecha_fin;
-          },
-          (err) => {}
-        );
+          this.AdministrativaJbpm.get(
+            "contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:" +
+              this.dataContrato[0].ContratoSuscrito +
+              ",VigenciaContrato:" +
+              this.dataContrato[0].Vigencia
+          ).subscribe(
+            (res_Contrato) => {
+              this.AdministrativaJbpm.get(
+                "acta_inicio?query=NumeroContrato:" + res_Contrato[0].Id
+              ).subscribe(
+                (res_Acta) => {
+                  this.fechaInicio = res_Acta[0].FechaInicio;
+                  this.fechaFin = res_Acta[0].FechaFin;
+                },
+                (err) => {}
+              );
+            },
+            (err) => {}
+          );
       }),
       (error_service) => {
         this.openWindow(error_service.message);

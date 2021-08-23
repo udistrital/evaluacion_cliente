@@ -15,7 +15,7 @@ export class FiltroComponent implements OnInit {
   @Input() nombreTitulo : String;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
 
-  vigencias = ['2016', '2017', '2018', '2019', '2020'];
+  vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
 
   identificacion_proveedor: any;
   numero_contrato: any;
@@ -67,7 +67,7 @@ export class FiltroComponent implements OnInit {
     } else {
       if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
-        this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&Vigencia=' + this.vigencia
+          this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato=0&Vigencia=' + this.vigencia
          + '&SupID=' + String(this.documento))
           .subscribe((res) => {
             if (res.Data !== null) {
