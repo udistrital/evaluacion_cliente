@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild, OnInit, Output, EventEmitter,Input } from '@angular/core';
+import { Component, TemplateRef, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { NbWindowService } from '@nebular/theme';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { ImplicitAutenticationService } from '../../@core/utils/implicit_autentication.service';
@@ -6,16 +6,15 @@ import { ImplicitAutenticationService } from '../../@core/utils/implicit_autenti
 @Component({
   selector: 'ngx-certificacion',
   templateUrl: './certificacion.component.html',
-  styleUrls: ['./certificacion.component.scss']
+  styleUrls: ['./certificacion.component.scss'],
 })
 export class CertificacionComponent implements OnInit {
 
-  
   @Output() dataResponse: EventEmitter<any>;
   @Input() nombreTitulo : String;
-  @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
+  @ViewChild('contentTemplate',{ read: false }) contentTemplate: TemplateRef<any>;
 
-  vigencias = ['2016', '2017', '2018', '2019', '2020'];
+  vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
 
   identificacion_proveedor: any;
   numero_contrato: any;
@@ -33,15 +32,14 @@ export class CertificacionComponent implements OnInit {
 
   ngOnInit() {
     this.autentication_data = this.authService.getPayload();
-    this.documento ="19483708" ;
-    this.identificacion_proveedor=this.autentication_data.documento;
-    this.RealizarPeticion();
+    this.documento ='19483708' ;
+    this.identificacion_proveedor = this.autentication_data.documento;
+    this.RealizarPeticion(); 
   }
 
   filtro() {
-    
     this.autentication_data = this.authService.getPayload();
-    this.documento ="19483708" ;
+    this.documento ='19483708' ;
     this.identificacion_proveedor=this.autentication_data.documento;
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)

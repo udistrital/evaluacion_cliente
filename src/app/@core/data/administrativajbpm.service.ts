@@ -11,13 +11,13 @@ const httpOptions = {
   headers: new HttpHeaders({
     'Accept': 'application/json',
     'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache'
+    'Pragma': 'no-cache',
   }),
 };
 
 const path = environment.ADMINISTRIVA_JBPM;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdministrativajbpmService {
 

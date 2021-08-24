@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class NumerosAletrasService {
-  convertir(numero){
-    var numeroALetras = (function () {
+  convertir(numero) {
+    const numeroALetras = (function () {
         function Unidades(num) {
             switch (num) {
                 case 1: return ('UN ');
@@ -22,8 +22,8 @@ export class NumerosAletrasService {
         }
 
         function Decenas(num) {
-            var decena = Math.floor(num / 10);
-            var unidad = num - (decena * 10);
+            const decena = Math.floor(num / 10);
+            const unidad = num - (decena * 10);
             switch (decena) {
                 case 1:
                     switch (unidad) {
@@ -40,7 +40,7 @@ export class NumerosAletrasService {
                         default: return ('DIECI ') + Unidades(unidad);
                     }
                 case 2:
-                    if (unidad == 0) {
+                    if (unidad === 0) {
                         return ('VEINTE ');
                     } else {
                         return ('VEINTI ') + Unidades(unidad);
@@ -58,13 +58,13 @@ export class NumerosAletrasService {
 
         function DecenasY(strSin, numUnidades) {
             if (numUnidades > 0)
-                return strSin + ('Y ') + Unidades(numUnidades)
+                return strSin + ('Y ') + Unidades(numUnidades);
             return strSin;
         }
 
         function Centenas(num) {
-            var centenas = Math.floor(num / 100);
-            var decenas = num - (centenas * 100);
+            const centenas = Math.floor(num / 100);
+            const decenas = num - (centenas * 100);
             switch (centenas) {
                 case 1:
                     if (decenas > 0)
@@ -83,9 +83,9 @@ export class NumerosAletrasService {
         }
 
         function Seccion(num, divisor, strSingular, strPlural) {
-            var cientos = Math.floor(num / divisor)
-            var resto = num - (cientos * divisor)
-            var letras = '';
+            const cientos = Math.floor(num / divisor);
+            const resto = num - (cientos * divisor);
+            let letras = '';
             if (cientos > 0)
                 if (cientos > 1)
                     letras = Centenas(cientos) + ' ' + strPlural;
@@ -97,30 +97,30 @@ export class NumerosAletrasService {
         }
 
         function Miles(num) {
-            var divisor = 1000;
-            var cientos = Math.floor(num / divisor)
-            var resto = num - (cientos * divisor)
-            var strMiles = Seccion(num, divisor, ('UNMIL '), ('MIL '));
-            var strCentenas = Centenas(resto);
-            if (strMiles == '')
+            const divisor = 1000;
+            const cientos = Math.floor(num / divisor);
+            const resto = num - (cientos * divisor);
+            const strMiles = Seccion(num, divisor, ('UNMIL '), ('MIL '));
+            const strCentenas = Centenas(resto);
+            if (strMiles === '')
                 return strCentenas;
             return strMiles + ' ' + strCentenas;
         }
 
         function Millones(num) {
-            var divisor = 1000000;
-            var cientos = Math.floor(num / divisor)
-            var resto = num - (cientos * divisor)
-            var strMillones = Seccion(num, divisor, ('UN MILLON '), ('MILLONES '));
-            var strMiles = Miles(resto);
-            if (strMillones == '')
+            const divisor = 1000000;
+            const cientos = Math.floor(num / divisor);
+            const resto = num - (cientos * divisor);
+            const strMillones = Seccion(num, divisor, ('UN MILLON '), ('MILLONES '));
+            const strMiles = Miles(resto);
+            if (strMillones === '')
                 return strMiles;
             return strMillones + ' ' + strMiles;
         }
 
         return function NumeroALetras(num, currency) {
             currency = currency || {};
-            var data = {
+            const data = {
                 numero: num,
                 enteros: Math.floor(num),
                 centavos: ((Math.round(num * 100)) - (Math.floor(num) * 100)),
@@ -128,21 +128,21 @@ export class NumerosAletrasService {
                 letrasMonedaPlural: currency.plural || ('PESOS '),
                 letrasMonedaSingular: currency.singular || ('PESO '),
                 letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS ',
-                letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO '
+                letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO ',
             };
 
             if (data.centavos > 0) {
                 data.letrasCentavos = ('CON ') + (function () {
-                    if (data.centavos == 1)
+                    if (data.centavos === 1)
                         return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoSingular;
                     else
                         return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoPlural;
                 })();
             }
 
-            if (data.enteros == 0)
+            if (data.enteros === 0)
                 return ('CERO ') + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
-            if (data.enteros == 1)
+            if (data.enteros === 1)
                 return Millones(data.enteros) + ' ' + data.letrasMonedaSingular + ' ' + data.letrasCentavos;
             else
                 return Millones(data.enteros) + ' ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
@@ -152,6 +152,6 @@ export class NumerosAletrasService {
     plural: ('PESOS '),
     singular: ('PESO '),
     centPlural: ('CENTAVOS '),
-    centSingular: ('CENTAVO ')
-});}
+    centSingular: ('CENTAVO '),
+});} 
 }

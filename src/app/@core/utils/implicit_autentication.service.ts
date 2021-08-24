@@ -22,7 +22,7 @@ export class ImplicitAutenticationService {
                 'Accept': 'application/json',
                 'authorization': 'Bearer ' + window.localStorage.getItem('access_token'),
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache'
+                'Pragma': 'no-cache',
             }),
         };
         auth.setGeneral(environment.TOKEN);

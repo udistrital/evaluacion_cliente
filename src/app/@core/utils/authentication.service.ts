@@ -20,7 +20,7 @@ export class AutenticationService {
                     //    + Config.LOCAL.TOKEN.CLIENT_SECRET
                 ),
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache'
+                'Pragma': 'no-cache',
             }),
         };
         this.logOut = '';

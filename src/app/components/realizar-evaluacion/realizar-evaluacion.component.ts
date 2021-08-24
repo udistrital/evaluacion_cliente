@@ -78,7 +78,7 @@ export class RealizarEvaluacionComponent implements OnInit {
           if (res_evaluacion !== null) {
             this.jsonResultadoEvaluacion = {
               'Activo': true,
-              'IdEvaluacion': res_evaluacion,
+              'IdEvaluacion': res_evaluacion['Data'],
               'ResultadoEvaluacion': JSON.stringify(data),
             };
             // Se realiza el post del resultado de la evaluación.
@@ -101,12 +101,12 @@ export class RealizarEvaluacionComponent implements OnInit {
       this.evaluacionCrudService.get('resultado_evaluacion?query=Id:' + this.idResultadoEvalucion + ',Activo:true')
         .subscribe((res_resultado_eva) => {
           if (res_resultado_eva !== null) {
-            res_resultado_eva[0].Activo = false;
-            this.evaluacionCrudService.put('resultado_evaluacion', res_resultado_eva[0]).subscribe((res_eva_actual) => {
+            res_resultado_eva.Data[0].Activo = false;
+            this.evaluacionCrudService.put('resultado_evaluacion', res_resultado_eva.Data[0]).subscribe((res_eva_actual) => {
               if (res_eva_actual !== null) {
                 this.jsonResultadoEvaluacion = {
                   'Activo': true,
-                  'IdEvaluacion': res_eva_actual['IdEvaluacion'],
+                  'IdEvaluacion': res_eva_actual['Data']['IdEvaluacion'],
                   'ResultadoEvaluacion': JSON.stringify(data),
                 };
                 // Se realiza el post del resultado de la evaluación.
