@@ -17,7 +17,6 @@ import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 
 import pdfFonts from '../../../assets/skins/lightgray/fonts/custom-fonts';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
-import { AdministrativajbpmService } from '../../@core/data/administrativajbpm.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -90,7 +89,6 @@ export class CrearCertificacionComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private NumerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
-    private AdministrativaJbpm: AdministrativajbpmService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -1283,7 +1281,7 @@ export class CrearCertificacionComponent implements OnInit {
 
         this.consultarNovedades();
         // console.log(this.idContrato);
-        this.AdministrativaJbpm.get(
+        this.AdministrativaAmazon.get(
           'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
             this.dataContrato[0].ContratoSuscrito +
             ',VigenciaContrato:' +
@@ -1291,7 +1289,7 @@ export class CrearCertificacionComponent implements OnInit {
         ).subscribe(
           (res_Contrato) => {
             // console.log('esta es la nueva respuesta',res_Contrato);
-            this.AdministrativaJbpm.get(
+            this.AdministrativaAmazon.get(
               'acta_inicio?query=NumeroContrato:' + res_Contrato[0].Id,
             ).subscribe(
               (res_Acta) => {

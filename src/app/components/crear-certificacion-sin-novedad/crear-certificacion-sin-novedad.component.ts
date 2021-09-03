@@ -17,7 +17,6 @@ import { NbWindowService } from '@nebular/theme';
 import pdfFonts from '../../../assets/skins/lightgray/fonts/custom-fonts';
 import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
-import { AdministrativajbpmService } from '../../@core/data/administrativajbpm.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { take } from 'rxjs/operators';
 
@@ -99,7 +98,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private evaluacionCrudService: EvaluacioncrudService,
-    private AdministrativaJbpm: AdministrativajbpmService,
+    private AdministrativaAmazon: AdministrativaamazonService,
     private NumerosAletrasService: NumerosAletrasService,
   ) {
     this.volverFiltro = new EventEmitter();
@@ -852,14 +851,14 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
           this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
 
-          this.AdministrativaJbpm.get(
+          this.AdministrativaAmazon.get(
             'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
               this.dataContrato[0].ContratoSuscrito +
               ',VigenciaContrato:' +
               this.dataContrato[0].Vigencia,
           ).subscribe(
             (res_Contrato) => {
-              this.AdministrativaJbpm.get(
+              this.AdministrativaAmazon.get(
                 'acta_inicio?query=NumeroContrato:' + res_Contrato[0].Id,
               ).subscribe(
                 (res_Acta) => {
