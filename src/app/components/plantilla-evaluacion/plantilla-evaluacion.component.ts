@@ -29,6 +29,10 @@ export class PlantillaEvaluacionComponent {
       .subscribe((response: any) => {
         if (response.length === 0) {
           this.json = {};
+        } else if (response.Data === undefined) {
+          if (Object.keys(response[0]).length === 0) {
+            this.CargarUltimaPlantilla();
+          }
         } else if (Object.keys(response.Data[0]).length === 0) {
           this.CargarUltimaPlantilla();
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
@@ -41,7 +45,7 @@ export class PlantillaEvaluacionComponent {
   CargarUltimaPlantilla() {
     this.evaRealizada = false;
     this.evaluacionMidService.get('plantilla').subscribe((res) => {
-      this.json = res;
+      this.json = res.Data;
     }, (error_service) => {
       this.openWindow(error_service['body'][1]['Error']);
     });

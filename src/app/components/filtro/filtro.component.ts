@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild, OnInit, Output, EventEmitter,Input } from '@angular/core';
+import { Component, TemplateRef, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { NbWindowService } from '@nebular/theme';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { ImplicitAutenticationService } from '../../@core/utils/implicit_autentication.service';
@@ -15,7 +15,7 @@ export class FiltroComponent implements OnInit {
   @Input() nombreTitulo : String;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
 
-  vigencias = ['2016', '2017', '2018', '2019', '2020'];
+  vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
 
   identificacion_proveedor: any;
   numero_contrato: any;
@@ -37,9 +37,9 @@ export class FiltroComponent implements OnInit {
   filtro() {
 
     this.autentication_data = this.authService.getPayload();
-    this.documento ="19483708" ;
-    //this.documento = this.autentication_data.documento;
-    //console.log(this.documento)
+    this.documento ='19483708';
+    // this.documento = this.autentication_data.documento;
+    // console.log(this.documento)
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {
@@ -54,10 +54,8 @@ export class FiltroComponent implements OnInit {
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&SupID=' + String(this.documento))
         .subscribe((res) => {
-          //console.log("respuesta del filtro",res)
-          
+          // console.log('respuesta del filtro',res);
           if (res.Data !== null) {
-            
             this.dataResponse.emit(res.Data);
           }
         }, (error_service) => {
@@ -67,11 +65,10 @@ export class FiltroComponent implements OnInit {
     } else {
       if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
-        this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&Vigencia=' + this.vigencia
+          this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato=0&Vigencia=' + this.vigencia
          + '&SupID=' + String(this.documento))
           .subscribe((res) => {
             if (res.Data !== null) {
-              
               this.dataResponse.emit(res.Data);
             }
           }, (error_service) => {
@@ -84,7 +81,6 @@ export class FiltroComponent implements OnInit {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento))
             .subscribe((res) => {
               if (res.Data !== null) {
-                
                 this.dataResponse.emit(res.Data);
               }
             }, (error_service) => {
@@ -97,7 +93,6 @@ export class FiltroComponent implements OnInit {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia='
               + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
                 if (res.Data !== null) {
-                  
                   this.dataResponse.emit(res.Data);
                 }
               }, (error_service) => {
@@ -110,7 +105,6 @@ export class FiltroComponent implements OnInit {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento)).subscribe((res) => {
                   if (res.Data !== null) {
-                   
 
                     this.dataResponse.emit(res.Data);
                   }
@@ -139,10 +133,10 @@ export class FiltroComponent implements OnInit {
   }
 
   openWindow(mensaje) {
-    const Swal = require("sweetalert2");
+    const Swal = require('sweetalert2');
     Swal.fire({
-      icon: "error",
-      title: "ERROR",
+      icon: 'error',
+      title: 'ERROR',
       text: mensaje,
     });
   }

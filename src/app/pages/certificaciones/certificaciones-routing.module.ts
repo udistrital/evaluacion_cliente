@@ -4,11 +4,11 @@ import { CertificacionesComponent } from './certificaciones.component';
 
 const routes: Routes = [{
   path: '',
-  component: CertificacionesComponent, 
+  component: CertificacionesComponent,
 }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class CertificacionesRoutingModule { }

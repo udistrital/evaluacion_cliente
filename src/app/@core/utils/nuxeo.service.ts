@@ -1,10 +1,10 @@
-import * as Nuxeo from "nuxeo";
-import { Injectable } from "@angular/core";
-import { environment } from "../../../environments/environment";
-import { Observable } from "rxjs/Observable";
-import { Documento } from "../data/models/documento/documento";
-import { TipoDocumento } from "../data/models/documento/tipo_documento";
-import { Subject } from "rxjs/Subject";
+import * as Nuxeo from 'nuxeo';
+import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs/Observable';
+import { Documento } from '../data/models/documento/documento';
+import { TipoDocumento } from '../data/models/documento/tipo_documento';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class NuxeoService {
@@ -23,12 +23,11 @@ export class NuxeoService {
     this.documentos = {};
     this.blobDocument = {};
     this.updateDoc = {};
-    
 
     NuxeoService.nuxeo = new Nuxeo({
       baseURL: environment.NUXEO.PATH,
       auth: {
-        method: "basic",
+        method: 'basic',
         username: environment.NUXEO.CREDENTIALS.USERNAME,
         password: environment.NUXEO.CREDENTIALS.PASS,
       },
@@ -46,7 +45,6 @@ export class NuxeoService {
   }
   public getDocumentoOne$(Id, documentoService): Observable<object[]> {
     this.getOneFile(Id, documentoService, this);
-    
     return this.blobDocument$.asObservable();
   }
 
@@ -61,19 +59,18 @@ export class NuxeoService {
     nuxeoservice.documentos = {};
     NuxeoService.nuxeo.connect().then(function (client) {
       files.forEach(file => {
-        
         documentoService
-          .get("tipo_documento/" + file.IdDocumento)
+          .get('tipo_documento/' + file.IdDocumento)
           .subscribe((res) => {
             if (res !== null) {
               const tipoDocumento = <TipoDocumento>res;
-              //console.info(tipoDocumento);
+              // console.info(tipoDocumento);
               NuxeoService.nuxeo
-                .operation("Document.Create")
+                .operation('Document.Create')
                 .params({
                   type: tipoDocumento.TipoDocumentoNuxeo,
                   name: file.nombre,
-                  properties: "dc:title=" + file.nombre,
+                  properties: 'dc:title=' + file.nombre,
                 })
                 .input(tipoDocumento.Workspace)
                 .execute()
@@ -86,8 +83,8 @@ export class NuxeoService {
                     .then(function (response) {
                       file.uid = doc.uid;
                       NuxeoService.nuxeo
-                        .operation("Blob.AttachOnDocument")
-                        .param("document", doc.uid)
+                        .operation('Blob.AttachOnDocument')
+                        .param('document', doc.uid)
                         .input(response.blob)
                         .execute()
                         .then(function (respuesta) {
@@ -95,9 +92,9 @@ export class NuxeoService {
                           documentoPost.Enlace = file.uid;
                           documentoPost.Nombre = file.nombre;
                           documentoPost.TipoDocumento = tipoDocumento;
-                          documentoPost.Activo = true
+                          documentoPost.Activo = true;
                           documentoService
-                            .post("documento", documentoPost)
+                            .post('documento', documentoPost)
                             .subscribe((resuestaPost) => {
                               
                               
@@ -135,7 +132,7 @@ export class NuxeoService {
       if (file.file !== undefined) {
         const nuxeoBlob = new Nuxeo.Blob({ content: file.file });
         documentoService
-          .get("documento?query=Enlace:" + file.documento)
+          .get('documento?query=Enlace:' + file.documento)
           .subscribe((res) => {
             if (res !== null) {
               const documento_temp = <any>res[0];
@@ -146,13 +143,13 @@ export class NuxeoService {
                 .upload(nuxeoBlob)
                 .then(function (response) {
                   NuxeoService.nuxeo
-                    .operation("Blob.AttachOnDocument")
+                    .operation('Blob.AttachOnDocument')
                     .params({
                       type: documento_temp.TipoDocumento.TipoDocumentoNuxeo,
                       name: documento_temp.Nombre,
-                      properties: "dc:title=" + file.nombre,
+                      properties: 'dc:title=' + file.nombre,
                     })
-                    .param("document", documento_temp.Enlace)
+                    .param('document', documento_temp.Enlace)
                     .input(response.blob)
                     .execute()
                     .then(function (respuesta) {
@@ -177,12 +174,12 @@ export class NuxeoService {
     this.blobDocument = {};
     nuxeoservice.blobDocument = {};
     files.forEach((file) => {
-      documentoService.get("documento/" + file.Id).subscribe((res) => {
+      documentoService.get('documento/' + file.Id).subscribe((res) => {
         if (res !== null) {
           if (res.Enlace != null) {
-            NuxeoService.nuxeo.header("X-NXDocumentProperties", "*");
+            NuxeoService.nuxeo.header('X-NXDocumentProperties', '*');
             NuxeoService.nuxeo
-              .request("/id/" + res.Enlace)
+              .request('/id/' + res.Enlace)
               .get()
               .then(function (response) {
                 response
@@ -209,15 +206,15 @@ export class NuxeoService {
     nuxeoservice.blobDocument = {};
     
     
-      documentoService.get("documento/?query=Enlace:" + file.Id).subscribe((res) => {
-        console.log("esta es la primera respuesta ",res)
+      documentoService.get('documento/?query=Enlace:' + file.Id).subscribe((res) => {
+        
         if (res !== null) {
-          //console.log("esta es la segunda respuesta",res.Enlace)
+          // console.log("esta es la segunda respuesta",res.Enlace)
           if (res[0].Enlace != null) {
             
-            NuxeoService.nuxeo.header("X-NXDocumentProperties", "*");
+            NuxeoService.nuxeo.header('X-NXDocumentProperties', '*');
             NuxeoService.nuxeo
-              .request("/id/" + res[0].Enlace)
+              .request('/id/' + res[0].Enlace)
               .get()
               .then(function (response) {
                 response
@@ -228,7 +225,7 @@ export class NuxeoService {
                                       
                       nuxeoservice.blobDocument[file.key] = url;
                       
-                      //this.someObservable = of([]);
+                      // this.someObservable = of([]);
                       
                       nuxeoservice.blobDocument$.next(
                         nuxeoservice.blobDocument
