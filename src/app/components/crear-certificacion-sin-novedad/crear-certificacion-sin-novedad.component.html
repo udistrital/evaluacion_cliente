@@ -72,7 +72,7 @@
                             <div>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Fecha de inicio</mat-label>
-                                    <mat-select [(ngModel)]="fecha_Inicio">
+                                    <mat-select [(value)]="fecha_Inicio">
                                         <mat-option value="1">SI</mat-option>
                                         <mat-option value="0">NO</mat-option>
 
@@ -92,10 +92,9 @@
                             <div>
                                 <mat-form-field appearance="fill">
                                     <mat-label>Fecha de finalización</mat-label>
-                                    <mat-select [(ngModel)]="fecha_final">
-                                        <mat-option value="1">SI</mat-option>
+                                    <mat-select [(value)]="fecha_final">
+                                        <mat-option value="1">SI</mat-option> 
                                         <mat-option value="0">NO</mat-option>
-
                                     </mat-select>
                                 </mat-form-field>
 
@@ -166,9 +165,42 @@
     </div>
 
 </div>
+<div class="font-black" id="novedad" *ngIf="fecha_Inicio=='1'">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
 
+            <div class="form-group row">
+                <label for="example-date-input" class="col-2 col-form-label">Fecha De Inicio</label>
+                <div class="col-10">
+                    <input class="form-control" type="date" [(ngModel)]="fechaInicio" required>
+                </div>
+            </div>
 
+        </div>
+    </div>
+
+</div>
+<div class="font-black" id="novedad" *ngIf="fecha_final=='1'">
+    <div class="card card-margin">
+        <div class="card-body">
+            <br>
+
+            <div class="form-group row">
+                <label for="example-date-input" class="col-2 col-form-label">Fecha De Finalización</label>
+                <div class="col-10">
+                    <input class="form-control" type="date" [(ngModel)]="fechaFin" required>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
 <br>
+<div class="col-9" *ngIf="listaNovedades">
+    <H1>Novedades</H1>
+</div>
 <div *ngFor="let novedades of listaNovedades">
     <div class="font-black" id="novedad" *ngIf="novedades=='cesion'">
         <div class="card card-margin">

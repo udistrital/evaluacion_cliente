@@ -44,6 +44,8 @@ export class AuthInterceptor implements HttpInterceptor {
         headers: new HttpHeaders({
           // 'Content-Type': 'application/json',
           'Authorization': `Bearer ${acces_token}`,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
         }),
       });
 
