@@ -29,7 +29,7 @@ export class FooterComponent {
       }, {
         title: 'Nombre',
         class: 'fas fa-globe-americas',
-        value: ['Sistema Integrado de informática y  Telecomunicaciones '],
+        value: ['Gestión de los Sistemas de la Información y las Telecomunicaciones'],
       }, {
         title: 'Phone',
         class: 'fas fa-phone',

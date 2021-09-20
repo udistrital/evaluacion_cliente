@@ -162,7 +162,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   crearPdf() {
     const cadena1 = 'QUE EL SEÑOR(A) ';
     const cadena2 = ' IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ';
-    const cadena3 = ' , CUMPLIO A SATISFACCIÓN CON LAS SIGUIENTES ORDENES ';
+    const cadena3 = ' , CUMPLIÓ A SATISFACCIÓN CON LAS SIGUIENTES ÓRDENES ';
     const cadena4 = 'QUE LA EMPRESA ';
     const cadena5 = ' IDENTIFICADA CON NIT DE CIUDADANÍA NO. ';
 
@@ -322,7 +322,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       duraContraDias: [
         {
           text: [
-            { text: 'DURACION:  ', style: 'body1', bold: true },
+            { text: 'DURACIÓN:  ', style: 'body1', bold: true },
             {
               text:
                 this.NumerosAletrasService.convertir(
@@ -330,7 +330,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 ).slice(0, -7) +
                 '' +
                 this.duracionContrato +
-                ' DIAS',
+                ' DÍAS',
               style: 'body',
             },
           ],
@@ -339,7 +339,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       duraContraMes: [
         {
           text: [
-            { text: 'DURACION:  ', style: 'body1', bold: true },
+            { text: 'DURACIÓN:  ', style: 'body1', bold: true },
             {
               text:
                 this.NumerosAletrasService.convertir(
@@ -401,7 +401,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           text: [
             { text: 'FECHA DE INICIO:  ', style: 'body1', bold: true },
             {
-              text: this.formato(this.fechaInicio.slice(0, 10)),
+              text: this.formato(this.fechaInicio),
               style: 'body',
             },
           ],
@@ -411,7 +411,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: 'FECHA DE FINALIZACION:  ', style: 'body1', bold: true },
-            { text: this.formato(this.fechaFin.slice(0, 10)), style: 'body' },
+            { 
+              text: this.formato(this.fechaFin), 
+              style: 'body',
+            },
           ],
         },
       ],
@@ -448,7 +451,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   this.fechaInicialSupension,
                   this.fechaFinalSuspension,
                 ) +
-                ' DIAS ' +
+                ' DÍAS ' +
                 'DESDE ' +
                 this.formato(this.fechaInicialSupension) +
                 ' HASTA ' +
@@ -581,7 +584,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             // ------------------------------ se arma el primer parrafo
             if (this.tipoPersona == 'NATURAL') {
               pdf.add(docDefinition.content[0]);
-            } else if (this.tipoPersona == 'JURIDICA') {
+            } else if (this.tipoPersona == 'JURÍDICA') {
               pdf.add(docDefinition.content1[0]);
             }
 
@@ -606,7 +609,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               if(parseInt(this.duracionContrato)>12){
                 pdf.add(docDefinition.duraContraDias);
   
-              }else if(parseInt(this.duracionContrato)<12){
+              }else if(parseInt(this.duracionContrato)<=12){
                 pdf.add(docDefinition.duraContraMes);
               }
             }
@@ -634,7 +637,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   new Txt(
                     'CESIÓN N° ' +
                       contador +
-                      `DEL CONTRATO DE ${tipoContrato} NO`    +
+                      ` DEL CONTRATO DE ${tipoContrato} NO `    +
                       this.dataContrato[0].ContratoSuscrito +
                       '-' +
                       this.dataContrato[0].Vigencia,
@@ -674,7 +677,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 var contador = i + 1;
                 pdf.add(
                   new Txt(
-                    'Prorroga N° ' +
+                    'Prórroga N° ' +
                       contador +
                       ` DEL CONTRATO DE ${tipoContrato} NO ` +
                       this.dataContrato[0].ContratoSuscrito +
@@ -703,7 +706,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                         ).slice(0, -7) +
                         '' +
                         this.diasProrroga[i] +
-                        ' DIAS',
+                        ' DÍAS',
                     ).bold().end,
                   );
                 } else if (this.mesesProrroga[i] == '1') {
@@ -711,7 +714,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                     new Txt(
                       'DURACIÓN:' +
                         this.diasProrroga[i] +
-                        ' DIAS Y ' +
+                        ' DÍAS Y ' +
                         this.mesesProrroga[i] +
                         ' Mes',
                     ).bold().end,
@@ -721,7 +724,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                     new Txt(
                       'DURACIÓN:' +
                         this.diasProrroga[i] +
-                        ' DIAS Y ' +
+                        ' DÍAS Y ' +
                         this.mesesProrroga[i] +
                         ' Meses',
                     ).bold().end,
@@ -772,7 +775,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               arreglo2.forEach((file) => {
                 (file.Id = file.nombre),
                   (file.nombre =
-                    'certificacion_' +
+                    'certificación_' +
                     file.Id +
                     this.numeroContrato +
                     '__' +
@@ -850,26 +853,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.idTipoContrato =
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
           this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
-
-          this.AdministrativaAmazon.get(
-            'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
-              this.dataContrato[0].ContratoSuscrito +
-              ',VigenciaContrato:' +
-              this.dataContrato[0].Vigencia,
-          ).subscribe(
-            (res_Contrato) => {
-              this.AdministrativaAmazon.get(
-                'acta_inicio?query=NumeroContrato:' + res_Contrato[0].Id,
-              ).subscribe(
-                (res_Acta) => {
-                  this.fechaInicio = res_Acta[0].FechaInicio;
-                  this.fechaFin = res_Acta[0].FechaFin;
-                },
-                (err) => {},
-              );
-            },
-            (err) => {},
-          );
       }),
       (error_service) => {
         this.openWindow(error_service.message);
