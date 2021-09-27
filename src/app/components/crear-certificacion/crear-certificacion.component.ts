@@ -1309,7 +1309,8 @@ export class CrearCertificacionComponent implements OnInit {
   }
   consultarNovedades() {
     this.AdministrativaAmazon.get(
-      'novedad_postcontractual?query=NumeroContrato:' + this.numeroContrato,
+      'novedad_postcontractual?query=NumeroContrato:' + this.numeroContrato +
+      ',Vigencia:' + this.dataContrato[0].Vigencia,
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
