@@ -32,14 +32,12 @@ export class CertificacionComponent implements OnInit {
 
   ngOnInit() {
     this.autentication_data = this.authService.getPayload();
-    this.documento ='19483708' ;
     this.identificacion_proveedor = this.autentication_data.documento;
-    this.RealizarPeticion(); 
+    this.ObtenerContratos();
   }
 
   filtro() {
     this.autentication_data = this.authService.getPayload();
-    this.documento ='19483708' ;
     this.identificacion_proveedor=this.autentication_data.documento;
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
@@ -48,6 +46,34 @@ export class CertificacionComponent implements OnInit {
     } else {
       this.RealizarPeticion();
     }
+  }
+
+  ObtenerContratos() {
+    this.evaluacionMidService
+      .get(
+        'filtroProveedor?ProvID=' +
+        this.identificacion_proveedor +
+        '&SupID=0'
+      )
+      .subscribe((res_proveedor) => {
+        this.evaluacionMidService
+          .get(
+            'datosContrato?NumContrato=' +
+            res_proveedor.Data[0].ContratoSuscrito +
+            '&VigenciaContrato=' +
+            res_proveedor.Data[0].Vigencia,
+          )
+          .subscribe((res_contrato) => {
+            this.documento = res_contrato.Data[0].contrato_general.Supervisor.Documento;
+            this.RealizarPeticion();
+          }),
+          (error_service) => {
+            this.openWindow(error_service.message);
+          };
+      }),
+      (error_service) => {
+        this.openWindow(error_service.message);
+      };
   }
 
   RealizarPeticion() {
@@ -66,7 +92,7 @@ export class CertificacionComponent implements OnInit {
       if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
         this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&Vigencia=' + this.vigencia
-         + '&SupID=' + String(this.documento))
+          + '&SupID=' + String(this.documento))
           .subscribe((res) => {
             if (res.Data !== null) {
               this.dataResponse.emit(res.Data);
