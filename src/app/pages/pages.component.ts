@@ -1,10 +1,9 @@
-import { Component , OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { MenuService } from '../@core/data/menu.service';
 import { ImplicitAutenticationService } from '../@core/utils/implicit_autentication.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NbMenuItem } from '@nebular/theme';
-
+import { NbMenuItem, NbSidebarService } from '@nebular/theme';
 
 
 import { MENU_ITEMS } from './pages-menu';
@@ -27,45 +26,62 @@ export class PagesComponent implements OnInit {
   roles: any;
   rol: string;
   menuLogin: NbMenuItem[] = [];
+  dataMenu: any;
 
   constructor(
     private translate: TranslateService,
-    private menuService: MenuService,
-    private implicitAutenticationService: ImplicitAutenticationService,
-    ) {
-      this.translate.onLangChange.subscribe((event: LangChangeEvent) => { // Live reload
-      });
+    private menuws: MenuService,
+    private autenticacion: ImplicitAutenticationService,
+  ) {
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => { // Live reload
+    });
 
-    }
+  }
 
-    ngOnInit() {
-      if ( this.implicitAutenticationService.live() ) {
-        this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role)
-        .filter((data: any) => (data.indexOf('/') === -1));
-        // console.info(this.roles);
-        this.menuService.get(this.roles + `/Evaluacion`).subscribe( menuResult => {
-          // console.info(menuResult);
-          const menuRespuesta = <any>menuResult;
-          this.menuLogin.push({
-            title: 'Home',
-            icon: 'nb-home',
-            link: '/pages/dashboard',
-          });
-          if (menuRespuesta !== null) {
-            for (let i = 0; i < menuRespuesta.length; i++) {
-              this.menuLogin.push({
-                title: menuRespuesta[i]['Nombre'],
-                link: menuRespuesta[i]['Url'],
-                icon: 'nb-compose',
-              });
-            }
-            // console.info(this.menuLogin);
-          }
-          this.menu = this.menuLogin;
-        },
-        (error: HttpErrorResponse) => {
-          this.menu = MENU_ITEMS;
-        });
+  ngOnInit() {
+    this.autenticacion.user$.subscribe((data: any) => {
+      console.info('data', data);
+      const id_token = window.localStorage.getItem('id_token').split('.');
+      const payload = JSON.parse(atob(id_token[1]));
+      console.info('payload pages: ', payload);
+      const { user, userService } = data;
+      console.info("user", user);
+      console.info("userService", userService);
+      let roles: any;
+      if (user.role !== undefined) {
+        const roleUser = typeof user.role !== 'undefined' ? user.role : [];
+        roles = (roleUser).filter((data: any) => (data.indexOf('/') === -1));
+      } else {
+        const roleUserService = typeof userService.role !== 'undefined' ? userService.role : [];
+        roles = (roleUserService).filter((data: any) => (data.indexOf('/') === -1));
       }
-    }
+      console.log('roles', roles);
+      this.getMenu(roles);
+    })
+  }
+
+  getMenu(roles) {
+    this.roles = roles;
+    this.menuws.get(this.roles + `/Evaluacion`).subscribe(menuResult => {
+      const menuRespuesta = <any>menuResult;
+      this.menuLogin.push({
+        title: 'Home',
+        icon: 'nb-home',
+        link: '/pages/dashboard'
+      });
+      if (menuRespuesta !== null) {
+        for (let i = 0; i < menuRespuesta.length; i++) {
+          this.menuLogin.push({
+            title: menuRespuesta[i]['Nombre'],
+            link: menuRespuesta[i]['Url'],
+            icon: 'nb-compose',
+          })
+        }
+      }
+      this.menu = this.menuLogin;
+    },
+      (error: HttpErrorResponse) => {
+        this.menu = MENU_ITEMS;
+      });
+  }
 }
