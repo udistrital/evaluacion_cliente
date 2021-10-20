@@ -5,28 +5,38 @@ import {
   RouterStateSnapshot,
   Router,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ImplicitAutenticationService } from '../utils/implicit_autentication.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
   rol: any;
-  constructor(private router: Router) {}
+  user: any;
+  userService: any;
+  constructor(private router: Router, private autenticacion: ImplicitAutenticationService) { }
 
   canActivate(
     route?: ActivatedRouteSnapshot,
     state?: RouterStateSnapshot,
-  ): Observable<boolean> {
-    return Observable.of(this.validacion());
+  ) {
+    this.autenticacion.user$.subscribe((data: any) => {
+      const { user, userService } = data;
+      this.user = user;
+      this.userService = userService;
+    })
+    return this.validacion();
     // return valid;
   }
 
   validacion(): boolean {
     let valid: boolean = false;
-    const id_token = window.localStorage.getItem('id_token').split('.');
-    const payload = JSON.parse(atob(id_token[1]));
-
+    let payload: any;
+    if (this.user.role !== undefined) {
+      payload = this.user;
+    } else {
+      payload = this.userService;
+    }
     if (payload && payload.role) {
       for (let i = 0; i < payload.role.length; i++) {
         if (
@@ -38,7 +48,6 @@ export class AuthGuard implements CanActivate {
           payload.role[i] === 'OPS'
         ) {
           this.rol = payload.role[i];
-
           valid = true;
           break;
         }
@@ -48,8 +57,12 @@ export class AuthGuard implements CanActivate {
   }
 
   rolActual(): any {
-    const id_token = window.localStorage.getItem('id_token').split('.');
-    const payload = JSON.parse(atob(id_token[1]));
+    let payload: any;
+    if (this.user.role !== undefined) {
+      payload = this.user;
+    } else {
+      payload = this.userService;
+    }
     if (payload && payload.role) {
       for (let i = 0; i < payload.role.length; i++) {
         if (
