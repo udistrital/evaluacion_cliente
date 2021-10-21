@@ -25,13 +25,13 @@ export class HeaderComponent implements OnInit {
   username = '';
   userMenu = [{ title: 'ver todas', icon: 'fa fa-list' }];
   public noNotify: any = '0';
-  private autenticacion = new ImplicitAutenticationService;
   public activeLang = 'es';
   toggle: boolean;
   clientes$: Observable<boolean>;
 
 
   constructor(private sidebarService: NbSidebarService,
+    private autenticacion: ImplicitAutenticationService,
     private menuService: NbMenuService,
     private router: Router,
     private analyticsService: AnalyticsService,
@@ -72,7 +72,10 @@ export class HeaderComponent implements OnInit {
   liveToken() {
     if (this.autenticacion.live()) {
       this.liveTokenValue = this.autenticacion.live();
-      this.username = (this.autenticacion.getPayload()).sub;
+      this.autenticacion.user$.subscribe((data: any) => {
+        const {user, userService} = data;
+        this.username = typeof user.email !== 'undefined' ? user.email : typeof userService.email !== 'undefined' ? userService.email : '';
+      })
     }
     return this.autenticacion.live();
   }
@@ -87,10 +90,10 @@ export class HeaderComponent implements OnInit {
     this.notificacionService.changeStateNoView(this.username);
   }
   login(): void {
-    this.autenticacion.getAuthorizationUrl(false);
+    this.autenticacion.login(false);
   }
   logout() {
-    this.autenticacion.logout();
+    this.autenticacion.logout('from header');
     // this.liveTokenValue = auth.live(true);
   }
   toggleSidebar(): boolean {
