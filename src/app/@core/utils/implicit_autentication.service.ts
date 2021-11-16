@@ -113,6 +113,7 @@ export class ImplicitAutenticationService {
             }, this.httpOptions)
                 .pipe(retry(3))
                 .subscribe((res: any) => {
+                    console.info("res", res);
                     this.clearUrl();
                     localStorage.setItem('user', btoa(JSON.stringify({ ...{ user: payload }, ...{ userService: res } })));
                     this.userSubject.next({ ...{ user: payload }, ...{ userService: res } });
@@ -249,7 +250,8 @@ export class ImplicitAutenticationService {
                     });
                     if (this.timeAlert < timerDelay) {
                         of(null).pipe(delay(timerDelay - this.timeAlert)).subscribe((data) => {
-                            (Swal as any).fire({
+                            const Swal = require('sweetalert2');
+                            Swal.fire({
                                 position: 'top-end',
                                 icon: 'info',
                                 title: `Su sesión se cerrará en ${this.timeAlert / 60000} minutos`,
