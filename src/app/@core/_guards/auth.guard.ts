@@ -39,17 +39,25 @@ export class AuthGuard implements CanActivate {
     }
     if (payload && payload.role) {
       for (let i = 0; i < payload.role.length; i++) {
-        if (
-          payload.role[i] === 'ORDENADOR_DEL_GASTO' ||
-          payload.role[i] === 'SUPERVISOR' ||
-          payload.role[i] === 'CONTRATISTA' ||
-          payload.role[i] === 'ASISTENTE_JURIDICA' ||
-          payload.role[i] === 'ASISTENTE_COMPRAS' ||
-          payload.role[i] === 'OPS'
-        ) {
+        if (payload.role[i] === 'ORDENADOR_DEL_GASTO') {
           this.rol = payload.role[i];
           valid = true;
           break;
+        }
+      }
+      if (this.rol != 'ORDENADOR_DEL_GASTO') {
+        for (let i = 0; i < payload.role.length; i++) {
+          if (
+            payload.role[i] === 'SUPERVISOR' ||
+            payload.role[i] === 'ASISTENTE_JURIDICA' ||
+            payload.role[i] === 'ASISTENTE_COMPRAS' ||
+            payload.role[i] === 'OPS' ||
+            payload.role[i] === 'CONTRATISTA'
+          ) {
+            this.rol = payload.role[i];
+            valid = true;
+            break;
+          }
         }
       }
     }
@@ -57,26 +65,8 @@ export class AuthGuard implements CanActivate {
   }
 
   rolActual(): any {
-    let payload: any;
-    if (this.user.role !== undefined) {
-      payload = this.user;
-    } else {
-      payload = this.userService;
-    }
-    if (payload && payload.role) {
-      for (let i = 0; i < payload.role.length; i++) {
-        if (
-          payload.role[i] === 'ORDENADOR_DEL_GASTO' ||
-          payload.role[i] === 'SUPERVISOR' ||
-          payload.role[i] === 'CONTRATISTA' ||
-          payload.role[i] === 'ASISTENTE_JURIDICA' ||
-          payload.role[i] === 'ASISTENTE_COMPRAS' ||
-          payload.role[i] === 'OPS'
-        ) {
-          return payload.role[i];
-        }
-      }
-    }
+    console.info('El rol que retorna es: ', this.rol);
+    return this.rol;
   }
 
   // canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
