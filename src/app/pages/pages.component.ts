@@ -40,13 +40,9 @@ export class PagesComponent implements OnInit {
 
   ngOnInit() {
     this.autenticacion.user$.subscribe((data: any) => {
-      console.info('data', data);
       const id_token = window.localStorage.getItem('id_token').split('.');
       const payload = JSON.parse(atob(id_token[1]));
-      console.info('payload pages: ', payload);
       const { user, userService } = data;
-      console.info("user", user);
-      console.info("userService", userService);
       let roles: any;
       if (user.role !== undefined) {
         const roleUser = typeof user.role !== 'undefined' ? user.role : [];
@@ -55,7 +51,6 @@ export class PagesComponent implements OnInit {
         const roleUserService = typeof userService.role !== 'undefined' ? userService.role : [];
         roles = (roleUserService).filter((data: any) => (data.indexOf('/') === -1));
       }
-      console.log('roles', roles);
       this.getMenu(roles);
     })
   }

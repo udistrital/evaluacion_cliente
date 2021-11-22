@@ -54,6 +54,7 @@ export class CrearCertificacionComponent implements OnInit {
   duracion_contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
+  estado_contrato: string;
   nuevo_texto: boolean = false;
   // novedadCesion: boolean = false;
   novedadOtro: boolean = false;
@@ -1482,7 +1483,7 @@ export class CrearCertificacionComponent implements OnInit {
         [
           { text: 'FECHA DE TERMINACIÓN:', style: 'tabla1' },
           { 
-            text: this.formato(this.fechaFin.slice(0, 10)), 
+            text: this.formato(this.fechaFin.slice(0, 10)),
             style: 'tabla2'
           }
         ]
@@ -1492,7 +1493,7 @@ export class CrearCertificacionComponent implements OnInit {
     this.datosTabla.push(
       [
         { text: 'ESTADO DEL CONTRATO:', style: 'tabla1' },
-        { text: '', style: 'tabla2' }
+        { text: this.estado_contrato, style: 'tabla2' }
       ]
     );
 
@@ -1745,7 +1746,7 @@ export class CrearCertificacionComponent implements OnInit {
         this.idTipoContrato =
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
-
+        this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
         this.consultarNovedades();
         // console.log(this.idContrato);
