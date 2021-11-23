@@ -16,10 +16,15 @@ import { Txt } from 'pdfmake-wrapper';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 
 import pdfFonts from '../../../assets/skins/lightgray/fonts/custom-fonts';
+import pdfFontTime from '../../../assets/skins/lightgray/fonts/vfs_fonts_times';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
+import { NovedadesService } from '../../@core/data/novedades.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { throwToolbarMixedModesError } from '@angular/material';
+import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
 
 // Set the fonts to use
 
@@ -37,7 +42,6 @@ export class CrearCertificacionComponent implements OnInit {
   uidDocumento: string;
   idDocumento: number;
   novedad: string;
-  listaNovedades: string;
   objeto: string;
   cedula: string;
   numeroContrato: string;
@@ -45,39 +49,51 @@ export class CrearCertificacionComponent implements OnInit {
   valorContrato: string;
   nombre: string;
   idTipoContrato: number;
+  fechaSuscrip: string = '';
+  duracionContrato: string = '';
+  idContrato: string = '';
+  fechaInicio: string = '';
+  fechaFin: string = '';
   // los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_contrato: string;
   duracion_contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
+  estado_contrato: string;
   nuevo_texto: boolean = false;
-  novedadCesion: boolean = false;
-  novedadOtro: boolean = false;
-  novedadSuspension: boolean = false;
-  novedadTerminacion: boolean = false;
-  // ----------------------------------------------------------------------------------
-  tituloNovedad: string = '';
-  textoNovedad: string = '';
-  fechaSuscrip: string = '';
-  duracionContrato: string = '';
-  idContrato: string = '';
-  fechaInicio: string = '';
-  fechaFin: string = ' ';
+  // ---------------------Novedades----------------------------------------------------
+  listaNovedades: string[] = [];
   datosNovedades: string[] = [];
   allNovedades: any[] = [];
-  tituloCesion: string = '';
+
+  novedadSuspension: any[] = [];
+  novedadCesion: any[] = [];
+  novedadReinicio: any[] = [];
+  novedadLiquidacion: any[] = [];
+  novedadTerminacion: any[] = [];
+  novedadAdicion: any[] = [];
+  novedadProrroga: any[] = [];
+  novedadAdiPro: any[] = [];
+  novedadInicio: any[] = [];
+
+  contadorSuspen: number = 0;
+  contadorCesion: number = 0;
+  contadorReinicio: number = 0;
+  contadorModificacion: number = 0;
+  contadorAdicion: number = 0;
+  contadorProrroga: number = 0;
+  contadorAdiPro: number = 0;
+  contadorInicio: number = 0;
+
   numeroNovedadesCesion: number;
   numeroNovedadesOtro: number;
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
-
-  duracionOtroSi: string[] = [];
-  valorOtroSi: string[] = [];
-  fechaInicialSupension = new Date();
-  fechaFinalSuspension = new Date();
-  fechaTerminacion = new Date();
+  // ----------------------------------------------------------------------------------
   horaCreacion: string = '';
+
+  datosTabla: any[] = [];
 
   contador: number = 0;
 
@@ -89,13 +105,12 @@ export class CrearCertificacionComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private NumerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
+    private NovedadesService: NovedadesService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
 
   ngOnInit() {
-    // console.log('esta es la data de el contrato',this.dataContrato)
-    // console.log('este es el rol',this.rol)
     this.consultarDatosContrato();
   }
   regresarFiltro() {
@@ -104,21 +119,22 @@ export class CrearCertificacionComponent implements OnInit {
 
   crearPdf() {
     var cadena1 =
-      'QUE, REVISADA LA BASE DE DATOS DE CONTRATACIÓN, SE ENCONTRÓ QUE ';
-    var cadena2 = ' IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ';
+      'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
+      'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
+    var cadena2 = ', identicado(a) con cédiula de ciudadanía No. ';
     var cadena3 =
-      ' , SUSCRIBIÓ CON LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS LOS SIGUIENTES CONTRATOS:  ';
+      ', suscribió en esta Entidad lo siguiente:';
     var date = new Date();
 
-    PdfMakeWrapper.setFonts(pdfFonts, {
-      myCustom: {
-        normal: 'calibri-light-2.ttf',
-        bold: 'calibri-bold-2.ttf',
-        italics: 'calibri-light-2.ttf',
-        bolditalics: 'calibri-light-2.ttf',
+    PdfMakeWrapper.setFonts(pdfFontTime, {
+      TimesNewRoman: {
+        normal: 'Times-Regular.ttf',
+        bold: 'Times-Bold.ttf',
+        italics: 'Times-Italic.ttf',
+        bolditalics: 'Times-BoldItalic.ttf',
       },
     });
-    PdfMakeWrapper.useFont('myCustom');
+    PdfMakeWrapper.useFont('TimesNewRoman');
     var tipoContrato='';
 
     const pdf = new PdfMakeWrapper();
@@ -135,11 +151,11 @@ export class CrearCertificacionComponent implements OnInit {
 
     }
 
-    pdf.pageMargins([80, 10, 60, 30]);
+    pdf.pageMargins([80, 100, 60, 100]);
     pdf.styles({
       Title: {
         bold: true,
-        fontSize: 14,
+        fontSize: 10,
         alignment: 'center',
       },
       body: {
@@ -156,6 +172,16 @@ export class CrearCertificacionComponent implements OnInit {
         bold: false,
         alignment: 'justify',
       },
+      tabla1: {
+        fontSize: 9,
+        bold: true,
+        alignment: 'left',
+      },
+      tabla2: {
+        fontSize: 9,
+        bold:false,
+        alignment: 'justify',
+      }
     });
 
     var docDefinition = {
@@ -171,42 +197,20 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
+      contentTable: [
+        {
+          table: {
+            headerRows: 0,
+            widths: [ 175, '*'],
+            body: this.datosTabla,
+          }
+        }
+      ],
       line: [
         {
           text:
             '___________________________________________________________________________________',
           style: 'body',
-        },
-      ],
-      content2: [
-        {
-          text: [
-            { text: 'OBJETO: ', style: 'body1', bold: true },
-            { text: this.objeto, style: 'body' }, // objeto del contrato
-          ],
-        },
-      ],
-      content3: [
-        {
-          text: [
-            { text: 'ACTIVIDAD ESPECÍFICA: ', style: 'body1', bold: true },
-            { text: this.actividadEspecifica.toUpperCase(), style: 'body' },
-          ],
-        },
-      ],
-      valorContra: [
-        {
-          text: [
-            { text: 'VALOR: $ ', style: 'body1', bold: true },
-            {
-              text: '(' + this.numeromiles(this.valorContrato) + ') ',
-              style: 'body',
-            },
-            {
-              text: this.NumerosAletrasService.convertir(parseInt(this.valorContrato)),
-              style: 'body1',
-            },
-          ],
         },
       ],
       valorCabe: [
@@ -270,29 +274,6 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
-      fechaSub: [
-        {
-          text: [
-            { text: 'FECHA DE SUSCRIPCIÓN:  ', style: 'body1', bold: true },
-            {
-              text: this.formato(this.fechaSuscrip.slice(0, 10)),
-              style: 'body',
-            },
-          ],
-        },
-      ],
-      texTituloNovedad: [
-        {
-          text: [
-            {
-              text: 'Observaciones: ',
-              style: 'body1',
-              bold: true,
-            },
-            { text: this.textoNovedad.toUpperCase(), style: 'body' },
-          ],
-        },
-      ],
       texPieDePagina: [
         {
           text: [
@@ -310,79 +291,10 @@ export class CrearCertificacionComponent implements OnInit {
       firmaPagina: [
         {
           text:
-            'FERNANDO ANTONIO TORRES GÓMEZ  \n JEFE OFICINA ASESORA JURÍDICA',
+            '\n\n\n\nJAVIER BOLAÑOS ZAMBRANO\nJEFE OFICINA ASESORA JURÍDICA',
           style: 'body1',
           bold: true,
-          alignment: 'center',
-          absolutePosition: { x: 75, y: 750 },
-        },
-      ],
-      novedadCesion: [
-        {
-          text: [
-            {
-              text:
-                `CESIÓN DEL CONTRATO DE ${tipoContrato} NO.` +
-                this.dataContrato[0].ContratoSuscrito +
-                '-' +
-                this.dataContrato[0].Vigencia,
-              style: 'body1',
-              bold: true,
-            },
-          ],
-        },
-      ],
-      
-      novedadContraTerminacion: [
-        {
-          text: [
-            {
-              text: 'NOVEDAD CONTRACTUAL:',
-              style: 'body1',
-              bold: true,
-            },
-            {
-              text:
-                'ACTA DE TERMINACIÓN Y LIQUIDACIÓN BILATERAL ' +
-                this.formato(this.fechaTerminacion),
-              style: 'body',
-              bold: true,
-            },
-          ],
-        },
-      ],
-      novedadContraSuspension: [
-        {
-          text: [
-            {
-              text: 'NOVEDAD CONTRACTUAL:',
-              style: 'body1',
-              bold: true,
-            },
-            {
-              text:
-                'ACTA DE SUSPENSIÓN DE ' +
-                this.diasFecha(
-                  this.fechaInicialSupension,
-                  this.fechaFinalSuspension) +
-                ' DIAS' +
-                ' DESDE ' +
-                this.formato(this.fechaInicialSupension) +
-                ' HASTA ' +
-                this.formato(this.fechaFinalSuspension),
-              style: 'body',
-              bold: true,
-            },
-          ],
-        },
-      ],
-      novedadContraOtroSi: [
-        {
-          text: [
-            { text: 'DURACION:  ', style: 'body1', bold: true },
-            { text: ' DIAS ', style: 'body' },
-            { text: '\n VALOR: $', style: 'body1', bold: true },
-          ],
+          alignment: 'left',
         },
       ],
       contrato: [
@@ -403,7 +315,112 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
-
+      footerTable: [
+        {
+          table: [
+            {
+              text: ''
+            }
+          ],
+          margins: [40,40]
+        }
+      ],
+      footer: [
+        {
+          text: [
+            {
+              text: '____________________',
+              style: {
+                alignment: 'right',
+                fontSize: 8
+              }
+            },
+          ],
+        },
+      ],
+      footer1: [
+        {
+          text: [
+            {
+              text: 'Línea de ateción gratuita',
+              decoration: 'underline',
+              style: {
+                alignment: 'right',
+                fontSize: 8,
+              },
+            },
+          ],
+        },
+      ],
+      footer2: [
+        {
+          text: [
+            {
+              text: '01  800  091  44  10',
+              bold: true,
+              style: {
+                alignment: 'right',
+                fontSize: 8
+              }
+            },
+          ],
+        },
+      ],
+      footer3: [
+        {
+          text: [
+            {
+              text: 
+              '\n\n\nCarrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia',
+              style: {
+                alignment: 'left',
+                fontSize: 8
+              }
+            },
+          ],
+        },
+      ],
+      footer4: [
+        {
+          text: [
+            {
+              text: 'www.udistrital.edu.co',
+              style: {
+                alignment: 'right',
+                fontSize: 8
+              }
+            }
+          ]
+        }
+      ],
+      footer5: [
+        {
+          text: [
+            {
+              text: 
+              'Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016',
+              style: {
+                alignment: 'left',
+                bold: false,
+                fontSize: 8
+              }
+            },
+          ],
+        },
+      ],
+      footer7: [
+        {
+          text: [
+            {
+              text: 'jurídica@udistrital.edu.co',
+              style: {
+              alignment: 'right',
+              fontSize: 8
+              }
+            }
+          ]
+        }
+      ],
       firmaImagen: [
         {
           image:
@@ -898,52 +915,271 @@ export class CrearCertificacionComponent implements OnInit {
             rTjlk22xAWez4giyGCEUP5Ysk1iBCg022k1ipTbaaXZalirwkPeZaG7p+5hX/LiScDQS7bbQDzN3pnTwlgrBD+P6WCGQ9i4
             Lhub6bT1qBAnVrSQwk7+lkxfiJVi9xfnK4SGnIg14+whtrUgdmfGZp6OzBpL0W8F3YKwP5pkLhcW4JN688Yq5TikrbZrZj/
             b4xHi0/k+T4iT5Pk+T4if/9k=`,
-          alignment: 'center',
+          alignment: 'right',
           width: 45,
         },
       ],
     };
     // -------------------------------------------------------------------------------------
 
-    // console.log('esta es la novedad', this.novedadCesion);
-    // console.log('esta es la novedad', this.listaNovedades);
-    // console.log('esta es la novedad',this.valorOtroSi);
-    // console.log('esta es la novedad',this.duracionOtroSi)
-
-    // -------------------------------------------------------------------------------------
-
     let arreglo = [];
     let arreglo2 = [];
     let novedadesCesion = [];
     let novedadesAdicionPro = [];
-    if (this.listaNovedades != null) {
-      for (var i = 0; i < this.listaNovedades.length; i++) {
-        if (this.listaNovedades[i] == 'cesion') {
-          this.novedadCesion = true;
+    
+    for ( let i = 0; i < this.datosNovedades.length; i++ ) {
+
+    }
+
+    // Datos de la tabla de información del contrato
+    this.datosTabla.push(
+      [
+        { text: 'CONTRATO N° y FECHA:', style: 'tabla1' }, 
+        {
+          text: this.dataContrato[0].ContratoSuscrito + '-' + this.dataContrato[0].Vigencia +
+          ' - ' + this.formato(this.fechaSuscrip.slice(0, 10)), style: 'tabla2'
         }
-        if (this.listaNovedades[i] == 'otroSi') {
-          this.novedadOtro = true;
-        }
-        if (this.listaNovedades[i] == 'suspension') {
-          this.novedadSuspension = true;
-        }
-        if (this.listaNovedades[i] == 'terminacionLiquidacion') {
-          this.novedadTerminacion = true;
-        }
-        if (this.listaNovedades[i] == 'observaciones') {
-          this.nuevo_texto = true;
-        }
+      ]
+    );
+
+    this.datosTabla.push(
+      [
+        { text: 'TIPO DE CONTRATO:', style: 'tabla1' },
+        { text: 'CONTRATO DE ' + tipoContrato, style: 'tabla2' }
+      ]
+    );
+
+    this.datosTabla.push(
+      [
+        { text: 'OBJETO:', style: 'tabla1' },
+        { text: this.objeto, style: 'tabla2' }
+      ]
+    );
+
+    this.datosTabla.push(
+      [
+        { text: 'ACTIVIDADES ESPECÍFICAS:', style: 'tabla1' },
+        { text: this.actividadEspecifica.toUpperCase(), style: 'tabla2' }
+      ]
+    );
+
+    if (this.valor_contrato == '1') {
+      this.datosTabla.push(
+        [
+          { text: 'VALOR DEL CONTRATO:', style: 'tabla1' },
+          {
+            text: this.NumerosAletrasService.convertir(parseInt(this.valorContrato)).toLowerCase() +
+            '(' + this.numeromiles(this.valorContrato) + '). ',
+            style: 'tabla2',
+          },
+        ]
+      ); 
+    }
+    
+    if (this.duracion_contrato == '1') {
+      let textoDuracion = '';
+      if(parseInt(this.duracionContrato)>12){
+        textoDuracion = this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
+                        '' + this.duracionContrato + ' DIAS';
+
+      } else if(parseInt(this.duracionContrato)<12){
+        textoDuracion = this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
+                        '(' + this.duracionContrato + ') MESES';
       }
+      this.datosTabla.push(
+        [
+          { text: 'PLAZO DEL CONTRATO:', style: 'tabla1' },
+          { 
+            text: 
+              textoDuracion +
+              ', contados a partir del acta de inicio, previo cumplimiento' +
+               'de los requisitos de perfeccionamiento y ejecución, sin superar' +
+               'el tiempo de la vigencia fiscal.',
+            style: 'tabla2'
+          }
+        ]
+      );
+    }
+
+    if (this.fecha_Inicio == '1') {
+      this.datosTabla.push(
+        [
+          { text: 'FECHA DE INICIO:', style: 'tabla1' },
+          { text: this.formato(this.fechaInicio.slice(0, 10)), style: 'tabla2' }
+        ]
+      );
     }
 
     for (var i = 0; i < this.novedad.length; i++) {
+      
       if (this.novedad[i] == 'Cesion') {
         novedadesCesion.push(this.novedad[i]);
       } else if (this.novedad[i] == 'Adicion Prorroga') {
         novedadesAdicionPro.push(this.novedad[i]);
       }
+      
+      switch (this.novedad[i]) {
+        case 'Suspension':
+          this.datosTabla.push(
+            [
+              { text: 'NOVEDAD CONTRACTUAL:', style: 'tabla1' },
+              {
+                text:
+                  'ACTA DE SUSPENSIÓN DE ' +
+                  this.novedadSuspension[this.contadorSuspen].periodosuspension +
+                  ' DIAS' +
+                  ' DESDE ' +
+                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension) +
+                  ' HASTA ' +
+                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension),
+                style: 'tabla2'
+              },
+            ]
+          );
+          this.contadorSuspen++;
+          break;
+        case 'Cesion':
+          this.datosTabla.push(
+            [
+              { text: 'CESIÓN:', style: 'tabla1'},
+              {
+                text: `N° ${this.contadorSuspen+1} del contrato de ${tipoContrato} N° ` +
+                this.dataContrato[0].ContratoSuscrito +
+                '-' +
+                this.dataContrato[0].Vigencia + 
+                '. Fecha de la cesión:' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion),
+                style: 'tabla2'
+              } 
+            ]
+          );
+          break;
+        case 'Reinicio':
+          this.datosTabla.push(
+            [
+              { text: 'REINICIO:', style: 'tabla1' },
+              { text: 'Fecha de reinicio del contrato: ' +
+                this.formato(this.novedadReinicio[this.contadorReinicio].fechareinicio), 
+                style: 'tabla2'
+              }
+            ]
+          );
+          this.contadorReinicio++;
+          break;
+        case 'Liquidacion':
+          this.datosTabla.push(
+            [
+              { text: 'FECHA DE LIQUIDACIÓN:', style: 'tabla1' },
+              { 
+                text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
+                style: 'tabla2' 
+              }
+            ]
+          );
+          break;
+        case 'Terminacion':
+            this.datosTabla.push(
+              [
+                { text: 'TERMINACIÓN:', style: 'tabla1' },
+                { 
+                  text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada), 
+                  style: 'tabla2' 
+                }
+              ]
+            );
+          break;
+        case 'Adicion':
+          this.contadorModificacion++;
+          this.datosTabla.push(
+            [
+              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
+              { 
+                text: 
+                'Se adicionó el valor de ' + this.novedadAdicion[this.contadorAdicion].valoradicion + 
+                '.\n\n' + ' Fecha de la adición: ' +
+                this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
+                style: 'tabla2' 
+              }
+            ]
+          );
+          this.contadorAdicion++;
+          break;
+        case 'Prorroga':
+          this.datosTabla.push(
+            [
+              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
+              { 
+                text: 'Prórroga de (' + this.novedadProrroga[this.contadorProrroga].tiempoprorroga + 
+                ') día(s).', style: 'tabla2' 
+              }
+            ]
+          );
+          this.contadorProrroga++;
+          break;
+        case 'Adicion/Prorroga':
+          this.datosTabla.push(
+            [
+              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
+              { 
+                text: 'Se adicionó el valor de ' + this.novedadAdiPro[this.contadorAdiPro].valoradicion +
+                '. Prórroga de (' + this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga + ') día(s).', 
+                style: 'tabla2'
+              }
+            ]
+          );
+          this.contadorAdiPro++;
+          break;
+        case 'Inicio':
+          this.datosTabla.push(
+            [
+              { text: 'NOVEDAD INICIO: ', style: 'tabla1' },
+              { 
+                text: 'Fecha registro: ' + this.novedadInicio[this.contadorInicio].fecharegistro, 
+                style: 'tabla2' 
+              }
+            ]
+          );
+          this.contadorInicio++;
+          break;
+      }
+
     }
-    // console.log('esta es la novedad', this.novedad[1]);
+    
+    if (this.fecha_final == '1') {
+      this.datosTabla.push(
+        [
+          { text: 'FECHA DE TERMINACIÓN:', style: 'tabla1' },
+          { 
+            text: this.formato(this.fechaFin.slice(0, 10)),
+            style: 'tabla2'
+          }
+        ]
+      ); 
+    }
+
+    this.datosTabla.push(
+      [
+        { text: 'ESTADO DEL CONTRATO:', style: 'tabla1' },
+        { text: this.estado_contrato, style: 'tabla2' }
+      ]
+    );
+
+    this.datosTabla.push(
+      [
+        { text: 'OTROS:', style: 'tabla1' },
+        { text: 'N/A', style: 'tabla2' }
+      ]
+    );
+
+    this.datosTabla.push(
+      [
+        { text: 'OBSERVACIONES:', style: 'tabla1'},
+        { 
+          text: 'El contrato de que trata la presente certificación no genera ' +
+          'relación laboral entre el contratista y la Universidad ' +
+          'Distrital Francisco José de Caldas.', 
+          style: 'tabla2' }
+      ]
+    );
 
     pdf.create().getBlob((blob) => {
       const file = {
@@ -972,7 +1208,8 @@ export class CrearCertificacionComponent implements OnInit {
         (response) => {
           // console.log('esta es la respuesta de nuxeo', response['Enlace']);
           this.horaCreacion = response['FechaCreacion'];
-          pdf.add(
+          
+          pdf.header(
             new Table([
               [
                 docDefinition.escudoImagen,
@@ -980,20 +1217,20 @@ export class CrearCertificacionComponent implements OnInit {
                 new Txt('Código de autenticidad:' + response['Enlace'])
                   .bold()
                   .alignment('right')
-                  .fontSize(9).end,
+                  .fontSize(7).end,
               ],
-            ]).layout('noBorders').end,
+            ]).layout('noBorders').margin([80,5,60,0]).end,
           );
-          pdf.add('\n');
 
           pdf.add(
-            new Txt('EL SUSCRITO JEFE DE LA OFICINA ASESORA JURIDICA').style(
+            new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' + 
+                    'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
               'Title',
             ).end,
           );
 
           pdf.add('\n');
-          pdf.add(new Txt('CERTIFICA').style('Title').end);
+          pdf.add(new Txt('CERTIFICA:').style('Title').end);
 
           pdf.add('\n');
           // ------------------------------ se arma el primer parrafo
@@ -1001,196 +1238,54 @@ export class CrearCertificacionComponent implements OnInit {
           
           pdf.add(docDefinition.line);
 
-          pdf.add('\n');
-
-          if (this.novedadCesion == true) {
-            for (var i = 0; i < this.numeroNovedadesCesion; i++) {
-              var contador = i + 1;
-              pdf.add(
-                new Txt(
-                  'CESIÓN N° ' +
-                    contador +
-                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia,
-                ).bold().end
-              );
-            }
-          }
-
-          if (novedadesCesion.length != 0) {
-            for (var i = 0; i < novedadesCesion.length; i++) {
-              pdf.add(docDefinition.novedadCesion);
-            }
-          }
-          if (this.novedad == 'Sin novedades') {
-            pdf.add(docDefinition.contrato);
-          }
-
-          pdf.add('\n');
-          pdf.add(docDefinition.fechaSub);
-
-          if (this.fecha_Inicio == '1') {
-            pdf.add('\n');
-            pdf.add(docDefinition.fechainicio);
-          }
-          if (this.fecha_final == '1') {
-            pdf.add('\n');
-            pdf.add(docDefinition.fechafin);
-          }
-
-          pdf.add('\n');
-          pdf.add(docDefinition.content2);
-          pdf.add('\n');
-          pdf.add(docDefinition.content3);
-          pdf.add('\n');
-          if (this.novedadTerminacion == true) {
-            pdf.add(docDefinition.novedadContraTerminacion);
-          }
-          if (this.novedadSuspension == true) {
-            pdf.add(docDefinition.novedadContraSuspension);
-          }
-
-          if (this.duracion_contrato == '1') {
-            if(parseInt(this.duracionContrato)>12){
-              pdf.add(docDefinition.duraContraDias);
-
-            }else if(parseInt(this.duracionContrato)<12){
-              pdf.add(docDefinition.duraContraMes);
-            
-            }
-            
-          }
-          if (this.valor_contrato == '1') {
-            pdf.add(docDefinition.valorContra);
-          }
-          pdf.add('\n');
-
-          if (this.novedadOtro == true) {
-            for (var i = 0; i < this.duracionOtroSi.length; i++) {
-              var contador = i + 1;
-              this.contador = contador;
-              pdf.add(
-                new Txt(
-                  'OTROSÍ N° ' +
-                    contador +
-                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia,
-                ).bold().end,
-              );
-
-              pdf.add(
-                new Txt(
-                  'DURACIÓN: ' +
-                    this.NumerosAletrasService.convertir(
-                      parseInt(this.duracionOtroSi[i]),
-                    ).slice(0, -7) +
-                    this.duracionOtroSi[i] +
-                    ' DIAS',
-                ).bold().end,
-              );
-
-              pdf.add(
-                new Txt(
-                  'VALOR: $' +
-                    this.numeromiles(this.valorOtroSi[i]) +
-                    ' ' +
-                    this.NumerosAletrasService.convertir(
-                      parseInt(this.valorOtroSi[i]),
-                    ),
-                ).bold().end,
-              );
-            }
-            pdf.add('\n');
-          }
-          if (novedadesAdicionPro.length != 0) {
-            
-            pdf.add('\n');
-            for (var i = 0; i < novedadesAdicionPro.length; i++) {
-              
-              this.contador = this.contador+1;
-              pdf.add(
-                new Txt(
-                  'OTROSÍ N° ' +
-                    this.contador +
-                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia,
-                ).bold().end,
-              );
-              pdf.add(
-                new Txt(
-                  'DURACION: ' +
-                    this.NumerosAletrasService.convertir(
-                      parseInt(
-                        this.allNovedades[
-                          this.novedad.indexOf('Adicion Prorroga')
-                        ].PlazoEjecucion,
-                      ),
-                    ).slice(0, -7) +
-                    '(' +
-                    this.allNovedades[this.novedad.indexOf('Adicion Prorroga')]
-                      .PlazoEjecucion +
-                    ')' +
-                    ' Dias',
-                ).bold().end,
-              );
-              pdf.add(
-                new Txt(
-                  'VALOR: ' +
-                    this.numeromiles(
-                      this.allNovedades[
-                        this.novedad.indexOf('Adicion Prorroga')
-                      ].ValorNovedad,
-                    ) +
-                    '  ' +
-                    this.NumerosAletrasService.convertir(
-                      parseInt(
-                        this.allNovedades[
-                          this.novedad.indexOf('Adicion Prorroga')
-                        ].ValorNovedad,
-                      ),
-                    ),
-                ).bold().end,
-              );
-            }
-
-            // -------------------------------------
-          }
-          if (this.nuevo_texto == true) {
-            pdf.add(docDefinition.texTituloNovedad);
-            pdf.add('\n');
-          }
+          pdf.add(docDefinition.contentTable);
 
           pdf.add('\n\n');
 
-          pdf.add(docDefinition.firmaImagen);
-          pdf.add(docDefinition.firmaPagina);
           pdf.add(
             new Txt(
-              'PARA CONSTANCIA SE AÑADE LA FECHA Y HORA DE CREACIÓN:' +
+              'Fecha de expedición de la certificación a solicitud del interesado: ' +
                 this.horaCreacion.slice(0, 10) +
                 ' - ' +
                 this.horaCreacion.slice(11, 19),
             )
-              .bold()
-              .alignment('center')
-              .absolutePosition(75, 780)
-              .fontSize(8).end,
+              .alignment('left')
+              .fontSize(9).end,
+          );
+          pdf.add(
+            new Table([
+              [
+                {
+                  unbreakable: true,
+                  text: docDefinition.firmaPagina
+                }
+              ]
+            ]).alignment('left').layout('noBorders').end
+          );
+          pdf.add('\n');
+          pdf.add(
+            new Txt(
+              'El presente es un documento público expedido con firma mecánica que garantiza ' +
+              'su plena validez jurídica y probatoria según lo establecido en la ley 527 de 1999.'
+            ).alignment('justify').fontSize(10).bold().end
+          );
+          pdf.add('\n');
+          pdf.add(
+            new Txt(
+              'Elaboró: David Eliot Iriarte - Contratista - OAJ' +
+              '________________________________________________________________________________' +
+              '_________________________________'
+            ).fontSize(6).decoration('underline').alignment('left').end
           );
 
           pdf.footer(
-            new Txt(
-              `Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – 
-              Colombia \n Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 
-              de diciembre de 2016`,
-            )
-              .alignment('center')
-              .bold().end,
+            new Table([
+              [
+                docDefinition.footer3.concat(docDefinition.footer5),
+                docDefinition.footer.concat(docDefinition.footer1).concat(docDefinition.footer2)
+                .concat(docDefinition.footer4).concat(docDefinition.footer7)
+              ],
+            ]).layout('noBorders').margin([80, 0, 60, 0]).widths(['*',85]).end,
           );
 
           pdf.create().getBlob((blob) => {
@@ -1277,7 +1372,7 @@ export class CrearCertificacionComponent implements OnInit {
         this.idTipoContrato =
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
-
+        this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
         this.consultarNovedades();
         // console.log(this.idContrato);
@@ -1308,26 +1403,56 @@ export class CrearCertificacionComponent implements OnInit {
       };
   }
   consultarNovedades() {
-    this.AdministrativaAmazon.get(
-      'novedad_postcontractual?query=NumeroContrato:' + this.numeroContrato +
-      ',Vigencia:' + this.dataContrato[0].Vigencia,
+    this.NovedadesService.get(
+      'novedad/' + this.numeroContrato + '/' + this.dataContrato[0].Vigencia
     ).subscribe(
       (data: any) => {
+        console.info('novedades: ', data[0].tiponovedad);
         this.allNovedades = data;
-
-        for (var i = 0; i < data.length; i++) {
-          if (data[i].TipoNovedad == '219') {
-            this.datosNovedades.push('Cesion');
-          } else if (data[i].TipoNovedad == '220') {
-            this.datosNovedades.push('Adicion Prorroga');
+        
+        for (let i = 0; i < data.length; i++ ) {
+          switch (data[i].tiponovedad) {
+            case '1':
+              this.datosNovedades.push('Suspension');
+              this.novedadSuspension.push(data[i]);
+              break;
+            case '2':
+              this.datosNovedades.push('Cesion');
+              this.novedadCesion.push(data[i]);
+              break;
+            case '3':
+              this.datosNovedades.push('Reinicio');
+              this.novedadReinicio.push(data[i]);
+              break;
+            case '4':
+              this.datosNovedades.push('Liquidacion');
+              this.novedadLiquidacion.push(data[i]);
+              break;
+            case '5':
+              this.datosNovedades.push('Terminacion');
+              this.novedadTerminacion.push(data[i]);
+              break;
+            case 6:
+              this.datosNovedades.push('Adicion');
+              this.novedadAdicion.push(data[i]);
+              break;
+            case '7':
+              this.datosNovedades.push('Prorroga');
+              this.novedadProrroga.push(data[i]);
+              break;
+            case '8':
+              this.datosNovedades.push('Adicion/Prorroga');
+              this.novedadAdiPro.push(data[i]);
+              break;
+            case '9':
+              this.datosNovedades.push('Inicio');
+              this.novedadInicio.push(data[i]);
+              break;
           }
         }
-        this.datosNovedades.push('Sin novedades');
+        // this.datosNovedades.push('Sin novedades');
       },
       (err) => {
-        500;
-        console.log(err);
-
         this.datosNovedades.push('Sin novedades');
       },
     );
@@ -1357,19 +1482,6 @@ export class CrearCertificacionComponent implements OnInit {
       title: 'ERROR',
       text: mensaje,
     });
-  }
-
-  crearNovedades() {
-    this.numeroNovedadesArr.length = 0;
-    for (var i = 0; i < this.numeroNovedadesCesion; i++) {
-      // console.log(i);
-      this.numeroNovedadesArr.push('');
-    }
-    this.numeroNovedadesArrOtro.length = 0;
-    for (var i = 0; i < this.numeroNovedadesOtro; i++) {
-      // console.log(i);
-      this.numeroNovedadesArrOtro.push('');
-    }
   }
 
   numeromiles(num) {
