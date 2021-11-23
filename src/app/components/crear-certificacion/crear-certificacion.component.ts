@@ -49,6 +49,11 @@ export class CrearCertificacionComponent implements OnInit {
   valorContrato: string;
   nombre: string;
   idTipoContrato: number;
+  fechaSuscrip: string = '';
+  duracionContrato: string = '';
+  idContrato: string = '';
+  fechaInicio: string = '';
+  fechaFin: string = '';
   // los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_contrato: string;
   duracion_contrato: string;
@@ -56,18 +61,6 @@ export class CrearCertificacionComponent implements OnInit {
   fecha_final: string;
   estado_contrato: string;
   nuevo_texto: boolean = false;
-  // novedadCesion: boolean = false;
-  novedadOtro: boolean = false;
-  // novedadSuspension: boolean = false;
-  // novedadTerminacion: boolean = false;
-  // ----------------------------------------------------------------------------------
-  tituloNovedad: string = '';
-  textoNovedad: string = '';
-  fechaSuscrip: string = '';
-  duracionContrato: string = '';
-  idContrato: string = '';
-  fechaInicio: string = '';
-  fechaFin: string = ' ';
   // ---------------------Novedades----------------------------------------------------
   listaNovedades: string[] = [];
   datosNovedades: string[] = [];
@@ -92,18 +85,12 @@ export class CrearCertificacionComponent implements OnInit {
   contadorAdiPro: number = 0;
   contadorInicio: number = 0;
 
-  tituloCesion: string = '';
   numeroNovedadesCesion: number;
   numeroNovedadesOtro: number;
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
   // ----------------------------------------------------------------------------------
-  duracionOtroSi: string[] = [];
-  valorOtroSi: string[] = [];
-  fechaInicialSupension: Date[];
-  fechaFinalSuspension: Date[];
-  fechaTerminacion = new Date();
   horaCreacion: string = '';
 
   datosTabla: any[] = [];
@@ -226,37 +213,6 @@ export class CrearCertificacionComponent implements OnInit {
           style: 'body',
         },
       ],
-      content2: [
-        {
-          text: [
-            { text: 'OBJETO: ', style: 'body1', bold: true },
-            { text: this.objeto, style: 'body' }, // objeto del contrato
-          ],
-        },
-      ],
-      content3: [
-        {
-          text: [
-            { text: 'ACTIVIDAD ESPECÍFICA: ', style: 'body1', bold: true },
-            { text: this.actividadEspecifica.toUpperCase(), style: 'body' },
-          ],
-        },
-      ],
-      valorContra: [
-        {
-          text: [
-            { text: 'VALOR: $ ', style: 'body1', bold: true },
-            {
-              text: '(' + this.numeromiles(this.valorContrato) + ') ',
-              style: 'body',
-            },
-            {
-              text: this.NumerosAletrasService.convertir(parseInt(this.valorContrato)),
-              style: 'body1',
-            },
-          ],
-        },
-      ],
       valorCabe: [
         {
           text: [
@@ -318,29 +274,6 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
-      fechaSub: [
-        {
-          text: [
-            { text: 'FECHA DE SUSCRIPCIÓN:  ', style: 'body1', bold: true },
-            {
-              text: this.formato(this.fechaSuscrip.slice(0, 10)),
-              style: 'body',
-            },
-          ],
-        },
-      ],
-      texTituloNovedad: [
-        {
-          text: [
-            {
-              text: 'Observaciones: ',
-              style: 'body1',
-              bold: true,
-            },
-            { text: this.textoNovedad.toUpperCase(), style: 'body' },
-          ],
-        },
-      ],
       texPieDePagina: [
         {
           text: [
@@ -364,74 +297,6 @@ export class CrearCertificacionComponent implements OnInit {
           alignment: 'left',
         },
       ],
-      // novedadCesion: [
-      //   {
-      //     text: [
-      //       {
-      //         text:
-      //           `CESIÓN DEL CONTRATO DE ${tipoContrato} NO.` +
-      //           this.dataContrato[0].ContratoSuscrito +
-      //           '-' +
-      //           this.dataContrato[0].Vigencia,
-      //         style: 'body1',
-      //         bold: true,
-      //       },
-      //     ],
-      //   },
-      // ],
-      
-      // novedadContraTerminacion: [
-      //   {
-      //     text: [
-      //       {
-      //         text: 'NOVEDAD CONTRACTUAL:',
-      //         style: 'body1',
-      //         bold: true,
-      //       },
-      //       {
-      //         text:
-      //           'ACTA DE TERMINACIÓN Y LIQUIDACIÓN BILATERAL ' +
-      //           this.formato(this.fechaTerminacion),
-      //         style: 'body',
-      //         bold: true,
-      //       },
-      //     ],
-      //   },
-      // ],
-      // novedadContraSuspension: [
-      //   {
-      //     text: [
-      //       {
-      //         text: 'NOVEDAD CONTRACTUAL:',
-      //         style: 'body1',
-      //         bold: true,
-      //       },
-      //       {
-      //         text:
-      //           'ACTA DE SUSPENSIÓN DE ' +
-      //           this.diasFecha(
-      //             this.fechaInicialSupension,
-      //             this.fechaFinalSuspension) +
-      //           ' DIAS' +
-      //           ' DESDE ' +
-      //           this.formato(this.fechaInicialSupension) +
-      //           ' HASTA ' +
-      //           this.formato(this.fechaFinalSuspension),
-      //         style: 'body',
-      //         bold: true,
-      //       },
-      //     ],
-      //   },
-      // ],
-      // novedadContraOtroSi: [
-      //   {
-      //     text: [
-      //       { text: 'DURACION:  ', style: 'body1', bold: true },
-      //       { text: ' DIAS ', style: 'body' },
-      //       { text: '\n VALOR: $', style: 'body1', bold: true },
-      //     ],
-      //   },
-      // ],
       contrato: [
         {
           text: [
@@ -1057,13 +922,6 @@ export class CrearCertificacionComponent implements OnInit {
     };
     // -------------------------------------------------------------------------------------
 
-    // console.log('esta es la novedad', this.novedadCesion);
-    // console.log('esta es la novedad', this.listaNovedades);
-    // console.log('esta es la novedad',this.valorOtroSi);
-    // console.log('esta es la novedad',this.duracionOtroSi)
-
-    // -------------------------------------------------------------------------------------
-
     let arreglo = [];
     let arreglo2 = [];
     let novedadesCesion = [];
@@ -1072,28 +930,6 @@ export class CrearCertificacionComponent implements OnInit {
     for ( let i = 0; i < this.datosNovedades.length; i++ ) {
 
     }
-
-    // if (this.listaNovedades != null) {
-    //   for (var i = 0; i < this.listaNovedades.length; i++) {
-    //     if (this.listaNovedades[i] == 'cesion') {
-    //       this.novedadCesion = true;
-    //     }
-    //     if (this.listaNovedades[i] == 'otroSi') {
-    //       this.novedadOtro = true;
-    //     }
-    //     if (this.listaNovedades[i] == 'suspension') {
-    //       this.novedadSuspension = true;
-    //     }
-    //     if (this.listaNovedades[i] == 'terminacionLiquidacion') {
-    //       this.novedadTerminacion = true;
-    //     }
-    //     if (this.listaNovedades[i] == 'observaciones') {
-    //       this.nuevo_texto = true;
-    //     }
-    //   }
-    // }
-
-    // console.log('esta es la novedad', this.novedad[1]);
 
     // Datos de la tabla de información del contrato
     this.datosTabla.push(
@@ -1307,176 +1143,6 @@ export class CrearCertificacionComponent implements OnInit {
       }
 
     }
-
-    // if (this.novedadOtro == true) {
-    //   for (var i = 0; i < this.duracionOtroSi.length; i++) {
-    //     var contador = i + 1;
-    //     this.contador = contador;
-
-    //     this.datosTabla.push(
-    //       [
-    //         { text: 'MODIFICACIÓN CONTRACTUAL NO. ' + contador + ':', style: 'tabla1' },
-    //         { text: 
-    //           'Se adicionó el valor de ' +
-    //           this.numeromiles(this.valorOtroSi[i]) +
-    //           ' ' +
-    //           this.NumerosAletrasService.convertir(
-    //             parseInt(this.valorOtroSi[i])) + '. Prórroga de ' +
-    //           this.NumerosAletrasService.convertir(
-    //             parseInt(this.duracionOtroSi[i])).slice(0, -7) +
-    //             this.duracionOtroSi[i] +
-    //             ' días',
-    //           style: 'tabla2' }
-    //       ]
-    //     );
-        
-    //     pdf.add(
-    //       new Txt(
-    //         'OTROSÍ N° ' +
-    //           contador +
-    //           ` DEL CONTRATO DE ${tipoContrato} NO ` +
-    //           this.dataContrato[0].ContratoSuscrito +
-    //           '-' +
-    //           this.dataContrato[0].Vigencia,
-    //       ).bold().end,
-    //     );
-
-    //     pdf.add(
-    //       new Txt(
-    //         'DURACIÓN: ' +
-    //           this.NumerosAletrasService.convertir(
-    //             parseInt(this.duracionOtroSi[i]),
-    //           ).slice(0, -7) +
-    //           this.duracionOtroSi[i] +
-    //           ' DIAS',
-    //       ).bold().end,
-    //     );
-
-    //     pdf.add(
-    //       new Txt(
-    //         'VALOR: $' +
-    //           this.numeromiles(this.valorOtroSi[i]) +
-    //           ' ' +
-    //           this.NumerosAletrasService.convertir(
-    //             parseInt(this.valorOtroSi[i]),
-    //           ),
-    //       ).bold().end,
-    //     );
-    //   }
-    // }
-
-    // if (novedadesAdicionPro.length != 0) {
-      
-    //   for (var i = 0; i < novedadesAdicionPro.length; i++) {
-        
-    //     this.contador = this.contador+1;
-    //     this.datosTabla.push(
-    //       [
-    //         { text: 'MODIFICACIÓN CONTRACTUAL NO. ' + this.contador + ':', style: 'tabla1' },
-    //         { 
-    //           text:  
-    //             'Se adicionó el valor de : ' + 
-    //             this.numeromiles(
-    //               this.allNovedades[
-    //                 this.novedad.indexOf('Adicion Prorroga')
-    //               ].ValorNovedad) +
-    //             '  ' +
-    //             this.NumerosAletrasService.convertir(
-    //               parseInt(
-    //                 this.allNovedades[
-    //                   this.novedad.indexOf('Adicion Prorroga')
-    //                 ].ValorNovedad)) + '. Prórroga de ' + 
-    //                 this.NumerosAletrasService.convertir(
-    //                   parseInt(
-    //                     this.allNovedades[
-    //                       this.novedad.indexOf('Adicion Prorroga')
-    //                     ].PlazoEjecucion)).slice(0, -7) +
-    //                 '(' +
-    //                 this.allNovedades[this.novedad.indexOf('Adicion Prorroga')]
-    //                   .PlazoEjecucion +
-    //                 ')' +
-    //                 ' Dias',
-    //           style: 'tabla2' }
-    //       ]
-    //     );
-
-    //     // pdf.add(
-    //     //   new Txt(
-    //     //     'OTROSÍ N° ' +
-    //     //       this.contador +
-    //     //       ` DEL CONTRATO DE ${tipoContrato} NO ` +
-    //     //       this.dataContrato[0].ContratoSuscrito +
-    //     //       '-' +
-    //     //       this.dataContrato[0].Vigencia,
-    //     //   ).bold().end,
-    //     // );
-    //     // pdf.add(
-    //     //   new Txt(
-    //     //     'DURACION: ' +
-    //     //       this.NumerosAletrasService.convertir(
-    //     //         parseInt(
-    //     //           this.allNovedades[
-    //     //             this.novedad.indexOf('Adicion Prorroga')
-    //     //           ].PlazoEjecucion,
-    //     //         ),
-    //     //       ).slice(0, -7) +
-    //     //       '(' +
-    //     //       this.allNovedades[this.novedad.indexOf('Adicion Prorroga')]
-    //     //         .PlazoEjecucion +
-    //     //       ')' +
-    //     //       ' Dias',
-    //     //   ).bold().end,
-    //     // );
-    //     // pdf.add(
-    //     //   new Txt(
-    //     //     'VALOR: '
-              
-    //     //   ).bold().end,
-    //     // );
-    //   }
-
-    //   // -------------------------------------
-    // }
-
-    // if (this.novedadCesion == true) {
-    //   for (var i = 0; i < this.numeroNovedadesCesion; i++) {
-    //     var contador = i + 1;
-    //     this.datosTabla.push(
-    //       [ { text: 'CESIÓN:', style: 'tabla1'},
-    //         {
-    //           text: 'N° ' + contador + ` DEL CONTRATO DE ${tipoContrato} NO ` +
-    //           this.dataContrato[0].ContratoSuscrito +
-    //           '-' +
-    //           this.dataContrato[0].Vigencia,
-    //           style: 'tabla2'
-    //         } 
-    //       ]
-    //     );
-    //   }
-    // }
-
-    // if (novedadesCesion.length != 0) {
-    //   for (var i = 0; i < novedadesCesion.length; i++) {
-    //     this.datosTabla.push(
-    //       [ { text: 'CESIÓN:', style: 'tabla1'},
-    //         {
-    //           text: 'N° ' + contador + ` DEL CONTRATO DE ${tipoContrato} NO ` +
-    //           this.dataContrato[0].ContratoSuscrito +
-    //           '-' +
-    //           this.dataContrato[0].Vigencia,
-    //           style: 'tabla2'
-    //         } 
-    //       ]
-    //     );
-    //   }
-    // } else {
-    //   this.datosTabla.push(
-    //     [ 
-    //       { text: 'CESIÓN:', style: 'tabla1'},
-    //       { text: 'N/A', style: 'tabla2' }
-    //     ]
-    //   );
-    // }
     
     if (this.fecha_final == '1') {
       this.datosTabla.push(
@@ -1555,20 +1221,6 @@ export class CrearCertificacionComponent implements OnInit {
               ],
             ]).layout('noBorders').margin([80,5,60,0]).end,
           );
-          
-          // pdf.add(
-          //   new Table([
-          //     [
-          //       docDefinition.escudoImagen,
-          //       docDefinition.valorCabe,
-          //       new Txt('Código de autenticidad:' + response['Enlace'])
-          //         .bold()
-          //         .alignment('right')
-          //         .fontSize(7).end,
-          //     ],
-          //   ]).layout('noBorders').end,
-          // );
-          // pdf.add('\n');
 
           pdf.add(
             new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' + 
@@ -1587,32 +1239,6 @@ export class CrearCertificacionComponent implements OnInit {
           pdf.add(docDefinition.line);
 
           pdf.add(docDefinition.contentTable);
-
-          // if (this.novedad == 'Sin novedades') {
-          //   pdf.add(docDefinition.contrato);
-          // }
-
-          // pdf.add('\n');
-          // pdf.add(docDefinition.fechaSub);
-
-          // pdf.add('\n');
-          // pdf.add(docDefinition.content2);
-          // pdf.add('\n');
-          // pdf.add(docDefinition.content3);
-          // pdf.add('\n');
-          // if (this.novedadTerminacion == true) {
-          //   pdf.add(docDefinition.novedadContraTerminacion);
-          // }
-          // if (this.novedadSuspension == true) {
-          //   pdf.add(docDefinition.novedadContraSuspension);
-          // }
-
-          // pdf.add('\n');
-
-          // if (this.nuevo_texto == true) {
-          //   pdf.add(docDefinition.texTituloNovedad);
-          //   pdf.add('\n');
-          // }
 
           pdf.add('\n\n');
 
@@ -1830,28 +1456,6 @@ export class CrearCertificacionComponent implements OnInit {
         this.datosNovedades.push('Sin novedades');
       },
     );
-
-    // this.AdministrativaAmazon.get(
-    //   'novedad_postcontractual?query=NumeroContrato:' + this.numeroContrato +
-    //   ',Vigencia:' + this.dataContrato[0].Vigencia,
-    // ).subscribe(
-    //   (data: any) => {
-    //     this.allNovedades = data;
-
-    //     for (var i = 0; i < data.length; i++) {
-    //       if (data[i].TipoNovedad == '219') {
-    //         this.datosNovedades.push('Cesion');
-    //       } else if (data[i].TipoNovedad == '220') {
-    //         this.datosNovedades.push('Adicion Prorroga');
-    //       }
-    //     }
-    //     this.datosNovedades.push('Sin novedades');
-    //   },
-    //   (err) => {
-    //     500;
-    //     this.datosNovedades.push('Sin novedades');
-    //   },
-    // );
   }
   diasFecha(fecha1, fecha2) {
     var date_1 = new Date(fecha1.toString()).getTime();
@@ -1878,19 +1482,6 @@ export class CrearCertificacionComponent implements OnInit {
       title: 'ERROR',
       text: mensaje,
     });
-  }
-
-  crearNovedades() {
-    this.numeroNovedadesArr.length = 0;
-    for (var i = 0; i < this.numeroNovedadesCesion; i++) {
-      // console.log(i);
-      this.numeroNovedadesArr.push('');
-    }
-    this.numeroNovedadesArrOtro.length = 0;
-    for (var i = 0; i < this.numeroNovedadesOtro; i++) {
-      // console.log(i);
-      this.numeroNovedadesArrOtro.push('');
-    }
   }
 
   numeromiles(num) {
