@@ -21,7 +21,6 @@ export const environment = {
   ADMINISTRIVA_AMAZON: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/',
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
   NOVEDADES_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/novedades_mid/v1',
-  // ADMINISTRIVA_JBPM: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/',
 
   SPAGOBI: {
     PROTOCOL: 'https',

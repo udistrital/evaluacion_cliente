@@ -65,7 +65,6 @@ export class AuthGuard implements CanActivate {
   }
 
   rolActual(): any {
-    console.info('El rol que retorna es: ', this.rol);
     return this.rol;
   }
 
