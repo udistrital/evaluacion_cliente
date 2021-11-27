@@ -41,7 +41,7 @@ export class CrearCertificacionComponent implements OnInit {
   @Input() rol: string = '';
   uidDocumento: string;
   idDocumento: number;
-  novedad: string;
+  novedad: string[] = [];
   objeto: string;
   cedula: string;
   numeroContrato: string;
@@ -54,13 +54,14 @@ export class CrearCertificacionComponent implements OnInit {
   idContrato: string = '';
   fechaInicio: string = '';
   fechaFin: string = '';
+  otrosDatos: string;
   // los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_contrato: string;
   duracion_contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
   estado_contrato: string;
-  nuevo_texto: boolean = false;
+  otros_datos: string;
   // ---------------------Novedades----------------------------------------------------
   listaNovedades: string[] = [];
   datosNovedades: string[] = [];
@@ -1012,12 +1013,6 @@ export class CrearCertificacionComponent implements OnInit {
 
     for (var i = 0; i < this.novedad.length; i++) {
       
-      if (this.novedad[i] == 'Cesion') {
-        novedadesCesion.push(this.novedad[i]);
-      } else if (this.novedad[i] == 'Adicion Prorroga') {
-        novedadesAdicionPro.push(this.novedad[i]);
-      }
-      
       switch (this.novedad[i]) {
         case 'Suspension':
           this.datosTabla.push(
@@ -1028,10 +1023,10 @@ export class CrearCertificacionComponent implements OnInit {
                   'ACTA DE SUSPENSIÓN DE ' +
                   this.novedadSuspension[this.contadorSuspen].periodosuspension +
                   ' DIAS' +
-                  ' DESDE ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension) +
-                  ' HASTA ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension),
+                  ' DESDE El ' +
+                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension.slice(0,10)) +
+                  ' HASTA El ' +
+                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension.slice(0,10)),
                 style: 'tabla2'
               },
             ]
@@ -1102,6 +1097,7 @@ export class CrearCertificacionComponent implements OnInit {
             ]
           );
           this.contadorAdicion++;
+          this.contadorModificacion++;
           break;
         case 'Prorroga':
           this.datosTabla.push(
@@ -1114,6 +1110,7 @@ export class CrearCertificacionComponent implements OnInit {
             ]
           );
           this.contadorProrroga++;
+          this.contadorModificacion++;
           break;
         case 'Adicion/Prorroga':
           this.datosTabla.push(
@@ -1127,6 +1124,7 @@ export class CrearCertificacionComponent implements OnInit {
             ]
           );
           this.contadorAdiPro++;
+          this.contadorModificacion++;
           break;
         case 'Inicio':
           this.datosTabla.push(
@@ -1163,12 +1161,21 @@ export class CrearCertificacionComponent implements OnInit {
       ]
     );
 
-    this.datosTabla.push(
-      [
-        { text: 'OTROS:', style: 'tabla1' },
-        { text: 'N/A', style: 'tabla2' }
-      ]
-    );
+    if (this.otros_datos == '1') {
+      this.datosTabla.push(
+        [
+          { text: 'OTROS:', style: 'tabla1' },
+          { text: this.otrosDatos, style: 'tabla2' }
+        ]
+      );
+    } else {
+      this.datosTabla.push(
+        [
+          { text: 'OTROS:', style: 'tabla1' },
+          { text: 'N/A', style: 'tabla2' }
+        ]
+      );
+    }
 
     this.datosTabla.push(
       [
@@ -1412,23 +1419,23 @@ export class CrearCertificacionComponent implements OnInit {
         
         for (let i = 0; i < data.length; i++ ) {
           switch (data[i].tiponovedad) {
-            case '1':
+            case 1:
               this.datosNovedades.push('Suspension');
               this.novedadSuspension.push(data[i]);
               break;
-            case '2':
+            case 2:
               this.datosNovedades.push('Cesion');
               this.novedadCesion.push(data[i]);
               break;
-            case '3':
+            case 3:
               this.datosNovedades.push('Reinicio');
               this.novedadReinicio.push(data[i]);
               break;
-            case '4':
+            case 4:
               this.datosNovedades.push('Liquidacion');
               this.novedadLiquidacion.push(data[i]);
               break;
-            case '5':
+            case 5:
               this.datosNovedades.push('Terminacion');
               this.novedadTerminacion.push(data[i]);
               break;
@@ -1436,23 +1443,24 @@ export class CrearCertificacionComponent implements OnInit {
               this.datosNovedades.push('Adicion');
               this.novedadAdicion.push(data[i]);
               break;
-            case '7':
+            case 7:
               this.datosNovedades.push('Prorroga');
               this.novedadProrroga.push(data[i]);
               break;
-            case '8':
+            case 8:
               this.datosNovedades.push('Adicion/Prorroga');
               this.novedadAdiPro.push(data[i]);
               break;
-            case '9':
+            case 9:
               this.datosNovedades.push('Inicio');
               this.novedadInicio.push(data[i]);
               break;
           }
         }
-        // this.datosNovedades.push('Sin novedades');
+        this.datosNovedades.push('Sin novedades');
       },
       (err) => {
+        console.log(err);
         this.datosNovedades.push('Sin novedades');
       },
     );
