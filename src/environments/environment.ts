@@ -27,10 +27,8 @@ export const environment = {
   // NOTIFICACION_SERVICE: 'ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws',
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
   EVALUACIONMID_SERVICE: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8507/v1/',
-  // EVALUACIONMID_SERVICE: 'http://localhost:8080/v1/',
   EVALUACIONCRUD_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8506/v1/',
   ADMINISTRIVA_AMAZON: 'http://pruebasapi.intranetoas.udistrital.edu.co:8104/v1/',
-  // ADMINISTRIVA_JBPM:'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/',
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
   NOVEDADES_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8502/v1/',
 
