@@ -30,7 +30,7 @@ export const environment = {
   EVALUACIONCRUD_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8506/v1/',
   ADMINISTRIVA_AMAZON: 'http://pruebasapi.intranetoas.udistrital.edu.co:8104/v1/',
   DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
-  // ADMINISTRIVA_JBPM:'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v2/',
+  NOVEDADES_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8502/v1/',
 
   SPAGOBI: {
     PROTOCOL: 'https',

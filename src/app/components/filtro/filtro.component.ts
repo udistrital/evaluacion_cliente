@@ -2,6 +2,7 @@ import { Component, TemplateRef, ViewChild, OnInit, Output, EventEmitter, Input 
 import { NbWindowService } from '@nebular/theme';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { ImplicitAutenticationService } from '../../@core/utils/implicit_autentication.service';
+import { AuthGuard } from '../../@core/_guards/auth.guard';
 
 
 @Component({
@@ -17,6 +18,8 @@ export class FiltroComponent implements OnInit {
 
   vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
 
+  rolUsuario: any;
+
   identificacion_proveedor: any;
   numero_contrato: any;
   vigencia: any;
@@ -27,6 +30,7 @@ export class FiltroComponent implements OnInit {
     private windowService: NbWindowService,
     private evaluacionMidService: EvaluacionmidService,
     private authService: ImplicitAutenticationService,
+    private authGuard: AuthGuard,
   ) {
     this.dataResponse = new EventEmitter();
   }
@@ -37,11 +41,18 @@ export class FiltroComponent implements OnInit {
   filtro() {
 
     this.autentication_data = this.authService.getPayload();
-    this.documento = this.autentication_data.documento;
+    this.rolUsuario = this.authGuard.rolActual();
+    if (this.rolUsuario == 'ORDENADOR_DEL_GASTO') {
+      this.documento = '0';
+    } else {
+      this.documento = this.autentication_data.documento;
+    }
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {
       this.openWindow('Debe ingresar almenos una Identificación de proveedor o un número de contrato');
+      console.info('Rol', this.rolUsuario);
+      console.log('Documento', this.documento);
     } else {
       this.RealizarPeticion();
     }
