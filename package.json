@@ -92,7 +92,7 @@
     "ngx-echarts": "^4.1.1",
     "ngx-moment": "^3.4.0",
     "ngx-smart-table": "^2.0.3",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "normalize.css": "6.0.0",
     "numero-a-letras": "^1.0.6",
     "nuxeo": "^3.17.0",
