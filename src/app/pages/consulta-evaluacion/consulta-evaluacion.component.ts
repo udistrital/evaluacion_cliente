@@ -1,5 +1,5 @@
 import { Component, TemplateRef, ViewChild, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NbWindowService } from '@nebular/theme';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 
@@ -29,29 +29,29 @@ export class ConsultaEvaluacionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private windowService: NbWindowService,
     private evaluacionMidService: EvaluacionmidService,
-    ) {
-      this.data = [];
+  ) {
+    this.data = [];
     this.datosContratoAVer = [];
     this.datosContratoAEvaluar = [];
-      this.componenteRealizar = false;
-      this.componenteVer = false;
-      this.activatedRoute.params.subscribe( params => {
-        this.identificacionProveedor = params['IdentificacionProveedor'];
-        this.tipodocumento = params['TipoDocumento'];
+    this.componenteRealizar = false;
+    this.componenteVer = false;
+    this.activatedRoute.params.subscribe(params => {
+      this.identificacionProveedor = params['IdentificacionProveedor'];
+      this.tipodocumento = params['TipoDocumento'];
 
-      } );
-     }
+    });
+  }
 
   ngOnInit() {
-    this.evaluacionMidService.get(`filtroProveedor?ProvID=${this.identificacionProveedor}&SupID=0` )
-        .subscribe((res) => {
-          if (res.Data !== null) {
-            this.data = res.Data;
-          }
-        }, (error_service) => {
-          this.openWindow(error_service['body'][1]['Error']);
-          this.data = [];
-        });
+    this.evaluacionMidService.get(`filtroProveedor?ProvID=${String(this.identificacionProveedor)}`)
+      .subscribe((res) => {
+        if (res.Data !== null) {
+          this.data = res.Data;
+        }
+      }, (error_service) => {
+        this.openWindow(error_service['body'][1]['Error']);
+        this.data = [];
+      });
   }
 
   openWindow(mensaje) {
@@ -62,7 +62,7 @@ export class ConsultaEvaluacionComponent implements OnInit {
   }
 
   habilitarFiltro(data: any) {
-    if (data === true ) {
+    if (data === true) {
       this.componenteVer = false;
       this.componenteRealizar = false;
     }
