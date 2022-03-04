@@ -11,8 +11,8 @@ import { ImplicitAutenticationService } from '../../@core/utils/implicit_autenti
 export class CertificacionComponent implements OnInit {
 
   @Output() dataResponse: EventEmitter<any>;
-  @Input() nombreTitulo : String;
-  @ViewChild('contentTemplate',{ read: false }) contentTemplate: TemplateRef<any>;
+  @Input() nombreTitulo: String;
+  @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
 
   vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
 
@@ -38,7 +38,7 @@ export class CertificacionComponent implements OnInit {
 
   filtro() {
     this.autentication_data = this.authService.getPayload();
-    this.identificacion_proveedor=this.autentication_data.documento;
+    this.identificacion_proveedor = this.autentication_data.documento;
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {
@@ -52,8 +52,7 @@ export class CertificacionComponent implements OnInit {
     this.evaluacionMidService
       .get(
         'filtroProveedor?ProvID=' +
-        this.identificacion_proveedor +
-        '&SupID=0'
+        String(this.identificacion_proveedor)
       )
       .subscribe((res_proveedor) => {
         this.evaluacionMidService
@@ -79,7 +78,7 @@ export class CertificacionComponent implements OnInit {
   RealizarPeticion() {
     if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
-      this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&SupID=' + String(this.documento))
+      this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor))
         .subscribe((res) => {
           if (res.Data !== null) {
             this.dataResponse.emit(res.Data);
@@ -91,8 +90,7 @@ export class CertificacionComponent implements OnInit {
     } else {
       if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
-        this.evaluacionMidService.get('filtroProveedor?ProvID=' + this.identificacion_proveedor + '&Vigencia=' + this.vigencia
-          + '&SupID=' + String(this.documento))
+        this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + '&Vigencia=' + String(this.vigencia))
           .subscribe((res) => {
             if (res.Data !== null) {
               this.dataResponse.emit(res.Data);
@@ -104,7 +102,7 @@ export class CertificacionComponent implements OnInit {
       } else {
         if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
           && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
-          this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento))
+          this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia=0')
             .subscribe((res) => {
               if (res.Data !== null) {
                 this.dataResponse.emit(res.Data);
@@ -116,8 +114,8 @@ export class CertificacionComponent implements OnInit {
         } else {
           if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
             && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
-            this.evaluacionMidService.get('filtroContrato?NumContrato=' + this.numero_contrato + '&Vigencia='
-              + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
+            this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia='
+              + String(this.vigencia)).subscribe((res) => {
                 if (res.Data !== null) {
                   this.dataResponse.emit(res.Data);
                 }
@@ -129,7 +127,7 @@ export class CertificacionComponent implements OnInit {
             if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
               && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
-                + this.numero_contrato + '&Vigencia=0&SupID=' + String(this.documento)).subscribe((res) => {
+                + this.numero_contrato + '&Vigencia=0').subscribe((res) => {
                   if (res.Data !== null) {
                     this.dataResponse.emit(res.Data);
                   }
@@ -141,7 +139,7 @@ export class CertificacionComponent implements OnInit {
               if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
                 && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
                 this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
-                  + this.numero_contrato + '&Vigencia=' + String(this.vigencia) + '&SupID=' + String(this.documento)).subscribe((res) => {
+                  + this.numero_contrato + '&Vigencia=' + String(this.vigencia)).subscribe((res) => {
                     if (res.Data !== null) {
                       this.dataResponse.emit(res.Data);
                     }
