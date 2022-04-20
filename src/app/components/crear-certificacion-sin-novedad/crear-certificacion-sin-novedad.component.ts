@@ -52,6 +52,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   fecha_final: string;
   fecha_suscrip: string;
   duracion_contrato: string;
+  observaciones: string;
   // ************************************************************************ */
   evaluacionRealizada: any;
   fechaEvaluacion: Date;
@@ -61,6 +62,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   idContrato: string = '';
   fechaInicio: string = '';
   fechaFin: string = '';
+  texto_observacion: string = '';
   nuevo_texto: boolean = false;
   novedadCesion: boolean = false;
   novedadOtro: boolean = false;
@@ -110,9 +112,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     this.evaluacionCrudService
       .get(
         'evaluacion?query=ContratoSuscrito:' +
-          this.dataContrato[0].ContratoSuscrito +
-          ',Vigencia:' +
-          this.dataContrato[0].Vigencia,
+        this.dataContrato[0].ContratoSuscrito +
+        ',Vigencia:' +
+        this.dataContrato[0].Vigencia,
       )
       .subscribe(
         (res_evaluacion) => {
@@ -120,8 +122,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             this.evaluacionCrudService
               .get(
                 'resultado_evaluacion?query=IdEvaluacion:' +
-                  res_evaluacion.Data[0].Id +
-                  ',Activo:true',
+                res_evaluacion.Data[0].Id +
+                ',Activo:true',
               )
               .subscribe(
                 (res_resultado_eva) => {
@@ -160,11 +162,11 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   }
 
   crearPdf() {
-    const cadena1 = 'QUE EL SEÑOR(A) ';
-    const cadena2 = ' IDENTIFICADO(A) CON CÉDULA DE CIUDADANÍA NO. ';
-    const cadena3 = ' , CUMPLIÓ A SATISFACCIÓN CON LAS SIGUIENTES ÓRDENES: ';
-    const cadena4 = 'QUE LA EMPRESA ';
-    const cadena5 = ' IDENTIFICADA CON NIT DE CIUDADANÍA NO. ';
+    const cadena1 = 'Que el señor(a) ';
+    const cadena2 = ' Identificado(a) con cédula de ciudadanía No. ';
+    const cadena3 = ' , cumplió a satisfacción con las siguientes órdenes: ';
+    const cadena4 = 'Que la empresa ';
+    const cadena5 = ' identificada con el NIT ';
 
     PdfMakeWrapper.setFonts(pdfFonts, {
       myCustom: {
@@ -178,16 +180,18 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     let tipoContrato = '';
 
     const pdf = new PdfMakeWrapper();
-    if(this.idTipoContrato === 14) {
+    if (this.idTipoContrato === 14) {
       tipoContrato = 'ORDEN DE SERVICIO';
 
-    } else if(this.idTipoContrato === 6) {
+    } else if (this.idTipoContrato === 6) {
       tipoContrato = 'PRESTACIÓN DE SERVICIOS';
 
-    } else if(this.idTipoContrato === 7) {
+    } else if (this.idTipoContrato === 7) {
       tipoContrato = 'ORDEN DE VENTA';
-      
+    } else if (this.idTipoContrato === 15) {
+      tipoContrato = 'ORDEN DE COMPRA';
     }
+
 
     pdf.pageMargins([80, 10, 60, 30]);
     pdf.styles({
@@ -279,7 +283,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: 'OBJETO: ', style: 'body1', bold: true },
-            { text: this.objeto, style: 'body' }, // objeto del contrato
+            { text: this.objeto.toUpperCase(), style: 'body' }, // objeto del contrato
           ],
         },
       ],
@@ -291,10 +295,19 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           ],
         },
       ],
+      content4: [
+        {
+          text: [
+            { text: '-' + tipoContrato + ' ', style: 'body1' },
+            { text: this.dataContrato[0].ContratoSuscrito, style: 'body1' },
+            { text: ' DE ' + this.dataContrato[0].Vigencia, style: 'body1' }
+          ],
+        },
+      ],
       valorContra: [
         {
           text: [
-            { text: 'VALOR: $ ', style: 'body1', bold: true },
+            { text: 'VALOR DEL CONTRATO: $ ', style: 'body1', bold: true },
             { text: this.numeromiles(this.valorContrato), style: 'body' },
             {
               text:
@@ -384,15 +397,15 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           ],
         },
       ],
-      texTituloNovedad: [
+      textObservaciones: [
         {
           text: [
             {
-              text: 'OBSERVACIONES' + ': ',
+              text: 'OBSERVACIONES: ',
               style: 'body1',
               bold: true,
             },
-            { text: this.textoNovedad.toUpperCase(), style: 'body' },
+            { text: this.texto_observacion.toUpperCase(), style: 'body' },
           ],
         },
       ],
@@ -411,8 +424,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         {
           text: [
             { text: 'FECHA DE FINALIZACION:  ', style: 'body1', bold: true },
-            { 
-              text: this.formato(this.fechaFin), 
+            {
+              text: this.formato(this.fechaFin),
               style: 'body',
             },
           ],
@@ -589,8 +602,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             pdf.add(docDefinition.line);
             pdf.add('\n');
             // --------------- numero de contrato
-            
-            
+            pdf.add(docDefinition.content4);
             pdf.add('\n');
             // -------------------------------- Objeto
             pdf.add(docDefinition.content2);
@@ -598,32 +610,34 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             // -------------------------------- fehca de suscripcion
             pdf.add(docDefinition.fechaSub);
             pdf.add('\n');
+            if (this.fecha_Inicio == '1') {
+              pdf.add(docDefinition.fechainicio);
+              pdf.add('\n');
+            }
+            if (this.fecha_final == '1') {
+              pdf.add(docDefinition.fechafin);
+              pdf.add('\n');
+            }
             if (this.valor_Contrato == '1') {
               pdf.add(docDefinition.valorContra);
             }
             pdf.add('\n');
             if (this.duracion_contrato == '1') {
-              
-              if(parseInt(this.duracionContrato)>12){
+
+              if (parseInt(this.duracionContrato) > 12) {
                 pdf.add(docDefinition.duraContraDias);
-  
-              }else if(parseInt(this.duracionContrato)<=12){
+
+              } else if (parseInt(this.duracionContrato) <= 12) {
                 pdf.add(docDefinition.duraContraMes);
               }
             }
-            if (this.fecha_Inicio == '1') {
-              pdf.add('\n');
-              pdf.add(docDefinition.fechainicio);
-            }
-            if (this.fecha_final == '1') {
-              pdf.add('\n');
-              pdf.add(docDefinition.fechafin);
-            }
             pdf.add('\n');
-            pdf.add(docDefinition.resultadoEva);
-            pdf.add('\n');
-            if (this.nuevo_texto == true) {
-              pdf.add(docDefinition.texTituloNovedad);
+            if (this.calificacionManual !== "") {
+              pdf.add(docDefinition.resultadoEva);
+              pdf.add('\n');
+            }
+            if (this.observaciones == '1') {
+              pdf.add(docDefinition.textObservaciones);
               pdf.add('\n');
             }
 
@@ -634,11 +648,11 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 pdf.add(
                   new Txt(
                     'CESIÓN N° ' +
-                      contador +
-                      ` DEL CONTRATO DE ${tipoContrato} NO `    +
-                      this.dataContrato[0].ContratoSuscrito +
-                      '-' +
-                      this.dataContrato[0].Vigencia,
+                    contador +
+                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
+                    this.dataContrato[0].ContratoSuscrito +
+                    '-' +
+                    this.dataContrato[0].Vigencia,
                   ).bold().end,
                 );
               }
@@ -649,22 +663,22 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 pdf.add(
                   new Txt(
                     'ADDICIÓN N° ' +
-                      contador +
-                      ` DEL CONTRATO DE ${tipoContrato}  NO ` +
-                      this.dataContrato[0].ContratoSuscrito +
-                      '-' +
-                      this.dataContrato[0].Vigencia,
+                    contador +
+                    ` DEL CONTRATO DE ${tipoContrato}  NO ` +
+                    this.dataContrato[0].ContratoSuscrito +
+                    '-' +
+                    this.dataContrato[0].Vigencia,
                   ).bold().end,
                 );
 
                 pdf.add(
                   new Txt(
                     'VALOR: $' +
-                      this.numeromiles(this.valorAdicion[i]) +
-                      ' ' +
-                      this.NumerosAletrasService.convertir(
-                        parseInt(this.valorAdicion[i])
-                      ),
+                    this.numeromiles(this.valorAdicion[i]) +
+                    ' ' +
+                    this.NumerosAletrasService.convertir(
+                      parseInt(this.valorAdicion[i])
+                    ),
                   ).bold().end,
                 );
               }
@@ -676,55 +690,55 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 pdf.add(
                   new Txt(
                     'Prórroga N° ' +
-                      contador +
-                      ` DEL CONTRATO DE ${tipoContrato} NO ` +
-                      this.dataContrato[0].ContratoSuscrito +
-                      '-' +
-                      this.dataContrato[0].Vigencia,
+                    contador +
+                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
+                    this.dataContrato[0].ContratoSuscrito +
+                    '-' +
+                    this.dataContrato[0].Vigencia,
                   ).bold().end,
                 );
                 if (this.diasProrroga[i].length == 0) {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
-                        this.NumerosAletrasService.convertir(
-                          parseInt(this.mesesProrroga[i]),
-                        ).slice(0, -7) +
-                        '' +
-                        this.mesesProrroga[i] +
-                        ' Meses',
+                      this.NumerosAletrasService.convertir(
+                        parseInt(this.mesesProrroga[i]),
+                      ).slice(0, -7) +
+                      '' +
+                      this.mesesProrroga[i] +
+                      ' Meses',
                     ).bold().end,
                   );
                 } else if (this.mesesProrroga[i].length == 0) {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
-                        this.NumerosAletrasService.convertir(
-                          parseInt(this.diasProrroga[i]),
-                        ).slice(0, -7) +
-                        '' +
-                        this.diasProrroga[i] +
-                        ' DÍAS',
+                      this.NumerosAletrasService.convertir(
+                        parseInt(this.diasProrroga[i]),
+                      ).slice(0, -7) +
+                      '' +
+                      this.diasProrroga[i] +
+                      ' DÍAS',
                     ).bold().end,
                   );
                 } else if (this.mesesProrroga[i] == '1') {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
-                        this.diasProrroga[i] +
-                        ' DÍAS Y ' +
-                        this.mesesProrroga[i] +
-                        ' Mes',
+                      this.diasProrroga[i] +
+                      ' DÍAS Y ' +
+                      this.mesesProrroga[i] +
+                      ' Mes',
                     ).bold().end,
                   );
                 } else {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
-                        this.diasProrroga[i] +
-                        ' DÍAS Y ' +
-                        this.mesesProrroga[i] +
-                        ' Meses',
+                      this.diasProrroga[i] +
+                      ' DÍAS Y ' +
+                      this.mesesProrroga[i] +
+                      ' Meses',
                     ).bold().end,
                   );
                 }
@@ -746,8 +760,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   {
                     rowSpan: 2,
                     text:
-                    '\n\n\n\n____________________\n' +
-                    'Firma del supervisor',
+                      '\n\n\n\n____________________\n' +
+                      'Firma del supervisor',
                     style: {
                       alignment: 'center',
                       bold: true
@@ -757,14 +771,14 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 [
                   docDefinition.firmaPagina,
                 ]
-              ]).layout('noBorders').alignment('center').widths([240,160]).absolutePosition(75,675).end
+              ]).layout('noBorders').alignment('center').widths([240, 160]).absolutePosition(75, 675).end
             );
             pdf.add(
               new Txt(
                 'PARA CONSTANCIA SE AÑADE LA FECHA Y HORA DE CREACIÓN:' +
-                  this.horaCreacion.slice(0, 10) +
-                  ' - ' +
-                  this.horaCreacion.slice(11, 19),
+                this.horaCreacion.slice(0, 10) +
+                ' - ' +
+                this.horaCreacion.slice(11, 19),
               )
                 .bold()
                 .alignment('center')
@@ -814,13 +828,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               .create()
               .download(
                 'Certificacion_' +
-                  this.numeroContrato +
-                  '__' +
-                  this.cedula +
-                  '_cumplimiento',
+                this.numeroContrato +
+                '__' +
+                this.cedula +
+                '_cumplimiento',
               );
           },
-          (error) => {},
+          (error) => { },
         );
     });
 
@@ -842,9 +856,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     this.evaluacionMidService
       .get(
         'datosContrato?NumContrato=' +
-          this.dataContrato[0].ContratoSuscrito +
-          '&VigenciaContrato=' +
-          this.dataContrato[0].Vigencia,
+        this.dataContrato[0].ContratoSuscrito +
+        '&VigenciaContrato=' +
+        this.dataContrato[0].Vigencia,
       )
       .subscribe((res_contrato) => {
         // console.log('aca esta el contrato', res_contrato);
@@ -868,7 +882,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
         this.idTipoContrato =
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
-          this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
+        this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
       }),
       (error_service) => {
         this.openWindow(error_service.message);
@@ -893,9 +907,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       ) {
         if (
           this.evaluacionRealizada.ValorFinal >=
-            this.evaluacionRealizada.Clasificaciones[i].LimiteInferior &&
+          this.evaluacionRealizada.Clasificaciones[i].LimiteInferior &&
           this.evaluacionRealizada.ValorFinal <=
-            this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior
+          this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior
         ) {
           return this.evaluacionRealizada.Clasificaciones[i].Nombre;
         }
