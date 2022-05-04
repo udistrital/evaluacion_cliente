@@ -32,11 +32,14 @@ export class PlantillaEvaluacionComponent {
         } else if (response.Data === undefined) {
           if (Object.keys(response[0]).length === 0) {
             this.CargarUltimaPlantilla();
+            console.log("1");
           }
         } else if (Object.keys(response.Data[0]).length === 0) {
           this.CargarUltimaPlantilla();
+          console.log("2");
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
           this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
+          console.info("Json: ", this.json);
           this.evaRealizada = true;
         }
       });
@@ -45,7 +48,9 @@ export class PlantillaEvaluacionComponent {
   CargarUltimaPlantilla() {
     this.evaRealizada = false;
     this.evaluacionMidService.get('plantilla').subscribe((res) => {
+      console.info("Data", res.Data);
       this.json = res.Data;
+      console.log("Json: ", this.json);
     }, (error_service) => {
       this.openWindow(error_service['body'][1]['Error']);
     });
@@ -60,7 +65,7 @@ export class PlantillaEvaluacionComponent {
     } else {
       for (let i = 0; i < this.json.Secciones.length; i++) {
         for (let k = 0; k < this.json.Secciones[i].Seccion_hija_id.length; k++) {
-          if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12) {
+          if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 && this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
             if (this.json.Secciones[i].Seccion_hija_id[k]['Condicion'].length > 0) {
               if (this.json.Secciones[i].Seccion_hija_id[k - 1]['Item'][2].Valor.Nombre ===
                 this.json.Secciones[i].Seccion_hija_id[k]['Condicion'][0]['Nombre']) {
