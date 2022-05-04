@@ -32,14 +32,11 @@ export class PlantillaEvaluacionComponent {
         } else if (response.Data === undefined) {
           if (Object.keys(response[0]).length === 0) {
             this.CargarUltimaPlantilla();
-            console.log("1");
           }
         } else if (Object.keys(response.Data[0]).length === 0) {
           this.CargarUltimaPlantilla();
-          console.log("2");
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
           this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
-          console.info("Json: ", this.json);
           this.evaRealizada = true;
         }
       });
@@ -48,9 +45,7 @@ export class PlantillaEvaluacionComponent {
   CargarUltimaPlantilla() {
     this.evaRealizada = false;
     this.evaluacionMidService.get('plantilla').subscribe((res) => {
-      console.info("Data", res.Data);
       this.json = res.Data;
-      console.log("Json: ", this.json);
     }, (error_service) => {
       this.openWindow(error_service['body'][1]['Error']);
     });
