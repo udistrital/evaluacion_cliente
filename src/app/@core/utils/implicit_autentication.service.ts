@@ -113,7 +113,6 @@ export class ImplicitAutenticationService {
             }, this.httpOptions)
                 .pipe(retry(3))
                 .subscribe((res: any) => {
-                    console.info("res", res);
                     this.clearUrl();
                     localStorage.setItem('user', btoa(JSON.stringify({ ...{ user: payload }, ...{ userService: res } })));
                     this.userSubject.next({ ...{ user: payload }, ...{ userService: res } });
