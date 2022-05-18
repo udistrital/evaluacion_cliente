@@ -137,6 +137,7 @@ export class VerEvaluacionComponent implements OnInit {
       ]];
       this.jsonPDF.push(array);
     }
+    this.observacionesPdf = this.evaluacionRealizada.observaciones;
   }
 
   // Se consulta los datos del contrato general.
