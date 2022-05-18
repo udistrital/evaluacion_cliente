@@ -137,7 +137,6 @@ export class VerEvaluacionComponent implements OnInit {
       ]];
       this.jsonPDF.push(array);
     }
-    this.observacionesPdf = this.evaluacionRealizada.observaciones;
   }
 
   // Se consulta los datos del contrato general.
@@ -178,6 +177,61 @@ export class VerEvaluacionComponent implements OnInit {
 
   formatDate(date) {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  }
+
+  obtenerObservaciones() {
+    var obsStruct = {};
+    if (this.evaluacionRealizada.observaciones != undefined) {
+      this.observacionesPdf = this.evaluacionRealizada.observaciones;
+      obsStruct = [
+        {
+          text: "Observaciones", bold: true, style: 'header',
+        },
+        {
+          text: '\n' + this.evaluacionRealizada.observaciones, style: 'tableSeciones',
+        }
+      ]
+    }
+    console.log("Observaciones: ", this.evaluacionRealizada.observaciones);
+    console.log("Ola: ", obsStruct)
+    return obsStruct
+  }
+
+  tablaEvaluadores() {
+    var evaStruct = [];
+    var medidas = [350, 150, 27];
+    var tabla = [];
+    if (this.evaluacionRealizada.evaluadores != undefined && this.evaluacionRealizada.evaluadores.length != 0) {
+      tabla.push(
+        [
+          { text: 'Nombre del evaluador', alignment: 'center', bold: true },
+          { text: 'Firma', alignment: 'center', bold: true }
+        ]
+      );
+      for (var eva in this.evaluacionRealizada.evaluadores) {
+        medidas.push(90);
+        tabla.push(
+          [
+            { text: "\n" + this.evaluacionRealizada.evaluadores[eva] + "\n\n" },
+            { text: "" }
+          ]
+        );
+      }
+      evaStruct = [
+        {
+          text: "\nEvaluadores\n", bold: true
+        },
+        {
+          style: 'table',
+          table: {
+            widths: medidas,
+            body: tabla,
+          },
+        }
+      ]
+      console.log(evaStruct)
+      return evaStruct;
+    }
   }
 
   makePdf2() {
@@ -280,6 +334,7 @@ export class VerEvaluacionComponent implements OnInit {
         },
         '\n\n',
         this.jsonPDF,
+        this.obtenerObservaciones(),
         '\n',
         {
           style: 'tableFooter',
@@ -322,15 +377,10 @@ export class VerEvaluacionComponent implements OnInit {
             ],
           },
         },
-        {
-          text: '\nObservaciones', bold: true,
-        },
-        {
-          text: '\n' + this.observacionesPdf,
-        },
-        {
-          text: '\n\nFirma del Supervisor: ____________________________________', bold: true,
-        },
+        this.tablaEvaluadores(),
+        // {
+        //   text: '\n\nFirma del Supervisor: ____________________________________', bold: true,
+        // },
       ],
       styles: {
         table: {
