@@ -27,6 +27,7 @@ export class VerEvaluacionComponent implements OnInit {
   fechaEvaluacion: Date;
   docDefinition: any;
   jsonPDF: any;
+  observacionesPdf: string;
   labelAux: any;
   constructor(
     private evaluacionCrudService: EvaluacioncrudService,
@@ -46,7 +47,7 @@ export class VerEvaluacionComponent implements OnInit {
     this.jsonPDF = [];
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     // console.log(this.dataContrato)
     this.realizar = false;
     this.consultarDatosContrato();
@@ -88,7 +89,7 @@ export class VerEvaluacionComponent implements OnInit {
     let bodyTableSeccion: any = [];
     let valorSeccion: any;
     // Se crea el objeto que trae toda la calificación
-    for (let i = 1; i < this.evaluacionRealizada.Secciones.length; i++) {
+    for (let i = 1; i < this.evaluacionRealizada.Secciones.length - 1; i++) {
       bodyTableSeccion = [];
       valorSeccion = 0;
       bodyTableSeccion.push([' ', ' ', ' ', { text: 'Valor Asignado', style: 'subtitulo' }]);
@@ -107,13 +108,14 @@ export class VerEvaluacionComponent implements OnInit {
             valorSeccion += this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor;
           }
         } else {
-          bodyTableSeccion.push([this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[0].Valor,
-          this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[1].Valor,
-          this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Nombre,
-          {
-            text: this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor,
-            alignment: 'center',
-          },
+          bodyTableSeccion.push([
+            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[0].Valor,
+            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[1].Valor,
+            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Nombre,
+            {
+              text: this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor,
+              alignment: 'center',
+            },
           ]);
           valorSeccion += this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor;
         }
@@ -144,7 +146,7 @@ export class VerEvaluacionComponent implements OnInit {
         this.dependencia = res_contrato.Data[0].dependencia_SIC.ESFDEPENCARGADA;
         this.proveedor = res_contrato.Data[0].informacion_proveedor;
         this.contratoCompleto = res_contrato.Data[0].contrato_general;
-        this.supervisor = this.contratoCompleto.Supervisor;        
+        this.supervisor = this.contratoCompleto.Supervisor;
         /*this.administrativaAmazonService.get('supervisor_contrato?query=Documento:' + this.supervisor.Documento
           + ',DependenciaSupervisor:' + this.contratoCompleto.DependenciaSolicitante).subscribe((response) => {
             console.info(response[0].Cargo)
@@ -175,6 +177,58 @@ export class VerEvaluacionComponent implements OnInit {
 
   formatDate(date) {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+  }
+
+  obtenerObservaciones() {
+    var obsStruct = {};
+    if (this.evaluacionRealizada.observaciones != undefined) {
+      this.observacionesPdf = this.evaluacionRealizada.observaciones;
+      obsStruct = [
+        {
+          text: "Observaciones", bold: true, style: 'header',
+        },
+        {
+          text: '\n' + this.evaluacionRealizada.observaciones, style: 'tableSeciones',
+        }
+      ]
+    }
+    return obsStruct
+  }
+
+  tablaEvaluadores() {
+    var evaStruct = [];
+    var medidas = [350, 150, 27];
+    var tabla = [];
+    if (this.evaluacionRealizada.evaluadores != undefined && this.evaluacionRealizada.evaluadores.length != 0) {
+      tabla.push(
+        [
+          { text: 'Nombre del evaluador', alignment: 'center', bold: true },
+          { text: 'Firma', alignment: 'center', bold: true }
+        ]
+      );
+      for (var eva in this.evaluacionRealizada.evaluadores) {
+        medidas.push(90);
+        tabla.push(
+          [
+            { text: "\n" + this.evaluacionRealizada.evaluadores[eva] + "\n\n" },
+            { text: "" }
+          ]
+        );
+      }
+      evaStruct = [
+        {
+          text: "\nEvaluadores\n", bold: true
+        },
+        {
+          style: 'table',
+          table: {
+            widths: medidas,
+            body: tabla,
+          },
+        }
+      ]
+      return evaStruct;
+    }
   }
 
   makePdf2() {
@@ -277,6 +331,7 @@ export class VerEvaluacionComponent implements OnInit {
         },
         '\n\n',
         this.jsonPDF,
+        this.obtenerObservaciones(),
         '\n',
         {
           style: 'tableFooter',
@@ -319,9 +374,10 @@ export class VerEvaluacionComponent implements OnInit {
             ],
           },
         },
-        {
-          text: '\n\nFirma del Supervisor: ____________________________________', bold: true,
-        },
+        this.tablaEvaluadores(),
+        // {
+        //   text: '\n\nFirma del Supervisor: ____________________________________', bold: true,
+        // },
       ],
       styles: {
         table: {

@@ -5,7 +5,8 @@
         <h2>{{seccionPadre.Nombre}}</h2>
       </div>
       <div class="col-2" *ngFor="let seccionHija of seccionPadre.Seccion_hija_id; let j = index">
-        <p class="p-valor" *ngIf="seccionHija['Item'][0].Tamano!=12 && j==0">Valor asignado</p>
+        <p class="p-valor" *ngIf="seccionHija['Item'][0].Tamano!=12 && seccionHija['Item'][0].Tamano!=13 && j==0">Valor
+          asignado</p>
       </div>
     </div>
     <div class="div-seccionHija" *ngFor="let seccionHija of seccionPadre.Seccion_hija_id; let j = index">
@@ -13,10 +14,19 @@
         <mat-form-field class="txtArea-full" *ngIf="this.realizar==true">
           <textarea matInput placeholder="Item Evaluado" [(ngModel)]="this.json.label"></textarea>
         </mat-form-field>
-        <label class="txtArea-full" matInput placeholder="Item Evaluado" *ngIf="this.realizar==false">{{this.json.label}}</label>
+        <label class="txtArea-full" matInput placeholder="Item Evaluado"
+          *ngIf="this.realizar==false">{{this.json.label}}</label>
       </div>
 
-      <div *ngIf="seccionHija['Item'][0].Tamano!=12">
+      <div class="col-12" *ngIf="seccionHija['Item'][0].Tamano==13">
+        <mat-form-field class="txtArea-full" *ngIf="this.realizar==true">
+          <textarea matInput placeholder="Observaciones" [(ngModel)]="this.json.observaciones"></textarea>
+        </mat-form-field>
+        <label class="txtArea-full" matInput placeholder="Observaciones"
+          *ngIf="this.realizar==false">{{this.json.observaciones}}</label>
+      </div>
+
+      <div *ngIf="seccionHija['Item'][0].Tamano!=12 && seccionHija['Item'][0].Tamano!=13">
         <div *ngIf="seccionHija['Condicion'].length>0">
           <div class="row"
             *ngIf="seccionPadre.Seccion_hija_id[j-1]['Item'][2].Valor.Nombre==seccionHija['Condicion'][0]['Nombre']">
@@ -87,9 +97,11 @@
         </div>
       </div>
     </div>
+
     <div *ngFor="let seccionHija of seccionPadre.Seccion_hija_id; let j = index">
-      <hr *ngIf="seccionHija['Item'][0].Tamano!=12 && j==0" />
-      <div class="row div-seccionHija" *ngIf="seccionHija['Item'][0].Tamano!=12 && j==0">
+      <hr *ngIf="seccionHija['Item'][0].Tamano!=12 && seccionHija['Item'][0].Tamano!=13 && j==0" />
+      <div class="row div-seccionHija"
+        *ngIf="seccionHija['Item'][0].Tamano!=12 && seccionHija['Item'][0].Tamano!=13 && j==0">
         <div class="col-8">
         </div>
         <div class="col-2">
@@ -102,6 +114,65 @@
     </div>
   </div>
 </div>
+
+<div class="card card-margin" *ngIf="this.realizar==true">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <h2>Evaluadores</h2>
+      </div>
+    </div>
+    <div class="row" *ngFor="let evaluador of evaluadoresArray; let i = index">
+      <div class="col-md-auto">
+        <p></p>
+        <p>Nombre: </p>
+      </div>
+      <div class="col-9">
+        <mat-form-field class="txtArea-full">
+          <textarea rows="1" cols="9" style="resize:none;" matInput [(ngModel)]="evaluador"
+            placeholder="Nombre del proveedor" (keydown)="deshabilitarBoton(i)">{{evaluador}}</textarea>
+        </mat-form-field>
+      </div>
+      <div class=" col-md-auto">
+        <button mat-mini-fab color="primary" (click)="asignarEvaluador(evaluador, i)" [disabled]="review_btn[i]">
+          <mat-icon>check</mat-icon>
+        </button>
+      </div>
+      <div class="col-md-auto">
+        <button mat-mini-fab color="warn" (click)="eliminarEvaluador(evaluador, i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-auto">
+      <button (click)="agregarEvaluador()" style="align-items: right;" nbButton class="btn-flotante">
+        Agregar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card card-margin" *ngIf="this.realizar==false">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <h2>Evaluadores</h2>
+      </div>
+    </div>
+    <div class="row" *ngFor="let evaluadores of evaluadoresArray; let i = index">
+      <div class="col-2">
+        <p></p>
+        <p>Nombre Evaluador {{i+1}}: </p>
+      </div>
+      <div class="col-md-auto">
+        <p></p>
+        <label class="txtArea-full" matInput placeholder="Nombre del evaluador"
+          *ngIf="this.realizar==false">{{this.evaluadoresArray[i]}}</label>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="card card-margin">
   <div class="card-body">
     <div class="row">
@@ -115,7 +186,7 @@
         <div *ngFor="let clasificador of json['Clasificaciones']; let k = index">
           <p class="p-valor-item"
             *ngIf="json.ValorFinal >= clasificador.LimiteInferior && json.ValorFinal <= clasificador.LimiteSuperior">
-            {{ clasificador['Nombre']  }}</p>
+            {{ clasificador['Nombre'] }}</p>
         </div>
       </div>
       <div class="col-3">

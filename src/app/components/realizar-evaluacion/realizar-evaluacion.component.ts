@@ -59,7 +59,7 @@ export class RealizarEvaluacionComponent implements OnInit {
   }
 
   realizarEvaluacion(data: any) {
-    console.info(this.idResultadoEvalucion);
+    // console.info(this.idResultadoEvalucion);
     if (this.idResultadoEvalucion === 0) {
       console.info('Nueva');
       // Se verifica si hay una evalucion existente
