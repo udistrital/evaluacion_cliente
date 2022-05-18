@@ -41,7 +41,7 @@
           <div *ngFor="let clasificador of evaluacionRealizada['Clasificaciones']; let k = index">
             <label class="p-valor-item"
               *ngIf="evaluacionRealizada.ValorFinal >= clasificador.LimiteInferior && evaluacionRealizada.ValorFinal <= clasificador.LimiteSuperior">
-              {{ clasificador['Nombre']  }}</label>
+              {{ clasificador['Nombre'] }}</label>
           </div>
         </div>
         <div class="col-4">
