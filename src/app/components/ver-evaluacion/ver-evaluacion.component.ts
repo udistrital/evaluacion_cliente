@@ -192,8 +192,6 @@ export class VerEvaluacionComponent implements OnInit {
         }
       ]
     }
-    console.log("Observaciones: ", this.evaluacionRealizada.observaciones);
-    console.log("Ola: ", obsStruct)
     return obsStruct
   }
 
@@ -229,7 +227,6 @@ export class VerEvaluacionComponent implements OnInit {
           },
         }
       ]
-      console.log(evaStruct)
       return evaStruct;
     }
   }

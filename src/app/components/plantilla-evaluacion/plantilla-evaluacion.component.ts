@@ -47,7 +47,6 @@ export class PlantillaEvaluacionComponent {
           }
           this.evaRealizada = true;
         }
-        console.log(this.json);
       });
   }
 
@@ -117,7 +116,6 @@ export class PlantillaEvaluacionComponent {
   }
 
   agregarEvaluador() {
-    // console.log("Evaluadores: ", this.evaluadoresArray);
     this.evaluadoresArray.push("");
     this.review_btn.push(false);
   }
@@ -132,11 +130,6 @@ export class PlantillaEvaluacionComponent {
       this.openWindow("El evaluador ya fue agregado!", "Alerta");
     }
     this.review_btn[i] = true;
-  }
-
-  editarEvaluador(evaluador: any) {
-    console.log("evaluadoresArray: ", this.evaluadoresArray);
-    console.log("Evaluador: ", evaluador);
   }
 
   eliminarEvaluador(evaluador: any, i: number) {
