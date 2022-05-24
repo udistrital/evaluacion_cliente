@@ -202,8 +202,8 @@ export class VerEvaluacionComponent implements OnInit {
     if (this.evaluacionRealizada.evaluadores != undefined && this.evaluacionRealizada.evaluadores.length != 0) {
       tabla.push(
         [
-          { text: 'Nombre del evaluador', alignment: 'center', bold: true },
-          { text: 'Firma', alignment: 'center', bold: true }
+          { text: 'NOMBRE DEL EVALUADOR', alignment: 'center', bold: true },
+          { text: 'FIRMA', alignment: 'center', bold: true }
         ]
       );
       for (var eva in this.evaluacionRealizada.evaluadores) {
@@ -217,7 +217,7 @@ export class VerEvaluacionComponent implements OnInit {
       }
       evaStruct = [
         {
-          text: "\nEvaluadores\n", bold: true
+          text: "\nEvaluadores\n", bold: true, style: 'header'
         },
         {
           style: 'table',
@@ -332,6 +332,7 @@ export class VerEvaluacionComponent implements OnInit {
         '\n\n',
         this.jsonPDF,
         this.obtenerObservaciones(),
+        this.tablaEvaluadores(),
         '\n',
         {
           style: 'tableFooter',
@@ -374,10 +375,6 @@ export class VerEvaluacionComponent implements OnInit {
             ],
           },
         },
-        this.tablaEvaluadores(),
-        // {
-        //   text: '\n\nFirma del Supervisor: ____________________________________', bold: true,
-        // },
       ],
       styles: {
         table: {
