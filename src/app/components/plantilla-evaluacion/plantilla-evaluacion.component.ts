@@ -18,6 +18,8 @@ export class PlantillaEvaluacionComponent {
   json: any = {};
   evaluacionCompleta: boolean;
   evaRealizada: boolean;
+  review_btn: boolean[] = [];
+  evaluadoresArray: string[] = [];
   constructor(
     private evaluacionMidService: EvaluacionmidService,
     private evaluacioncrudService: EvaluacioncrudService,
@@ -37,6 +39,12 @@ export class PlantillaEvaluacionComponent {
           this.CargarUltimaPlantilla();
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
           this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
+          if (this.json.evaluadores != undefined) {
+            this.evaluadoresArray = this.json.evaluadores;
+            for (let i = 0; i < this.evaluadoresArray.length; i++) {
+              this.review_btn.push(false);
+            }
+          }
           this.evaRealizada = true;
         }
       });
@@ -47,17 +55,18 @@ export class PlantillaEvaluacionComponent {
     this.evaluacionMidService.get('plantilla').subscribe((res) => {
       this.json = res.Data;
     }, (error_service) => {
-      this.openWindow(error_service['body'][1]['Error']);
+      this.openWindow(error_service['body'][1]['Error'], 'Alerta');
     });
   }
 
   realizarEvaluacion() {
     this.evaluacionCompleta = true;
     if (this.json.ValorFinal < 0) {
-      this.openWindow('Error en el valor total de la evaluación, es menor de cero.');
+      this.openWindow('Error en el valor total de la evaluación, es menor de cero.', 'Alerta');
     } else if (this.json.ValorFinal > 100) {
-      this.openWindow('Error en el valor total de la evaluación, es mayor a 100');
+      this.openWindow('Error en el valor total de la evaluación, es mayor a 100', 'Alerta');
     } else {
+      this.json.evaluadores = this.evaluadoresArray;
       for (let i = 0; i < this.json.Secciones.length; i++) {
         for (let k = 0; k < this.json.Secciones[i].Seccion_hija_id.length; k++) {
           if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 && this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
@@ -75,7 +84,7 @@ export class PlantillaEvaluacionComponent {
         }
       }
       if (this.evaluacionCompleta === false) {
-        this.openWindow('Aun no se ha completado la evaluación');
+        this.openWindow('Aun no se ha completado la evaluación', 'Alerta');
       } else if (this.evaluacionCompleta === true) {
         this.jsonEvaluacion.emit(this.json);
       }
@@ -106,10 +115,40 @@ export class PlantillaEvaluacionComponent {
     }
   }
 
-  openWindow(mensaje) {
+  agregarEvaluador() {
+    this.evaluadoresArray.push("");
+    this.review_btn.push(false);
+  }
+
+  asignarEvaluador(evaluador: any, i: number) {
+
+    var index = this.evaluadoresArray.indexOf(evaluador);
+    if (index == -1) {
+      this.evaluadoresArray[i] = evaluador;
+      this.openWindow("Evaluador agregado!", "");
+    } else {
+      this.openWindow("El evaluador ya fue agregado!", "Alerta");
+    }
+    this.review_btn[i] = true;
+  }
+
+  eliminarEvaluador(evaluador: any, i: number) {
+    var index = this.evaluadoresArray.indexOf(evaluador);
+    if (index != -1) {
+      this.evaluadoresArray.splice(i, 1);
+      this.review_btn.splice(i, 1);
+    }
+  }
+
+  deshabilitarBoton(i: number) {
+    this.review_btn[i] = false;
+  }
+
+  openWindow(mensaje, titulo) {
     this.windowService.open(
       this.contentTemplate,
-      { title: 'Alerta', context: { text: mensaje } },
+      { title: titulo, context: { text: mensaje } },
     );
   }
+
 }

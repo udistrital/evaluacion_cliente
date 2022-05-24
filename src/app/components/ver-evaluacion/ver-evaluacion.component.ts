@@ -180,6 +180,58 @@ export class VerEvaluacionComponent implements OnInit {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
   }
 
+  obtenerObservaciones() {
+    var obsStruct = {};
+    if (this.evaluacionRealizada.observaciones != undefined) {
+      this.observacionesPdf = this.evaluacionRealizada.observaciones;
+      obsStruct = [
+        {
+          text: "Observaciones", bold: true, style: 'header',
+        },
+        {
+          text: '\n' + this.evaluacionRealizada.observaciones, style: 'tableSeciones',
+        }
+      ]
+    }
+    return obsStruct
+  }
+
+  tablaEvaluadores() {
+    var evaStruct = [];
+    var medidas = [350, 150, 27];
+    var tabla = [];
+    if (this.evaluacionRealizada.evaluadores != undefined && this.evaluacionRealizada.evaluadores.length != 0) {
+      tabla.push(
+        [
+          { text: 'NOMBRE DEL EVALUADOR', alignment: 'center', bold: true },
+          { text: 'FIRMA', alignment: 'center', bold: true }
+        ]
+      );
+      for (var eva in this.evaluacionRealizada.evaluadores) {
+        medidas.push(90);
+        tabla.push(
+          [
+            { text: "\n" + this.evaluacionRealizada.evaluadores[eva] + "\n\n" },
+            { text: "" }
+          ]
+        );
+      }
+      evaStruct = [
+        {
+          text: "\nEvaluadores\n", bold: true, style: 'header'
+        },
+        {
+          style: 'table',
+          table: {
+            widths: medidas,
+            body: tabla,
+          },
+        }
+      ]
+      return evaStruct;
+    }
+  }
+
   makePdf2() {
     return {
       ageSize: 'LETTER',
@@ -280,6 +332,8 @@ export class VerEvaluacionComponent implements OnInit {
         },
         '\n\n',
         this.jsonPDF,
+        this.obtenerObservaciones(),
+        this.tablaEvaluadores(),
         '\n',
         {
           style: 'tableFooter',
@@ -321,15 +375,6 @@ export class VerEvaluacionComponent implements OnInit {
               ],
             ],
           },
-        },
-        {
-          text: '\nObservaciones', bold: true,
-        },
-        {
-          text: '\n' + this.observacionesPdf,
-        },
-        {
-          text: '\n\nFirma del Supervisor: ____________________________________', bold: true,
         },
       ],
       styles: {
