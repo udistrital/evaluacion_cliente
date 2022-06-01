@@ -136,19 +136,19 @@ export class CrearCertificacionComponent implements OnInit {
       },
     });
     PdfMakeWrapper.useFont('TimesNewRoman');
-    var tipoContrato='';
+    var tipoContrato = '';
 
     const pdf = new PdfMakeWrapper();
-    if(this.idTipoContrato == 14){
+    if (this.idTipoContrato == 14) {
       tipoContrato = 'ORDEN DE SERVICIO';
 
-    }else if(this.idTipoContrato == 6){
-      
+    } else if (this.idTipoContrato == 6) {
+
       tipoContrato = 'PRESTACIÓN DE SERVICIOS';
 
-    }else if(this.idTipoContrato == 7){
+    } else if (this.idTipoContrato == 7) {
       tipoContrato = 'ORDEN DE VENTA';
-      
+
 
     }
 
@@ -180,7 +180,7 @@ export class CrearCertificacionComponent implements OnInit {
       },
       tabla2: {
         fontSize: 9,
-        bold:false,
+        bold: false,
         alignment: 'justify',
       }
     });
@@ -202,7 +202,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           table: {
             headerRows: 0,
-            widths: [ 175, '*'],
+            widths: [175, '*'],
             body: this.datosTabla,
           }
         }
@@ -324,7 +324,7 @@ export class CrearCertificacionComponent implements OnInit {
               text: ''
             }
           ],
-          margins: [40,40]
+          margins: [40, 40]
         }
       ],
       footer: [
@@ -372,8 +372,8 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             {
-              text: 
-              '\n\n\nCarrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia',
+              text:
+                '\n\n\nCarrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia',
               style: {
                 alignment: 'left',
                 fontSize: 8
@@ -399,8 +399,8 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             {
-              text: 
-              'Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016',
+              text:
+                'Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016',
               style: {
                 alignment: 'left',
                 bold: false,
@@ -416,8 +416,8 @@ export class CrearCertificacionComponent implements OnInit {
             {
               text: 'jurídica@udistrital.edu.co',
               style: {
-              alignment: 'right',
-              fontSize: 8
+                alignment: 'right',
+                fontSize: 8
               }
             }
           ]
@@ -813,7 +813,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           unbreakable: true,
           image:
-          `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QA6RXhpZgAATU0AKgAAAAgAA1EQAAEAAAABAQAAAFE
+            `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QA6RXhpZgAATU0AKgAAAAgAA1EQAAEAAAABAQAAAFE
           RAAQAAAABAAAAAFESAAQAAAABAAAAAAAAAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCA
           gKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD
           AwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAIgA3kDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcI
@@ -1327,18 +1327,18 @@ export class CrearCertificacionComponent implements OnInit {
 
     let arreglo = [];
     let arreglo2 = [];
-    
-    for ( let i = 0; i < this.datosNovedades.length; i++ ) {
+
+    for (let i = 0; i < this.datosNovedades.length; i++) {
 
     }
 
     // Datos de la tabla de información del contrato
     this.datosTabla.push(
       [
-        { text: 'CONTRATO N° y FECHA:', style: 'tabla1' }, 
+        { text: 'CONTRATO N° y FECHA:', style: 'tabla1' },
         {
           text: this.dataContrato[0].ContratoSuscrito + '-' + this.dataContrato[0].Vigencia +
-          ' - ' + this.formato(this.fechaSuscrip.slice(0, 10)), style: 'tabla2'
+            ' - ' + this.formato(this.fechaSuscrip.slice(0, 10)), style: 'tabla2'
         }
       ]
     );
@@ -1370,32 +1370,32 @@ export class CrearCertificacionComponent implements OnInit {
           { text: 'VALOR DEL CONTRATO:', style: 'tabla1' },
           {
             text: this.NumerosAletrasService.convertir(parseInt(this.valorContrato)).toLowerCase() +
-            '(' + this.numeromiles(this.valorContrato) + '). ',
+              '(' + this.numeromiles(this.valorContrato) + '). ',
             style: 'tabla2',
           },
         ]
-      ); 
+      );
     }
-    
+
     if (this.duracion_contrato == '1') {
       let textoDuracion = '';
-      if(parseInt(this.duracionContrato)>12){
+      if (parseInt(this.duracionContrato) > 12) {
         textoDuracion = this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
-                        '' + this.duracionContrato + ' DIAS';
+          '' + this.duracionContrato + ' DIAS';
 
-      } else if(parseInt(this.duracionContrato)<12){
+      } else if (parseInt(this.duracionContrato) < 12) {
         textoDuracion = this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
-                        '(' + this.duracionContrato + ') MESES';
+          '(' + this.duracionContrato + ') MESES';
       }
       this.datosTabla.push(
         [
           { text: 'PLAZO DEL CONTRATO:', style: 'tabla1' },
-          { 
-            text: 
+          {
+            text:
               textoDuracion +
               ', contados a partir del acta de inicio, previo cumplimiento' +
-               'de los requisitos de perfeccionamiento y ejecución, sin superar' +
-               'el tiempo de la vigencia fiscal.',
+              'de los requisitos de perfeccionamiento y ejecución, sin superar' +
+              'el tiempo de la vigencia fiscal.',
             style: 'tabla2'
           }
         ]
@@ -1412,7 +1412,7 @@ export class CrearCertificacionComponent implements OnInit {
     }
 
     for (var i = 0; i < this.novedad.length; i++) {
-      
+
       switch (this.novedad[i]) {
         case 'Suspension':
           this.datosTabla.push(
@@ -1421,12 +1421,12 @@ export class CrearCertificacionComponent implements OnInit {
               {
                 text:
                   'ACTA DE SUSPENSIÓN DE ' +
-                  this.novedadSuspension[this.contadorSuspen].periodosuspension +
+                  this.formato(this.novedadSuspension[this.contadorSuspen].periodosuspension) +
                   ' DIAS' +
                   ' DESDE El ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension.slice(0,10)) +
+                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension.slice(0, 10)) +
                   ' HASTA El ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension.slice(0,10)),
+                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension.slice(0, 10)),
                 style: 'tabla2'
               },
             ]
@@ -1436,24 +1436,26 @@ export class CrearCertificacionComponent implements OnInit {
         case 'Cesion':
           this.datosTabla.push(
             [
-              { text: 'CESIÓN:', style: 'tabla1'},
+              { text: 'CESIÓN:', style: 'tabla1' },
               {
-                text: `N° ${this.contadorSuspen+1} del contrato de ${tipoContrato} N° ` +
-                this.dataContrato[0].ContratoSuscrito +
-                '-' +
-                this.dataContrato[0].Vigencia + 
-                '. Fecha de la cesión:' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion),
+                text: `N° ${this.contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
+                  this.dataContrato[0].ContratoSuscrito +
+                  '-' +
+                  this.dataContrato[0].Vigencia +
+                  '. Fecha de la cesión:' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion),
                 style: 'tabla2'
-              } 
+              }
             ]
           );
+          this.contadorCesion++;
           break;
         case 'Reinicio':
           this.datosTabla.push(
             [
               { text: 'REINICIO:', style: 'tabla1' },
-              { text: 'Fecha de reinicio del contrato: ' +
-                this.formato(this.novedadReinicio[this.contadorReinicio].fechareinicio), 
+              {
+                text: 'Fecha de reinicio del contrato: ' +
+                  this.formato(this.novedadReinicio[this.contadorReinicio].fechareinicio),
                 style: 'tabla2'
               }
             ]
@@ -1464,75 +1466,74 @@ export class CrearCertificacionComponent implements OnInit {
           this.datosTabla.push(
             [
               { text: 'FECHA DE LIQUIDACIÓN:', style: 'tabla1' },
-              { 
+              {
                 text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
-                style: 'tabla2' 
+                style: 'tabla2'
               }
             ]
           );
           break;
         case 'Terminacion':
-            this.datosTabla.push(
-              [
-                { text: 'TERMINACIÓN:', style: 'tabla1' },
-                { 
-                  text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada), 
-                  style: 'tabla2' 
-                }
-              ]
-            );
+          this.datosTabla.push(
+            [
+              { text: 'TERMINACIÓN:', style: 'tabla1' },
+              {
+                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada),
+                style: 'tabla2'
+              }
+            ]
+          );
           break;
         case 'Adicion':
           this.contadorModificacion++;
           this.datosTabla.push(
             [
               { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              { 
-                text: 
-                'Se adicionó el valor de ' + this.novedadAdicion[this.contadorAdicion].valoradicion + 
-                '.\n\n' + ' Fecha de la adición: ' +
-                this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
-                style: 'tabla2' 
+              {
+                text:
+                  'Se adicionó el valor de ' + this.formato(this.novedadAdicion[this.contadorAdicion].valoradicion) +
+                  '.\n\n' + ' Fecha de la adición: ' +
+                  this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
+                style: 'tabla2'
               }
             ]
           );
           this.contadorAdicion++;
-          this.contadorModificacion++;
           break;
         case 'Prorroga':
+          this.contadorModificacion++;
           this.datosTabla.push(
             [
               { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              { 
-                text: 'Prórroga de (' + this.novedadProrroga[this.contadorProrroga].tiempoprorroga + 
-                ') día(s).', style: 'tabla2' 
+              {
+                text: 'Prórroga de (' + this.formato(this.novedadProrroga[this.contadorProrroga].tiempoprorroga) +
+                  ') día(s).', style: 'tabla2'
               }
             ]
           );
           this.contadorProrroga++;
-          this.contadorModificacion++;
           break;
         case 'Adicion/Prorroga':
+          this.contadorModificacion++;
           this.datosTabla.push(
             [
               { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              { 
-                text: 'Se adicionó el valor de ' + this.novedadAdiPro[this.contadorAdiPro].valoradicion +
-                '. Prórroga de (' + this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga + ') día(s).', 
+              {
+                text: 'Se adicionó el valor de ' + this.formato(this.novedadAdiPro[this.contadorAdiPro].valoradicion) +
+                  '. Prórroga de (' + this.formato(this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga) + ') día(s).',
                 style: 'tabla2'
               }
             ]
           );
           this.contadorAdiPro++;
-          this.contadorModificacion++;
           break;
         case 'Inicio':
           this.datosTabla.push(
             [
               { text: 'NOVEDAD INICIO: ', style: 'tabla1' },
-              { 
-                text: 'Fecha registro: ' + this.novedadInicio[this.contadorInicio].fecharegistro, 
-                style: 'tabla2' 
+              {
+                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro),
+                style: 'tabla2'
               }
             ]
           );
@@ -1541,17 +1542,17 @@ export class CrearCertificacionComponent implements OnInit {
       }
 
     }
-    
+
     if (this.fecha_final == '1') {
       this.datosTabla.push(
         [
           { text: 'FECHA DE TERMINACIÓN:', style: 'tabla1' },
-          { 
+          {
             text: this.formato(this.fechaFin.slice(0, 10)),
             style: 'tabla2'
           }
         ]
-      ); 
+      );
     }
 
     this.datosTabla.push(
@@ -1579,12 +1580,13 @@ export class CrearCertificacionComponent implements OnInit {
 
     this.datosTabla.push(
       [
-        { text: 'OBSERVACIONES:', style: 'tabla1'},
-        { 
+        { text: 'OBSERVACIONES:', style: 'tabla1' },
+        {
           text: 'El contrato de que trata la presente certificación no genera ' +
-          'relación laboral entre el contratista y la Universidad ' +
-          'Distrital Francisco José de Caldas.', 
-          style: 'tabla2' }
+            'relación laboral entre el contratista y la Universidad ' +
+            'Distrital Francisco José de Caldas.',
+          style: 'tabla2'
+        }
       ]
     );
 
@@ -1626,14 +1628,14 @@ export class CrearCertificacionComponent implements OnInit {
                   .alignment('right')
                   .fontSize(7).end,
               ],
-            ]).layout('noBorders').absolutePosition(80,6).end,
+            ]).layout('noBorders').absolutePosition(80, 6).end,
           );
-          
+
           pdf.add(
-            new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' + 
-                    'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
-              'Title',
-            ).end,
+            new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' +
+              'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
+                'Title',
+              ).end,
           );
 
           pdf.add('\n');
@@ -1642,7 +1644,7 @@ export class CrearCertificacionComponent implements OnInit {
           pdf.add('\n');
           // ------------------------------ se arma el primer parrafo
           pdf.add(docDefinition.content[0]);
-          
+
           pdf.add(docDefinition.line);
 
           pdf.add(docDefinition.contentTable);
@@ -1652,9 +1654,9 @@ export class CrearCertificacionComponent implements OnInit {
           pdf.add(
             new Txt(
               'Fecha de expedición de la certificación a solicitud del interesado: ' +
-                this.horaCreacion.slice(0, 10) +
-                ' - ' +
-                this.horaCreacion.slice(11, 19),
+              this.horaCreacion.slice(0, 10) +
+              ' - ' +
+              this.horaCreacion.slice(11, 19),
             )
               .alignment('left')
               .fontSize(9).end,
@@ -1690,9 +1692,9 @@ export class CrearCertificacionComponent implements OnInit {
               [
                 docDefinition.footer3.concat(docDefinition.footer5),
                 docDefinition.footer.concat(docDefinition.footer1).concat(docDefinition.footer2)
-                .concat(docDefinition.footer4).concat(docDefinition.footer7)
+                  .concat(docDefinition.footer4).concat(docDefinition.footer7)
               ],
-            ]).layout('noBorders').margin([80, 0, 60, 0]).widths(['*',85]).end,
+            ]).layout('noBorders').margin([80, 0, 60, 0]).widths(['*', 85]).end,
           );
 
           pdf.create().getBlob((blob) => {
@@ -1729,10 +1731,10 @@ export class CrearCertificacionComponent implements OnInit {
             .create()
             .download(
               'Certificacion_' +
-                this.numeroContrato +
-                '__' +
-                this.cedula +
-                '_contractual',
+              this.numeroContrato +
+              '__' +
+              this.cedula +
+              '_contractual',
             );
         },
         (error) => {
@@ -1756,9 +1758,9 @@ export class CrearCertificacionComponent implements OnInit {
     this.evaluacionMidService
       .get(
         'datosContrato?NumContrato=' +
-          this.dataContrato[0].ContratoSuscrito +
-          '&VigenciaContrato=' +
-          this.dataContrato[0].Vigencia,
+        this.dataContrato[0].ContratoSuscrito +
+        '&VigenciaContrato=' +
+        this.dataContrato[0].Vigencia,
       )
       .subscribe((res_contrato) => {
         // console.log('aca esta el contrato', res_contrato);
@@ -1785,9 +1787,9 @@ export class CrearCertificacionComponent implements OnInit {
         // console.log(this.idContrato);
         this.AdministrativaAmazon.get(
           'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
-            this.dataContrato[0].ContratoSuscrito +
-            ',VigenciaContrato:' +
-            this.dataContrato[0].Vigencia,
+          this.dataContrato[0].ContratoSuscrito +
+          ',VigenciaContrato:' +
+          this.dataContrato[0].Vigencia,
         ).subscribe(
           (res_Contrato) => {
             // console.log('esta es la nueva respuesta',res_Contrato);
@@ -1798,10 +1800,10 @@ export class CrearCertificacionComponent implements OnInit {
                 this.fechaInicio = res_Acta[0].FechaInicio;
                 this.fechaFin = res_Acta[0].FechaFin;
               },
-              (err) => {},
+              (err) => { },
             );
           },
-          (err) => {},
+          (err) => { },
         );
       }),
       (error_service) => {
@@ -1815,8 +1817,9 @@ export class CrearCertificacionComponent implements OnInit {
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
+        console.info(this.allNovedades);
         this.datosNovedades.push('Sin novedades');
-        for (let i = 0; i < data.length; i++ ) {
+        for (let i = 0; i < data.length; i++) {
           switch (data[i].tiponovedad) {
             case 1:
               this.datosNovedades.push('Suspension');
@@ -1879,7 +1882,11 @@ export class CrearCertificacionComponent implements OnInit {
     }
   }
   formato(texto) {
-    return texto.toString().replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');
+    if (texto == null) {
+      return "";
+    } else {
+      return texto.toString().replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');
+    }
   }
   openWindow(mensaje) {
     const Swal = require('sweetalert2');
