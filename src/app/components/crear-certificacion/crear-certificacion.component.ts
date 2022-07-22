@@ -1442,7 +1442,7 @@ export class CrearCertificacionComponent implements OnInit {
                   this.dataContrato[0].ContratoSuscrito +
                   '-' +
                   this.dataContrato[0].Vigencia +
-                  '. Fecha de la cesión:' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion),
+                  '. Fecha de la cesión: ' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion.slice(0,10)),
                 style: 'tabla2'
               }
             ]
@@ -1478,7 +1478,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'TERMINACIÓN:', style: 'tabla1' },
               {
-                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada),
+                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0,10)),
                 style: 'tabla2'
               }
             ]
@@ -1491,7 +1491,7 @@ export class CrearCertificacionComponent implements OnInit {
               { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
               {
                 text:
-                  'Se adicionó el valor de ' + this.formato(this.novedadAdicion[this.contadorAdicion].valoradicion) +
+                  'Se adicionó el valor de ' + this.numeromiles(this.novedadAdicion[this.contadorAdicion].valoradicion) +
                   '.\n\n' + ' Fecha de la adición: ' +
                   this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
                 style: 'tabla2'
@@ -1519,7 +1519,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
               {
-                text: 'Se adicionó el valor de ' + this.formato(this.novedadAdiPro[this.contadorAdiPro].valoradicion) +
+                text: 'Se adicionó el valor de ' + this.numeromiles(this.novedadAdiPro[this.contadorAdiPro].valoradicion) +
                   '. Prórroga de (' + this.formato(this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga) + ') día(s).',
                 style: 'tabla2'
               }
@@ -1532,7 +1532,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'NOVEDAD INICIO: ', style: 'tabla1' },
               {
-                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro),
+                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro.slice(0,10)),
                 style: 'tabla2'
               }
             ]
