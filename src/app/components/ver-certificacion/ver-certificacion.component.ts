@@ -8,7 +8,6 @@ import {
   TemplateRef,
   ElementRef,
 } from "@angular/core";
-import { NuxeoService } from "../../@core/utils/nuxeo.service";
 import { DocumentoService } from "../../@core/data/documento.service";
 import { PdfMakeWrapper, Img, Columns, Table, Cell } from "pdfmake-wrapper";
 import { Txt } from "pdfmake-wrapper";
@@ -51,7 +50,6 @@ export class VerCertificacionComponent implements OnInit {
   codigoDocumento: string;
 
   constructor(
-    private nuxeoService: NuxeoService,
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,

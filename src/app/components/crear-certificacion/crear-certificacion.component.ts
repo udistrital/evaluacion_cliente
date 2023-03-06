@@ -8,7 +8,6 @@ import {
   TemplateRef,
   ElementRef,
 } from '@angular/core';
-import { NuxeoService } from '../../@core/utils/nuxeo.service';
 
 import { DocumentoService } from '../../@core/data/documento.service';
 import { PdfMakeWrapper, Img, Columns, Table, Cell } from 'pdfmake-wrapper';
@@ -102,7 +101,6 @@ export class CrearCertificacionComponent implements OnInit {
   subscription: Subscription;
 
   constructor(
-    private nuxeoService: NuxeoService,
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
@@ -121,6 +119,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   crearPdf() {
+    this.datosTabla = [];
     var cadena1 =
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
       'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
