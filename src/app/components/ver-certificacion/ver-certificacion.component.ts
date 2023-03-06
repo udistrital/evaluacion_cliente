@@ -19,6 +19,7 @@ import pdfFonts from "../../../assets/skins/lightgray/fonts/custom-fonts";
 import { EvaluacioncrudService } from "../../@core/data/evaluacioncrud.service";
 import Swal from "sweetalert2";
 import { Subscription } from "rxjs";
+import { GestorDocumentalService } from "../../@core/utils/gestor-documental.service";
 
 @Component({
   selector: "ngx-ver-certificacion",
@@ -51,6 +52,7 @@ export class VerCertificacionComponent implements OnInit {
 
   constructor(
     private nuxeoService: NuxeoService,
+    private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
@@ -195,19 +197,19 @@ export class VerCertificacionComponent implements OnInit {
       key: "prueba",
     };
 
-    
+    const serv = this.gestorDocumental.getByUUID(contrato.Enlace);
 
-    const serv = this.nuxeoService.getDocumentoOne$(
+    /* const serv = this.nuxeoService.getDocumentoOne$(
       anObject,
       this.documentoService
-    );
+    ); */
 
     (this.subscription = serv.subscribe((response) => {
       //console.log("respuesta 1", response);
 
       //console.log("respuesta", response["prueba"]);
 
-      this.download(response["prueba"], "", 1000, 1000);
+      this.download(response, "", 1000, 1000);
     })),
       (error_service) => {
         this.openWindow("No se pudo descargar la certificacion");
