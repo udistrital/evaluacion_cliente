@@ -2,7 +2,6 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NuxeoService } from '../@core/utils/nuxeo.service';
 
 
 
@@ -133,7 +132,6 @@ import {
   ThemeSwitcherListComponent,
   ToggleSettingsButtonComponent,
   SelectComponent,
-  NuxeoComponent,
   FiltroComponent,
   TablaBusquedaCertificacionComponent,
   TablaBusquedaComponent,
@@ -231,7 +229,6 @@ const COMPONENTS = [
   TwoColumnsLayoutComponent,
   ToggleSettingsButtonComponent,
   SelectComponent,
-  NuxeoComponent,
   SelectDirective,
    FiltroComponent,
   TablaBusquedaComponent,
@@ -281,7 +278,7 @@ const NB_THEME_PROVIDERS = [
   declarations: [...COMPONENTS, ...PIPES],
   entryComponents: [...ENTRY_COMPONENTS],
   providers:[
-    NuxeoService
+    
   ],
 })
 export class ThemeModule {
