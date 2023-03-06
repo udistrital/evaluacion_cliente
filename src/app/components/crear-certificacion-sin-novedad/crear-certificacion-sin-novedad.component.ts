@@ -19,6 +19,7 @@ import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { take } from 'rxjs/operators';
+import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 
 // Set the fonts to use
 
@@ -97,6 +98,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
   constructor(
     private nuxeoService: NuxeoService,
+    private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private evaluacionCrudService: EvaluacioncrudService,
@@ -157,7 +159,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
     this.consultarDatosContrato();
   }
-  regresarFiltro() {
+    regresarFiltro() {
     this.volverFiltro.emit(true);
   }
 
@@ -542,7 +544,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       }
     }
 
-    pdf.create().getBlob((blob) => {
+    /* pdf.create().getBlob((blob) => {
       const file = {
         IdDocumento: 16,
         file: blob,
@@ -559,23 +561,23 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             this.cedula +
             '_cumplimiento');
         file.key = file.Id;
-      });
-      this.nuxeoService
+      }); */
+      /* this.nuxeoService
         .getDocumentos$(arreglo, this.documentoService)
         .pipe(take(1))
         .subscribe(
-          (response) => {
-            this.horaCreacion = response['FechaCreacion'];
+          (response) => { */
+            this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
             pdf.add(
               new Table([
                 [
                   docDefinition.escudoImagen,
-                  docDefinition.valorCabe,
+                  docDefinition.valorCabe,/* 
                   new Txt('Código de autenticidad:' + response['Enlace'])
                     .bold()
                     .alignment('right')
-                    .fontSize(9).end,
+                    .fontSize(9).end, */
                 ],
               ]).layout('noBorders').end,
             );
@@ -775,10 +777,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             );
             pdf.add(
               new Txt(
-                'PARA CONSTANCIA SE AÑADE LA FECHA Y HORA DE CREACIÓN:' +
-                this.horaCreacion.slice(0, 10) +
+                'PARA CONSTANCIA SE AÑADE LA FECHA Y HORA DE CREACIÓN:' + this.horaCreacion
+                /* this.horaCreacion.slice(0, 10) +
                 ' - ' +
-                this.horaCreacion.slice(11, 19),
+                this.horaCreacion.slice(11, 19), */
               )
                 .bold()
                 .alignment('center')
@@ -799,13 +801,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 IdDocumento: 16,
                 file: blob,
                 nombre: '',
-                documento: response['Enlace'],
+                //documento: response['Enlace'],
               };
               arreglo2.push(file2);
               arreglo2.forEach((file) => {
                 (file.Id = file.nombre),
                   (file.nombre =
-                    'certificación_' +
+                    'certificacion_' +
                     file.Id +
                     this.numeroContrato +
                     '__' +
@@ -814,31 +816,36 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 file.key = file.Id;
               });
 
-              this.nuxeoService
-                .updateDocument$(arreglo2, this.documentoService)
-                .subscribe((response) => {
-                  console.log(
-                    'Esta es la respuesta de la actualizacion de nuxeo',
-                    response
-                  );
+              this.gestorDocumental.uploadFiles(arreglo2)
+/*               this.nuxeoService
+                .updateDocument$(arreglo2, this.documentoService) */
+                .subscribe((response: any[]) => {
+                  if (response[0].Status == "200") {
+                    pdf
+                    .create()
+                    .download(
+                      'Certificacion_' +
+                      this.numeroContrato +
+                      '__' +
+                      this.cedula +
+                      '_cumplimiento',
+                    );
+                    this.regresarInicio();
+                  } else {
+                    this.openWindow("Fallo en carga a Gestor Documental");
+                  }
+                },
+                (error) => {
+                  this.openWindow(error.status + ": " + error.message);
                 });
             });
 
-            pdf
-              .create()
-              .download(
-                'Certificacion_' +
-                this.numeroContrato +
-                '__' +
-                this.cedula +
-                '_cumplimiento',
-              );
-          },
+            
+          /* },
           (error) => { },
-        );
-    });
+        ); */
+    //});
 
-    this.regresarInicio();
   }
 
   regresarInicio() {
