@@ -8,7 +8,6 @@ import {
   TemplateRef,
   ElementRef,
 } from '@angular/core';
-import { NuxeoService } from '../../@core/utils/nuxeo.service';
 
 import { DocumentoService } from '../../@core/data/documento.service';
 import { PdfMakeWrapper, Img, Columns, Table, Cell } from 'pdfmake-wrapper';
@@ -25,6 +24,7 @@ import { take } from 'rxjs/operators';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { throwToolbarMixedModesError } from '@angular/material';
 import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
+import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 
 // Set the fonts to use
 
@@ -101,7 +101,7 @@ export class CrearCertificacionComponent implements OnInit {
   subscription: Subscription;
 
   constructor(
-    private nuxeoService: NuxeoService,
+    private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private NumerosAletrasService: NumerosAletrasService,
@@ -119,6 +119,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   crearPdf() {
+    this.datosTabla = [];
     var cadena1 =
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
       'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
@@ -1590,7 +1591,7 @@ export class CrearCertificacionComponent implements OnInit {
       ]
     );
 
-    pdf.create().getBlob((blob) => {
+    /* pdf.create().getBlob((blob) => {
       const file = {
         IdDocumento: 16,
         file: blob,
@@ -1608,25 +1609,25 @@ export class CrearCertificacionComponent implements OnInit {
             '_contractual');
         file.key = file.Id;
       });
-    });
+    }); */
 
-    this.nuxeoService
+    /* this.nuxeoService
       .getDocumentos$(arreglo, this.documentoService)
       .pipe(take(1))
       .subscribe(
-        (response) => {
+        (response: any[]) => { */
           // console.log('esta es la respuesta de nuxeo', response['Enlace']);
-          this.horaCreacion = response['FechaCreacion'];
+          this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
           pdf.add(
             new Table([
               [
                 docDefinition.escudoImagen,
                 docDefinition.valorCabe,
-                new Txt('Código de autenticidad:' + response['Enlace'])
+                /* new Txt('Código de autenticidad:' + "")
                   .bold()
                   .alignment('right')
-                  .fontSize(7).end,
+                  .fontSize(7).end, */
               ],
             ]).layout('noBorders').absolutePosition(80, 6).end,
           );
@@ -1653,10 +1654,10 @@ export class CrearCertificacionComponent implements OnInit {
 
           pdf.add(
             new Txt(
-              'Fecha de expedición de la certificación a solicitud del interesado: ' +
-              this.horaCreacion.slice(0, 10) +
+              'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion
+              /* this.horaCreacion.slice(0, 10) +
               ' - ' +
-              this.horaCreacion.slice(11, 19),
+              this.horaCreacion.slice(11, 19), */
             )
               .alignment('left')
               .fontSize(9).end,
@@ -1702,7 +1703,7 @@ export class CrearCertificacionComponent implements OnInit {
               IdDocumento: 16,
               file: blob,
               nombre: '',
-              documento: response['Enlace'],
+              //documento: response[0].res.Enlace,
             };
             arreglo2.push(file2);
             arreglo2.forEach((file) => {
@@ -1717,31 +1718,36 @@ export class CrearCertificacionComponent implements OnInit {
               file.key = file.Id;
             });
 
-            this.nuxeoService
-              .updateDocument$(arreglo2, this.documentoService)
-              .subscribe((response) => {
-                /* console.log(
-                'Esta es la respuesta de la actualizacion de nuxeo',
-                response
-              );*/
+            this.gestorDocumental.uploadFiles(arreglo2)
+            /* this.nuxeoService
+              .updateDocument$(arreglo2, this.documentoService) */
+              .subscribe((response: any[]) => {
+                if (response[0].Status == "200") {
+                  pdf
+                  .create()
+                  .download(
+                    'Certificacion_' +
+                    this.numeroContrato +
+                    '__' +
+                    this.cedula +
+                    '_contractual',
+                  );
+                  this.regresarInicio();
+                } else {
+                  this.openWindow("Fallo en carga a Gestor Documental");
+                }
+              },
+              (error) => {
+                this.openWindow(error.status + ": " + error.message);
               });
           });
 
-          pdf
-            .create()
-            .download(
-              'Certificacion_' +
-              this.numeroContrato +
-              '__' +
-              this.cedula +
-              '_contractual',
-            );
-        },
+          
+        /* },
         (error) => {
           this.openWindow(error);
         },
-      );
-    this.regresarInicio();
+      );*/
   }
   regresarInicio() {
     const Swal = require('sweetalert2');

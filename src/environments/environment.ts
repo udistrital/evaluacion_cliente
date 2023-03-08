@@ -10,19 +10,7 @@
 
 export const environment = {
   production: false,
-  NUXEO: {
-
-    PATH: 'https://documental.portaloas.udistrital.edu.co/nuxeo/',
-    CREDENTIALS: {
-      USERNAME: 'Administrator',
-      PASS: 'S1st3m4s04S=Fr331P4',
-      // Administrator---S1st3m4s04S=Fr331P4
-      /*
-      USERNAME: 'desarrollooas',
-      PASS: 'desarrollooas2019',
-      */
-    },
-  },
+  GESTOR_DOCUMENTAL_MID: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8199/v1/',
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
   // NOTIFICACION_SERVICE: 'ws://pruebasapi.intranetoas.udistrital.edu.co:8116/ws',
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
