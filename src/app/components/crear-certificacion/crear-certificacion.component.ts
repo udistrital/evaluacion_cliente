@@ -25,6 +25,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { throwToolbarMixedModesError } from '@angular/material';
 import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { RequestManager } from '../../managers/requestManager';
 
 // Set the fonts to use
 
@@ -91,6 +92,8 @@ export class CrearCertificacionComponent implements OnInit {
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
+
+  firmantes: any = undefined;
   // ----------------------------------------------------------------------------------
   horaCreacion: string = '';
 
@@ -107,12 +110,14 @@ export class CrearCertificacionComponent implements OnInit {
     private NumerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
     private NovedadesService: NovedadesService,
+    private anyService: RequestManager,
   ) {
     this.volverFiltro = new EventEmitter();
   }
 
   ngOnInit() {
     this.consultarDatosContrato();
+    this.consultarFirmantes();
   }
   regresarFiltro() {
     this.volverFiltro.emit(true);
@@ -1703,6 +1708,8 @@ export class CrearCertificacionComponent implements OnInit {
               IdDocumento: 16,
               file: blob,
               nombre: '',
+              firmantes: [],
+              representantes: [],
               //documento: response[0].res.Enlace,
             };
             arreglo2.push(file2);
@@ -1716,22 +1723,18 @@ export class CrearCertificacionComponent implements OnInit {
                   this.cedula +
                   '_contractual');
               file.key = file.Id;
+              file.firmantes.push(this.firmantes);
             });
 
-            this.gestorDocumental.uploadFiles(arreglo2)
+            this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
             /* this.nuxeoService
               .updateDocument$(arreglo2, this.documentoService) */
               .subscribe((response: any[]) => {
                 if (response[0].Status == "200") {
-                  pdf
-                  .create()
-                  .download(
-                    'Certificacion_' +
-                    this.numeroContrato +
-                    '__' +
-                    this.cedula +
-                    '_contractual',
-                  );
+                  this.gestorDocumental.getByUUID(response[0].res.Enlace)
+                    .subscribe((file) => {
+                      this.download(file, "", 1000, 1000);
+                    });
                   this.regresarInicio();
                 } else {
                   this.openWindow("Fallo en carga a Gestor Documental");
@@ -1759,7 +1762,50 @@ export class CrearCertificacionComponent implements OnInit {
     });
     this.regresarFiltro();
   }
+  download(url, title, w, h) {
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    window.open(
+      url,
+      title,
+      "toolbar=no," +
+        "location=no, directories=no, status=no, menubar=no," +
+        "scrollbars=no, resizable=no, copyhistory=no, " +
+        "width=" +
+        w +
+        ", height=" +
+        h +
+        ", top=" +
+        top +
+        ", left=" +
+        left
+    );
+  }
 
+  consultarFirmantes(){
+    let docSupervisor = "1085248305"
+    this.anyService.setPath('ADMINISTRATIVA_JBPM_SERVICE');
+    this.anyService.get('supervisor_contratistas/'+docSupervisor)
+      .subscribe((response) => {
+        if (Object.keys(response.supervisores).length > 0) {
+          let supervisor = response.supervisores.supervisor_contratista[0].supervisor;
+          this.firmantes = {
+            nombre: supervisor.nombre,
+            tipoId: "cc",
+            identificacion: docSupervisor,
+            cargo: supervisor.cargo
+          }
+        } else {
+          this.firmantes = undefined;
+          this.openWindow("Sin información de Oficina Asesora Jurídica.");
+          this.regresarFiltro();
+        }
+      }, (error) => {
+        this.firmantes = undefined;
+        this.openWindow("Error al traer información de Oficina Asesora Jurídica.");
+        this.regresarFiltro();
+      });
+  }
   consultarDatosContrato() {
     this.evaluacionMidService
       .get(

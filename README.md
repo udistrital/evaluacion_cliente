@@ -77,6 +77,7 @@ Los siguientes mockups representan la estructura general de la aplicación, mód
 
 [Para visualizar los mockups acceder a este enlace](https://drive.google.com/file/d/1LR9DwzfaFSoEmWc4PWOIicGhS6XIxRrd/view?usp=sharing)
 
+test
 
 ## Dependencias Utilizadas
 
