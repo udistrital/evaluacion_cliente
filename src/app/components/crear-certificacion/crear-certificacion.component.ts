@@ -123,7 +123,7 @@ export class CrearCertificacionComponent implements OnInit {
     var cadena1 =
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
       'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
-    var cadena2 = ', identicado(a) con cédiula de ciudadanía No. ';
+    var cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
     var cadena3 =
       ', suscribió en esta Entidad lo siguiente:';
     var date = new Date();
@@ -1394,8 +1394,8 @@ export class CrearCertificacionComponent implements OnInit {
           {
             text:
               textoDuracion +
-              ', contados a partir del acta de inicio, previo cumplimiento' +
-              'de los requisitos de perfeccionamiento y ejecución, sin superar' +
+              ', contados a partir del acta de inicio, previo cumplimiento ' +
+              'de los requisitos de perfeccionamiento y ejecución, sin superar ' +
               'el tiempo de la vigencia fiscal.',
             style: 'tabla2'
           }
