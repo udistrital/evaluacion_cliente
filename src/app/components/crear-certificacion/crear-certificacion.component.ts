@@ -1665,7 +1665,7 @@ export class CrearCertificacionComponent implements OnInit {
               .alignment('left')
               .fontSize(9).end,
           );
-          pdf.add(
+          /* pdf.add(
             new Table([
               [
                 docDefinition.firmaImagen,
@@ -1674,14 +1674,14 @@ export class CrearCertificacionComponent implements OnInit {
                 docDefinition.firmaPagina
               ]
             ]).alignment('left').layout('noBorders').dontBreakRows(true).end
-          );
+          ); */
           pdf.add('\n');
-          pdf.add(
+          /* pdf.add(
             new Txt(
               'El presente es un documento público expedido con firma mecánica que garantiza ' +
               'su plena validez jurídica y probatoria según lo establecido en la ley 527 de 1999.'
             ).alignment('justify').fontSize(10).bold().end
-          );
+          ); */
           pdf.add('\n');
           pdf.add(
             new Txt(

@@ -762,7 +762,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             }
             pdf.add('\n\n');
 
-            pdf.add(
+            /* pdf.add(
               new Table([
                 [
                   docDefinition.firmaImagen,
@@ -781,7 +781,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   docDefinition.firmaPagina,
                 ]
               ]).layout('noBorders').alignment('center').widths([240, 160]).absolutePosition(75, 675).end
-            );
+            ); */
             pdf.add(
               new Txt(
                 'PARA CONSTANCIA SE AÑADE LA FECHA Y HORA DE CREACIÓN:' + this.horaCreacion
