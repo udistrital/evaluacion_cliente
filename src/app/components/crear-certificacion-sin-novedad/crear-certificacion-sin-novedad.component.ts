@@ -19,6 +19,8 @@ import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { take } from 'rxjs/operators';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { ImplicitAutenticationService } from '../../@core/utils';
+import { TercerosService } from '../../@core/data/terceros.service';
 
 // Set the fonts to use
 
@@ -95,6 +97,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   valorAdicion: string[] = [];
   listaNovedades: string;
 
+  firmantes: any = undefined;
+  representantes: any = undefined;
+
   constructor(
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
@@ -102,6 +107,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private evaluacionCrudService: EvaluacioncrudService,
     private AdministrativaAmazon: AdministrativaamazonService,
     private NumerosAletrasService: NumerosAletrasService,
+    private userAuth: ImplicitAutenticationService,
+    private tercerosService: TercerosService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -156,6 +163,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       );
 
     this.consultarDatosContrato();
+    this.consultarFirmantes();
+    this.consultarRepresentantes();
   }
     regresarFiltro() {
     this.volverFiltro.emit(true);
@@ -799,6 +808,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 IdDocumento: 16,
                 file: blob,
                 nombre: '',
+                firmantes: [],
+                representantes: [],
                 //documento: response['Enlace'],
               };
               arreglo2.push(file2);
@@ -812,22 +823,19 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                     this.cedula +
                     '_cumplimiento');
                 file.key = file.Id;
+                file.firmantes.push(this.firmantes);
+                file.representantes.push(this.representantes);
               });
 
-              this.gestorDocumental.uploadFiles(arreglo2)
+              this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
 /*               this.nuxeoService
                 .updateDocument$(arreglo2, this.documentoService) */
                 .subscribe((response: any[]) => {
                   if (response[0].Status == "200") {
-                    pdf
-                    .create()
-                    .download(
-                      'Certificacion_' +
-                      this.numeroContrato +
-                      '__' +
-                      this.cedula +
-                      '_cumplimiento',
-                    );
+                    this.gestorDocumental.getByUUID(response[0].res.Enlace)
+                    .subscribe((file) => {
+                      this.download(file, "", 1000, 1000);
+                    });
                     this.regresarInicio();
                   } else {
                     this.openWindow("Fallo en carga a Gestor Documental");
@@ -856,7 +864,71 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     });
     this.regresarFiltro();
   }
-
+  download(url, title, w, h) {
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    window.open(
+      url,
+      title,
+      "toolbar=no," +
+        "location=no, directories=no, status=no, menubar=no," +
+        "scrollbars=no, resizable=no, copyhistory=no, " +
+        "width=" +
+        w +
+        ", height=" +
+        h +
+        ", top=" +
+        top +
+        ", left=" +
+        left
+    );
+  }
+  consultarFirmantes(){
+    let IdCargoCompras = 66;
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:'+IdCargoCompras+'&sortby=FechaInicio&order=desc&limit=1')
+      .subscribe((response) => {
+        if (Object.keys(response[0]).length > 0) {
+          this.firmantes = {
+            nombre: response[0].Nombre,
+            tipoId: "CC",
+            identificacion: String(response[0].Documento),
+            cargo: response[0].Cargo
+          }
+        } else {
+          this.firmantes = undefined;
+          this.openWindow("Sin información de Sección de Compras.");
+          this.regresarFiltro();
+        }
+      }, (error) => {
+        this.firmantes = undefined;
+        this.openWindow("Error al traer información de Sección de Compras.");
+        this.regresarFiltro();
+      });
+  }
+  consultarRepresentantes() {
+    let infoUser = this.userAuth.getPayload();
+    if (infoUser.documento) {
+      this.tercerosService.get('datos_identificacion?query=Numero:'+infoUser.documento)
+        .subscribe((response)=>{
+          if (Object.keys(response[0]).length > 0) {
+            this.representantes = {
+              nombre: response[0].TerceroId.NombreCompleto,
+              tipoId: response[0].TipoDocumentoId.CodigoAbreviacion,
+              identificacion: String(response[0].Numero),
+              cargo: ""
+            }
+          } else {
+            this.representantes = undefined;
+            this.openWindow("Error al traer información de usuario");
+            this.regresarFiltro();
+          }
+        }, (error) => {
+            this.representantes = undefined;
+            this.openWindow(error.status + ": " + error.message);
+          this.regresarFiltro();
+        })
+    }
+  }
   consultarDatosContrato() {
     this.evaluacionMidService
       .get(
