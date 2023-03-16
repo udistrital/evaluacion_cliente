@@ -25,7 +25,6 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { throwToolbarMixedModesError } from '@angular/material';
 import { fontStyle } from 'html2canvas/dist/types/css/property-descriptors/font-style';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
-import { RequestManager } from '../../managers/requestManager';
 
 // Set the fonts to use
 
@@ -110,7 +109,6 @@ export class CrearCertificacionComponent implements OnInit {
     private NumerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
     private NovedadesService: NovedadesService,
-    private anyService: RequestManager,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -128,7 +126,7 @@ export class CrearCertificacionComponent implements OnInit {
     var cadena1 =
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
       'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
-    var cadena2 = ', identicado(a) con cédiula de ciudadanía No. ';
+    var cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
     var cadena3 =
       ', suscribió en esta Entidad lo siguiente:';
     var date = new Date();
@@ -1399,8 +1397,8 @@ export class CrearCertificacionComponent implements OnInit {
           {
             text:
               textoDuracion +
-              ', contados a partir del acta de inicio, previo cumplimiento' +
-              'de los requisitos de perfeccionamiento y ejecución, sin superar' +
+              ', contados a partir del acta de inicio, previo cumplimiento ' +
+              'de los requisitos de perfeccionamiento y ejecución, sin superar ' +
               'el tiempo de la vigencia fiscal.',
             style: 'tabla2'
           }
@@ -1783,17 +1781,15 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   consultarFirmantes(){
-    let docSupervisor = "1085248305"
-    this.anyService.setPath('ADMINISTRATIVA_JBPM_SERVICE');
-    this.anyService.get('supervisor_contratistas/'+docSupervisor)
+    let IdCargoJuridica = 78;
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:'+IdCargoJuridica+'&sortby=FechaInicio&order=desc&limit=1')
       .subscribe((response) => {
-        if (Object.keys(response.supervisores).length > 0) {
-          let supervisor = response.supervisores.supervisor_contratista[0].supervisor;
+        if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
-            nombre: supervisor.nombre,
-            tipoId: "cc",
-            identificacion: docSupervisor,
-            cargo: supervisor.cargo
+            nombre: response[0].Nombre,
+            tipoId: "CC",
+            identificacion: String(response[0].Documento),
+            cargo: response[0].Cargo
           }
         } else {
           this.firmantes = undefined;
@@ -1869,7 +1865,7 @@ export class CrearCertificacionComponent implements OnInit {
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
-        console.info(this.allNovedades);
+        //console.info(this.allNovedades);
         this.datosNovedades.push('Sin novedades');
         for (let i = 0; i < data.length; i++) {
           switch (data[i].tiponovedad) {
