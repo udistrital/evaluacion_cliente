@@ -31,18 +31,28 @@ export class PlantillaEvaluacionComponent {
       .subscribe((response: any) => {
         if (response.length === 0) {
           this.json = {};
+          this.evaluadoresArray = [];
+          this.review_btn = [];
         } else if (response.Data === undefined) {
+          this.json = {};
+          this.evaluadoresArray = [];
+          this.review_btn = [];
           if (Object.keys(response[0]).length === 0) {
             this.CargarUltimaPlantilla();
           }
         } else if (Object.keys(response.Data[0]).length === 0) {
+          this.json = {};
+          this.evaluadoresArray = [];
+          this.review_btn = [];
           this.CargarUltimaPlantilla();
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
           this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
+          this.evaluadoresArray = [];
+          this.review_btn = [];
           if (this.json.evaluadores != undefined) {
             this.evaluadoresArray = this.json.evaluadores;
             for (let i = 0; i < this.evaluadoresArray.length; i++) {
-              this.review_btn.push(false);
+              this.review_btn.push(true);
             }
           }
           this.evaRealizada = true;
@@ -67,6 +77,14 @@ export class PlantillaEvaluacionComponent {
       this.openWindow('Error en el valor total de la evaluación, es mayor a 100', 'Alerta');
     } else {
       this.json.evaluadores = this.evaluadoresArray;
+      if(this.review_btn.some(disabled => disabled == false)) {
+        this.openWindow('Alguno de los evaluadores no se ha guardado', 'Alerta');
+        this.evaluacionCompleta = false;
+      }
+      if(this.evaluadoresArray.some(nombre => nombre == "")) {
+        this.openWindow('Falta el nombre de alguno de los evaluadores', 'Alerta');
+        this.evaluacionCompleta = false;
+      }
       for (let i = 0; i < this.json.Secciones.length; i++) {
         for (let k = 0; k < this.json.Secciones[i].Seccion_hija_id.length; k++) {
           if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 && this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
