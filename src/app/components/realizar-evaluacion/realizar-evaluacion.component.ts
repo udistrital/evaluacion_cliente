@@ -6,6 +6,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { DocumentoService } from '../../@core/data/documento.service';
+import { UserService } from '../../@core/data/user.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -19,8 +20,6 @@ export class RealizarEvaluacionComponent implements OnInit {
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
   realizar: boolean;
   evaluacionRealizada: any;
-  jsonEvaluacion: any;
-  jsonResultadoEvaluacion: any;
   idResultadoEvalucion: any;
 
   fechaEvaluacion: any;
@@ -37,10 +36,9 @@ export class RealizarEvaluacionComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
+    private userService: UserService,
   ) {
     this.volverFiltro = new EventEmitter();
-    this.jsonEvaluacion = {};
-    this.jsonResultadoEvaluacion = {};
     this.evaluacionRealizada = {};
     this.idResultadoEvalucion = 0;
     this.jsonPDF = [];
@@ -50,17 +48,17 @@ export class RealizarEvaluacionComponent implements OnInit {
     this.supervisor = {};
   }
 
-
   ngOnInit() {
     this.realizar = true;
     // Se verifica si se ha realizado una evaluación
     this.evaluacionCrudService.get('evaluacion?query=ContratoSuscrito:' + this.dataContrato[0].ContratoSuscrito +
-      ',Vigencia:' + this.dataContrato[0].Vigencia).subscribe((res_evaluacion) => {
+      ',Vigencia:' + this.dataContrato[0].Vigencia)
+      .subscribe((res_evaluacion) => {
         if (Object.keys(res_evaluacion.Data[0]).length !== 0) {
           this.openWindow('Ya hay una evaluación existente, usted procederá a modificarla.');
           this.evaluacionCrudService.getEvaluacion('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true');
           this.evaluacionCrudService.get('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true')
-            .subscribe((res_resultado_eva) => {
+            .subscribe((res_resultado_eva: any) => {
               if (res_resultado_eva !== null) {
                 this.evaluacionRealizada = res_resultado_eva.Data[0];
                 this.idResultadoEvalucion = res_resultado_eva.Data[0].Id;
@@ -75,12 +73,13 @@ export class RealizarEvaluacionComponent implements OnInit {
         this.openWindow(error_service.message);
       });
 
-      this.consultarDatosContrato();
+    this.consultarDatosContrato();
   }
 
   consultarDatosContrato() {
     this.evaluacionMidService.get('datosContrato?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
-      '&VigenciaContrato=' + this.dataContrato[0].Vigencia).subscribe((res_contrato) => {
+      '&VigenciaContrato=' + this.dataContrato[0].Vigencia)
+      .subscribe((res_contrato) => {
         this.dependencia = res_contrato.Data[0].dependencia_SIC.ESFDEPENCARGADA;
         this.proveedor = res_contrato.Data[0].informacion_proveedor;
         this.contratoCompleto = res_contrato.Data[0].contrato_general;
@@ -96,42 +95,40 @@ export class RealizarEvaluacionComponent implements OnInit {
   }
 
   realizarEvaluacion(data: any) {
-    // console.info(this.idResultadoEvalucion);
-    if (this.idResultadoEvalucion === 0) {
-      console.info('Nueva');
-      // Se verifica si hay una evalucion existente
-      this.jsonEvaluacion = {
-        'Activo': true,
-        'Aprobado': true,
-        'ContratoSuscrito': Number(this.dataContrato[0].ContratoSuscrito),
-        'CotizacionId': 0,
-        'PlantillaId': data.Id,
-        'ProveedorId': this.dataContrato[0].IdProveedor,
-        'Vigencia': this.dataContrato[0].Vigencia,
+    const firmantes = data.firmantes;
+    delete data.firmantes;
+
+    // Se verifica si hay una evalucion existente
+    if (!this.idResultadoEvalucion) {
+      const jsonEvaluacion = {
+        Activo: true,
+        Aprobado: true,
+        ContratoSuscrito: Number(this.dataContrato[0].ContratoSuscrito),
+        CotizacionId: 0,
+        PlantillaId: data.Id,
+        ProveedorId: this.dataContrato[0].IdProveedor,
+        Vigencia: this.dataContrato[0].Vigencia,
       };
-      // Se realiza el post de la evaluación.
-      this.evaluacionCrudService.post('evaluacion', this.jsonEvaluacion)
+
+      this.evaluacionCrudService.post('evaluacion', jsonEvaluacion)
         .subscribe((res_evaluacion) => {
           if (res_evaluacion !== null) {
-            this.jsonResultadoEvaluacion = {
-              'Activo': true,
-              'IdEvaluacion': res_evaluacion['Data'],
-              'ResultadoEvaluacion': JSON.stringify(data),
-            };
-            // Se realiza el post del resultado de la evaluación.
-            this.evaluacionCrudService.post('resultado_evaluacion', this.jsonResultadoEvaluacion)
-              .subscribe((res_resultado_eva: any) => {
-                if (res_resultado_eva !== null) {
-                  this.prepareUploadPDF(res_resultado_eva.Data.ResultadoEvaluacion, res_resultado_eva.Data.FechaCreacion)
-                    .then((file) => {
-                      this.deletePreviusDocs(file[0].nombre);
-                      this.gestorDocumental.uploadFiles(file)
-                        .subscribe((response) => {});
-                    });
-                  
-                  this.openWindow('Se ha registrado satisfactoriamente la evaluación del contrato ' + this.dataContrato[0].ContratoSuscrito +
-                    ' de ' + this.dataContrato[0].Vigencia);
-                  this.regresarFiltro();
+            this.posResultadoEvaluacion(res_evaluacion['Data'], data, firmantes);
+          }
+        }, (error_service) => {
+          this.openWindow(error_service.message);
+        });
+
+    } else {
+
+      this.evaluacionCrudService.get('resultado_evaluacion?query=Activo:true,Id:' + this.idResultadoEvalucion)
+        .subscribe((res_resultado_eva) => {
+          if (res_resultado_eva !== null) {
+            res_resultado_eva.Data[0].Activo = false;
+            this.evaluacionCrudService.put('resultado_evaluacion', res_resultado_eva.Data[0])
+              .subscribe((res_eva_actual) => {
+                if (res_eva_actual !== null) {
+                  this.posResultadoEvaluacion(res_eva_actual['Data']['IdEvaluacion'], data, firmantes);
                 }
               }, (error_service) => {
                 this.openWindow(error_service.message);
@@ -140,43 +137,48 @@ export class RealizarEvaluacionComponent implements OnInit {
         }, (error_service) => {
           this.openWindow(error_service.message);
         });
-    } else {
-      console.info('Modificada');
-      this.evaluacionCrudService.get('resultado_evaluacion?query=Id:' + this.idResultadoEvalucion + ',Activo:true')
-        .subscribe((res_resultado_eva) => {
-          if (res_resultado_eva !== null) {
-            res_resultado_eva.Data[0].Activo = false;
-            this.evaluacionCrudService.put('resultado_evaluacion', res_resultado_eva.Data[0]).subscribe((res_eva_actual) => {
-              if (res_eva_actual !== null) {
-                this.jsonResultadoEvaluacion = {
-                  'Activo': true,
-                  'IdEvaluacion': res_eva_actual['Data']['IdEvaluacion'],
-                  'ResultadoEvaluacion': JSON.stringify(data),
-                };
-                // Se realiza el post del resultado de la evaluación.
-                this.evaluacionCrudService.post('resultado_evaluacion', this.jsonResultadoEvaluacion).subscribe((res_res_eva: any) => {
-                  if (res_res_eva !== null) {
-                  this.prepareUploadPDF(res_res_eva.Data.ResultadoEvaluacion, res_res_eva.Data.FechaCreacion)
-                    .then((file) => {
-                      this.deletePreviusDocs(file[0].nombre);
-                      this.gestorDocumental.uploadFiles(file)
-                        .subscribe((response) => {});
-                    });
-
-                  this.openWindow('Se ha actualizado satisfactoriamente la evaluación del contrato ' + this.dataContrato[0].ContratoSuscrito +
-                      ' de ' + this.dataContrato[0].Vigencia);
-                    this.regresarFiltro();
-                  }
-                }, (error_service) => {
-                  this.openWindow(error_service.message);
-                });
-              }
-            }, (error_service) => {
-            });
-          }
-        }, (error_service) => {
-        });
     }
+  }
+
+  private posResultadoEvaluacion(IdEvaluacion, resultado, firmantes) {
+    const jsonResultadoEvaluacion = {
+      Activo: true,
+      IdEvaluacion,
+      ResultadoEvaluacion: JSON.stringify(resultado),
+    };
+
+    this.userService.getPersonaNaturalAmazon().
+      subscribe((res: any) => {
+        const representantes = [];
+        if (res && res.length && res[0].Id) {
+          const responsable = {
+            nombre: res[0].PrimerNombre.concat(' ', res[0].SegundoNombre).concat(' ', res[0].PrimerApellido).concat(' ', res[0].SegundoApellido),
+            cargo: res[0].Cargo,
+            tipoId: res[0].TipoDocumento.Abreviatura,
+            identificacion: res[0].Id,
+          };
+          representantes.push(responsable);
+        }
+
+        this.evaluacionCrudService.post('resultado_evaluacion', jsonResultadoEvaluacion)
+          .subscribe((res_res_eva: any) => {
+            if (res_res_eva !== null) {
+              this.prepareUploadPDF(res_res_eva.Data.ResultadoEvaluacion, res_res_eva.Data.FechaCreacion, firmantes, representantes)
+                .then((file) => {
+                  this.deletePreviusDocs(file[0].nombre);
+                  this.gestorDocumental.uploadFilesElectronicSign(file)
+                    .subscribe((response) => {
+                      this.openWindow('Se ha actualizado satisfactoriamente la evaluación del contrato ' + this.dataContrato[0].ContratoSuscrito +
+                        ' de ' + this.dataContrato[0].Vigencia);
+                      this.regresarFiltro();
+                    });
+                });
+            }
+          }, (error_service) => {
+            this.openWindow(error_service.message);
+          });
+      })
+
   }
 
   crearJsonPDF() {
@@ -250,58 +252,57 @@ export class RealizarEvaluacionComponent implements OnInit {
   }
 
   obtenerObservaciones() {
-    var obsStruct = {};
-    if (this.evaluacionRealizada.observaciones != undefined) {
+    let obsStruct = {};
+    if (this.evaluacionRealizada.observaciones !== undefined) {
       this.observacionesPdf = this.evaluacionRealizada.observaciones;
       obsStruct = [
         {
-          text: "Observaciones", bold: true, style: 'header',
+          text: 'Observaciones', bold: true, style: 'header',
         },
         {
           text: '\n' + this.evaluacionRealizada.observaciones, style: 'tableSeciones',
-        }
-      ]
-    }
-    return obsStruct
-  }
-
-  tablaEvaluadores() {
-    var evaStruct = [];
-    var medidas = [350, 150, 27];
-    var tabla = [];
-    if (this.evaluacionRealizada.evaluadores != undefined && this.evaluacionRealizada.evaluadores.length != 0) {
-      tabla.push(
-        [
-          { text: 'NOMBRE DEL EVALUADOR', alignment: 'center', bold: true },
-          { text: 'FIRMA', alignment: 'center', bold: true }
-        ]
-      );
-      for (var eva in this.evaluacionRealizada.evaluadores) {
-        medidas.push(90);
-        tabla.push(
-          [
-            { text: "\n" + this.evaluacionRealizada.evaluadores[eva] + "\n\n" },
-            { text: "" }
-          ]
-        );
-      }
-      evaStruct = [
-        {
-          text: "\nEvaluadores\n", bold: true, style: 'header'
         },
-        {
-          style: 'table',
-          table: {
-            widths: medidas,
-            body: tabla,
-          },
-        }
-      ]
-      return evaStruct;
+      ];
     }
+    return obsStruct;
   }
 
-  makePdf2() {
+  async prepareUploadPDF(data: any, fecha: any, firmantes: any[], representantes: any[]) {
+    this.evaluacionRealizada = JSON.parse(data);
+    this.fechaEvaluacion = new Date(fecha.substr(0, 16));
+    this.crearJsonPDF();
+
+    const blob = await new Promise<Blob>((resolve) => {
+      pdfMake.createPdf(this.makePdf2(firmantes))
+        .getBlob((blob_) => {
+          resolve(blob_);
+        });
+    });
+
+    return [{
+      IdDocumento: 16,
+      file: blob,
+      nombre: 'evaluacion_contrato_' + this.dataContrato[0].ContratoSuscrito +
+        '_vig_' + this.dataContrato[0].Vigencia + '_proveedor_' + this.dataContrato[0].IdProveedor,
+      firmantes,
+      representantes,
+    }];
+  }
+
+  deletePreviusDocs(nombreDoc: string) {
+    this.documentoService.get('documento?limit=0&query=Activo:true,Nombre:' + nombreDoc)
+      .subscribe((response: any[]) => {
+        if (Object.keys(response[0]).length > 0) {
+          response.forEach((doc) => {
+            doc.Activo = false;
+            this.documentoService.put('documento', doc).subscribe(res => { });
+          });
+        }
+      });
+  }
+
+  makePdf2(firmantes: any[]) {
+    const horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
     return {
       ageSize: 'LETTER',
       pageMargins: [40, 130, 40, 60],
@@ -402,7 +403,6 @@ export class RealizarEvaluacionComponent implements OnInit {
         '\n',
         this.jsonPDF,
         this.obtenerObservaciones(),
-        this.tablaEvaluadores(),
         '\n',
         {
           style: 'tableFooter',
@@ -445,6 +445,18 @@ export class RealizarEvaluacionComponent implements OnInit {
             ],
           },
         },
+        '\n',
+        {
+          text: 'Fecha de expedición de la certificación a solicitud del interesado: ' + horaCreacion,
+          style: 'tableFooter',
+        },
+        '\n',
+      ],
+      footer: [
+        {
+          text: '.',
+          style: 'tableFooter',
+        },
       ],
       styles: {
         table: {
@@ -483,37 +495,7 @@ export class RealizarEvaluacionComponent implements OnInit {
     };
   }
 
-  async prepareUploadPDF(data: any, fecha: any) {
-    this.evaluacionRealizada = JSON.parse(data);
-    this.fechaEvaluacion = new Date(fecha.substr(0, 16));
-    this.crearJsonPDF();
 
-    const blob = await new Promise<Blob>((resolve) => {
-      pdfMake.createPdf(this.makePdf2())
-      .getBlob((blob) => {
-        resolve(blob);
-      });
-    });
-
-    return [{
-      IdDocumento: 16,
-      file: blob,
-      nombre: 'evaluacion_contrato_' + this.dataContrato[0].ContratoSuscrito +
-      '_vig_' + this.dataContrato[0].Vigencia + '_proveedor_' + this.dataContrato[0].IdProveedor,
-    }]
-  }
-
-  deletePreviusDocs(nombreDoc: string) {
-    this.documentoService.get('documento?query=Nombre:'+nombreDoc+',Activo:true&limit=0')
-      .subscribe((response: any[]) => {
-        if (Object.keys(response[0]).length > 0) {
-          response.forEach((doc) => {
-            doc.Activo = false;
-            this.documentoService.put('documento', doc).subscribe(res => {});
-          })
-        }
-      })
-  }
 
   openWindow(mensaje) {
     this.windowService.open(
