@@ -2,6 +2,10 @@ import { Component, OnInit, ViewChild, TemplateRef, Input, Output, EventEmitter 
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { NbWindowService } from '@nebular/theme';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { UserService } from '../../@core/data/user.service';
 
 
 @Component({
@@ -9,50 +13,60 @@ import { NbWindowService } from '@nebular/theme';
   templateUrl: './plantilla-evaluacion.component.html',
   styleUrls: ['./plantilla-evaluacion.component.scss'],
 })
-export class PlantillaEvaluacionComponent {
+export class PlantillaEvaluacionComponent implements OnInit {
 
   @Input() realizar: any;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
   @Output() jsonEvaluacion: EventEmitter<any>;
-  pipeprueba = 'algo';
   json: any = {};
   evaluacionCompleta: boolean;
   evaRealizada: boolean;
-  review_btn: boolean[] = [];
-  evaluadoresArray: string[] = [];
+  evaluadores: any[];
+  evaluadoresForm: FormGroup;
+
   constructor(
+    private fb: FormBuilder,
     private evaluacionMidService: EvaluacionmidService,
     private evaluacioncrudService: EvaluacioncrudService,
+    private userService: UserService,
     private windowService: NbWindowService,
   ) {
+    this.evaluadoresForm = this.fb.group({ evaluadores: this.fb.array([]) });
     this.jsonEvaluacion = new EventEmitter();
     this.evaluacionCompleta = true;
+  }
+
+  ngOnInit(): void {
     this.evaluacioncrudService.evaluacionRealizada$
       .subscribe((response: any) => {
         if (response.length === 0) {
           this.json = {};
-          this.evaluadoresArray = [];
-          this.review_btn = [];
         } else if (response.Data === undefined) {
           this.json = {};
-          this.evaluadoresArray = [];
-          this.review_btn = [];
           if (Object.keys(response[0]).length === 0) {
             this.CargarUltimaPlantilla();
           }
         } else if (Object.keys(response.Data[0]).length === 0) {
           this.json = {};
-          this.evaluadoresArray = [];
-          this.review_btn = [];
           this.CargarUltimaPlantilla();
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
           this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
-          this.evaluadoresArray = [];
-          this.review_btn = [];
-          if (this.json.evaluadores != undefined) {
-            this.evaluadoresArray = this.json.evaluadores;
-            for (let i = 0; i < this.evaluadoresArray.length; i++) {
-              this.review_btn.push(true);
+          if (this.json.evaluadores && this.json.evaluadores.length) {
+            this.evaluadoresForm = this.fb.group({ evaluadores: this.fb.array([]) });
+            for (const ev of this.json.evaluadores) {
+              this.userService.getAllInfoPersonaNatural('?query=Id:' + ev)
+                .subscribe(res => {
+                  if (res && res.length) {
+                    const evaluador = this.fb.group({
+                      evaluador: {
+                        value: res[0],
+                        disabled: !this.realizar,
+                      },
+                    });
+                    this.evaluadoresForm_.push(evaluador);
+                    this.cambiosEvaluador(evaluador.get('evaluador').valueChanges);
+                  }
+                });
             }
           }
           this.evaRealizada = true;
@@ -73,18 +87,27 @@ export class PlantillaEvaluacionComponent {
     this.evaluacionCompleta = true;
     if (this.json.ValorFinal < 0) {
       this.openWindow('Error en el valor total de la evaluación, es menor de cero.', 'Alerta');
+      return;
     } else if (this.json.ValorFinal > 100) {
       this.openWindow('Error en el valor total de la evaluación, es mayor a 100', 'Alerta');
+      return;
     } else {
-      this.json.evaluadores = this.evaluadoresArray;
-      if(this.review_btn.some(disabled => disabled == false)) {
-        this.openWindow('Alguno de los evaluadores no se ha guardado', 'Alerta');
+      const evaluadores = this.evaluadoresForm.value.evaluadores.map(ev => ev.evaluador);
+      if (evaluadores.some(eva => !eva.Id)) {
+        this.openWindow('Los evaluadores no se han seleccionado correctamente.', 'Alerta');
         this.evaluacionCompleta = false;
+        return;
       }
-      if(this.evaluadoresArray.some(nombre => nombre == "")) {
-        this.openWindow('Falta el nombre de alguno de los evaluadores', 'Alerta');
-        this.evaluacionCompleta = false;
-      }
+
+      const firmantes = this.evaluadoresForm.value.evaluadores.map(ev => ev.evaluador).map(ev => ({
+        nombre: ev.PrimerNombre.concat(' ', ev.SegundoNombre).concat(' ', ev.PrimerApellido).concat(' ', ev.SegundoApellido),
+        cargo: ev.Cargo,
+        tipoId: ev.TipoDocumento.Abreviatura,
+        identificacion: ev.Id,
+      }));
+
+      this.json.evaluadores = evaluadores.map(ev => ev.Id);
+      this.json.firmantes = firmantes;
       for (let i = 0; i < this.json.Secciones.length; i++) {
         for (let k = 0; k < this.json.Secciones[i].Seccion_hija_id.length; k++) {
           if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 && this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
@@ -133,33 +156,53 @@ export class PlantillaEvaluacionComponent {
     }
   }
 
-  agregarEvaluador() {
-    this.evaluadoresArray.push("");
-    this.review_btn.push(false);
+  private cambiosEvaluador(valueChanges: Observable<any>) {
+    valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((val: any) => this.loadEvaluadores(val)),
+      ).subscribe((response: any) => {
+        this.evaluadores = response.queryOptions &&
+          response.queryOptions.length &&
+          response.queryOptions[0].Id ? response.queryOptions : [];
+      });
   }
 
-  asignarEvaluador(evaluador: any, i: number) {
+  private loadEvaluadores(text: string) {
+    if (typeof (text) !== 'string' || text.length < 3) {
 
-    var index = this.evaluadoresArray.indexOf(evaluador);
-    if (index == -1) {
-      this.evaluadoresArray[i] = evaluador;
-      this.openWindow("Evaluador agregado!", "");
-    } else {
-      this.openWindow("El evaluador ya fue agregado!", "Alerta");
     }
-    this.review_btn[i] = true;
+
+    const payload = '?fields=Id,Cargo,PrimerNombre,SegundoNombre,PrimerApellido,SegundoApellido,TipoDocumento&limit=0&query=Id__icontains:';
+    const queryOptions$ = typeof (text) === 'string' && text.length > 3 ?
+      this.userService.getAllInfoPersonaNatural(payload + text.replace(/\D/g, '')) :
+      new Observable((obs) => { obs.next([]); });
+    return combineLatest([queryOptions$]).pipe(
+      map(([queryOptions_$]) => ({
+        queryOptions: queryOptions_$,
+      })),
+    );
+  }
+
+  public muestraTercero(contr): string {
+    return contr.Id ? contr.Id : '';
+  }
+
+  public agregarEvaluador() {
+    const evaluador = this.fb.group({
+      evaluador: [''],
+    });
+    this.evaluadoresForm_.push(evaluador);
+    this.cambiosEvaluador(evaluador.get('evaluador').valueChanges);
+  }
+
+  get evaluadoresForm_() {
+    return this.evaluadoresForm.get('evaluadores') as FormArray;
   }
 
   eliminarEvaluador(evaluador: any, i: number) {
-    var index = this.evaluadoresArray.indexOf(evaluador);
-    if (index != -1) {
-      this.evaluadoresArray.splice(i, 1);
-      this.review_btn.splice(i, 1);
-    }
-  }
-
-  deshabilitarBoton(i: number) {
-    this.review_btn[i] = false;
+    this.evaluadoresForm_.removeAt(evaluador);
   }
 
   openWindow(mensaje, titulo) {
