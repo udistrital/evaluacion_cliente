@@ -61,7 +61,7 @@ export class CrearCertificacionComponent implements OnInit {
   fecha_Inicio: string;
   fecha_final: string;
   estado_contrato: string;
-  otros_datos: string;
+  otros_datos: string = '0';
   // ---------------------Novedades----------------------------------------------------
   listaNovedades: string[] = [];
   datosNovedades: string[] = [];
@@ -1831,7 +1831,7 @@ export class CrearCertificacionComponent implements OnInit {
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
         this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
-        this.consultarNovedades();
+        // this.consultarNovedades();
         // console.log(this.idContrato);
         this.AdministrativaAmazon.get(
           'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
