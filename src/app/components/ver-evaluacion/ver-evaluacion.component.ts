@@ -55,7 +55,7 @@ export class VerEvaluacionComponent implements OnInit {
           this.evaluacionCrudService.getEvaluacion('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true');
           this.evaluacionCrudService.get('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true')
             .subscribe((res_resultado_eva) => {
-              if (res_resultado_eva !== null) {
+              if (res_resultado_eva && res_resultado_eva.Data && res_resultado_eva.Data.length && Object.keys(res_resultado_eva.Data[0]).length) {
                 this.evaluacionRealizada = JSON.parse(res_resultado_eva.Data[0].ResultadoEvaluacion);
                 this.fechaEvaluacion = new Date(res_resultado_eva.Data[0].FechaCreacion.substr(0, 16));
               }
