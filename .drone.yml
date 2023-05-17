@@ -72,11 +72,10 @@ steps:
     - push
 
 - name: nodejs_release
-  image: node:12.6.0
+  image: node:14
   commands:
+  - npm ci
   - node --version
-  - npm cache clean --force
-  - npm i
   - npm run build:test
   when:
     branch:
