@@ -18,7 +18,7 @@
                     <td>
                         <div class="row justify-content-md-center">
                             <!-- Rol de pruebas -->
-                            <div *ngIf="logueado && this.rolActual === 'ORDENADOR_DEL_GASTO'" class="col-md-auto">
+                            <div *ngIf="rolActual === 'ORDENADOR_DEL_GASTO'" class="col-md-auto">
                                 <button type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificación Contractual">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -39,7 +39,7 @@
                                     <i class="fas fa-download"></i>
                                 </button>
                             </div> -->
-                            <div class="col-md-auto" *ngIf="this.rolActual === 'CONTRATISTA'  ">
+                            <div class="col-md-auto" *ngIf="rolActual === 'CONTRATISTA'">
                                 <button type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificación Contractual">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -50,7 +50,7 @@
                                 </button>
                             </div>
                             <!-- Rol de Juridica -->
-                            <div *ngIf="logueado && this.rolActual === 'ASISTENTE_JURIDICA'" class="col-md-auto">
+                            <div *ngIf="rolActual === 'ASISTENTE_JURIDICA'" class="col-md-auto">
                                 <button type="button" (click)="relizarCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificación Contractual">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -61,7 +61,7 @@
                                 </button>
                             </div>
                             <!-- Rol de Compras -->
-                            <div *ngIf="logueado && this.rolActual === 'ASISTENTE_COMPRAS'" class="col-md-auto">
+                            <div *ngIf="rolActual === 'ASISTENTE_COMPRAS'" class="col-md-auto">
 
                                 <button type="button" (click)="relizarCertificacionSinNovedad(contrato)" class="btn-i" data-toggle="tooltip" title="Crear Certificación de Cumplimiento">
                                     <i class="fas fa-edit"></i>
@@ -73,7 +73,7 @@
                                 </button>
                             </div>
                             <!-- Rol de OPS -->
-                            <div *ngIf="logueado && this.rolActual === 'OPS'" class="col-md-auto">
+                            <div *ngIf="rolActual === 'OPS'" class="col-md-auto">
 
                                 <button type="button" (click)="verCertificacion(contrato)" class="btn-i" data-toggle="tooltip" title="Ver certificaciones">
 

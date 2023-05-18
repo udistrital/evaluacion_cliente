@@ -1,6 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AuthGuard } from '../../@core/_guards/auth.guard';
-
 
 @Component({
   selector: 'ngx-tabla-busqueda',
@@ -14,25 +12,20 @@ export class TablaBusquedaComponent implements OnInit {
   logueado: boolean = false;
 
 
-  constructor(private authGuard: AuthGuard) {
+  constructor() {
     this.dataToDo = new EventEmitter();
     this.dataView = new EventEmitter();
-
   }
 
   ngOnInit() {
-    if (this.authGuard.validacion()) {
-      this.logueado = true;
-    }
   }
+
   realizarEvaluacion(data: any) {
     this.dataToDo.emit(data);
   }
 
   verEvaluacion(data: any) {
     this.dataView.emit(data);
-  } 
-
-  
+  }
 
 }

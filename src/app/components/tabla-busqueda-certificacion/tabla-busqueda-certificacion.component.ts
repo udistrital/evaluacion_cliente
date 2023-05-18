@@ -13,8 +13,6 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
   @Output() dataToDo: any = {};
   @Output() dataToDo2: any = {};
   @Output() dataView: any = {};
-  logueado: boolean = false;
-
 
   constructor(
     private authGuard: AuthGuard,
@@ -27,9 +25,6 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
 
   ngOnInit() {
     this.rolActual = this.authGuard.rolActual();
-    if (this.authGuard.validacion()) {
-      this.logueado = true;
-    }
   }
 
   relizarCertificacion(data: any) {
