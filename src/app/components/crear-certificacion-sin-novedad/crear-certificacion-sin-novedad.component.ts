@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ViewChild,
-  TemplateRef,
-  ElementRef,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, TemplateRef } from '@angular/core';
 import { DocumentoService } from '../../@core/data/documento.service';
 import { PdfMakeWrapper, Img, Columns, Table, Cell } from 'pdfmake-wrapper';
 import { Txt } from 'pdfmake-wrapper';
@@ -17,10 +8,9 @@ import pdfFonts from '../../../assets/skins/lightgray/fonts/custom-fonts';
 import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
-import { take } from 'rxjs/operators';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { ImplicitAutenticationService } from '../../@core/utils';
-import { TercerosService } from '../../@core/data/terceros.service';
+import { UserService } from '../../@core/data/user.service';
 
 // Set the fonts to use
 
@@ -108,7 +98,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private AdministrativaAmazon: AdministrativaamazonService,
     private NumerosAletrasService: NumerosAletrasService,
     private userAuth: ImplicitAutenticationService,
-    private tercerosService: TercerosService,
+    private userService: UserService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -516,28 +506,28 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     let arreglo2 = [];
     if (this.listaNovedades != null) {
       for (var i = 0; i < this.listaNovedades.length; i++) {
-        if (this.listaNovedades[i] == 'cesion') {
+        if (this.listaNovedades[i] === 'cesion') {
           this.novedadCesion = true;
         }
-        if (this.listaNovedades[i] == 'adicion') {
+        if (this.listaNovedades[i] === 'adicion') {
           this.novedadAdiccion = true;
         }
-        if (this.listaNovedades[i] == 'prorroga') {
+        if (this.listaNovedades[i] === 'prorroga') {
           this.novedadProrroga = true;
         }
-        if (this.listaNovedades[i] == 'suspension') {
+        if (this.listaNovedades[i] === 'suspension') {
           this.novedadSuspension = true;
         }
-        if (this.listaNovedades[i] == 'terminacionLiquidacion') {
+        if (this.listaNovedades[i] === 'terminacionLiquidacion') {
           this.novedadTerminacion = true;
         }
-        if (this.listaNovedades[i] == 'observaciones') {
+        if (this.listaNovedades[i] === 'observaciones') {
           this.nuevo_texto = true;
         }
       }
     }
 
-    if (this.novedadAdiccion == true) {
+    if (this.novedadAdiccion === true) {
       for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
         if (
           parseInt(this.valorAdicion[i], 10) >
@@ -580,7 +570,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               new Table([
                 [
                   docDefinition.escudoImagen,
-                  docDefinition.valorCabe,/* 
+                  docDefinition.valorCabe, /*
                   new Txt('Código de autenticidad:' + response['Enlace'])
                     .bold()
                     .alignment('right')
@@ -602,9 +592,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
             pdf.add('\n');
             // ------------------------------ se arma el primer parrafo
-            if (this.tipoPersona == 'NATURAL') {
+            if (this.tipoPersona === 'NATURAL') {
               pdf.add(docDefinition.content[0]);
-            } else if (this.tipoPersona == 'JURIDICA') {
+            } else if (this.tipoPersona === 'JURIDICA') {
               pdf.add(docDefinition.content1[0]);
             }
 
@@ -619,19 +609,19 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             // -------------------------------- fehca de suscripcion
             pdf.add(docDefinition.fechaSub);
             pdf.add('\n');
-            if (this.fecha_Inicio == '1') {
+            if (this.fecha_Inicio === '1') {
               pdf.add(docDefinition.fechainicio);
               pdf.add('\n');
             }
-            if (this.fecha_final == '1') {
+            if (this.fecha_final === '1') {
               pdf.add(docDefinition.fechafin);
               pdf.add('\n');
             }
-            if (this.valor_Contrato == '1') {
+            if (this.valor_Contrato === '1') {
               pdf.add(docDefinition.valorContra);
             }
             pdf.add('\n');
-            if (this.duracion_contrato == '1') {
+            if (this.duracion_contrato === '1') {
 
               if (parseInt(this.duracionContrato) > 12) {
                 pdf.add(docDefinition.duraContraDias);
@@ -641,19 +631,19 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               }
             }
             pdf.add('\n');
-            if (this.calificacionManual !== "") {
+            if (this.calificacionManual !== '') {
               pdf.add(docDefinition.resultadoEva);
               pdf.add('\n');
             }
-            if (this.observaciones == '1') {
+            if (this.observaciones === '1') {
               pdf.add(docDefinition.textObservaciones);
               pdf.add('\n');
             }
 
             pdf.add('\n');
-            if (this.novedadCesion == true) {
+            if (this.novedadCesion === true) {
               for (var i = 0; i < this.numeroNovedadesCesion; i++) {
-                var contador = i + 1;
+                let contador = i + 1;
                 pdf.add(
                   new Txt(
                     'CESIÓN N° ' +
@@ -666,9 +656,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 );
               }
             }
-            if (this.novedadAdiccion == true) {
+            if (this.novedadAdiccion === true) {
               for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
-                var contador = i + 1;
+                let contador = i + 1;
                 pdf.add(
                   new Txt(
                     'ADDICIÓN N° ' +
@@ -693,9 +683,9 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               }
               pdf.add('\n');
             }
-            if (this.novedadProrroga == true) {
+            if (this.novedadProrroga === true) {
               for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
-                var contador = i + 1;
+                let contador = i + 1;
                 pdf.add(
                   new Txt(
                     'Prórroga N° ' +
@@ -706,7 +696,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                     this.dataContrato[0].Vigencia,
                   ).bold().end,
                 );
-                if (this.diasProrroga[i].length == 0) {
+                if (this.diasProrroga[i].length === 0) {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
@@ -718,7 +708,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                       ' Meses',
                     ).bold().end,
                   );
-                } else if (this.mesesProrroga[i].length == 0) {
+                } else if (this.mesesProrroga[i].length === 0) {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
@@ -730,7 +720,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                       ' DÍAS',
                     ).bold().end,
                   );
-                } else if (this.mesesProrroga[i] == '1') {
+                } else if (this.mesesProrroga[i] === '1') {
                   pdf.add(
                     new Txt(
                       'DURACIÓN:' +
@@ -754,10 +744,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
               }
               pdf.add('\n');
             }
-            if (this.novedadTerminacion == true) {
+            if (this.novedadTerminacion === true) {
               pdf.add(docDefinition.novedadContraTerminacion);
             }
-            if (this.novedadSuspension == true) {
+            if (this.novedadSuspension === true) {
               pdf.add(docDefinition.novedadContraSuspension);
             }
             pdf.add('\n\n');
@@ -831,22 +821,21 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 /*               this.nuxeoService
                 .updateDocument$(arreglo2, this.documentoService) */
                 .subscribe((response: any[]) => {
-                  if (response[0].Status == "200") {
+                  if (response[0].Status === '200') {
                     this.gestorDocumental.getByUUID(response[0].res.Enlace)
                     .subscribe((file) => {
-                      this.download(file, "", 1000, 1000);
+                      this.download(file, '', 1000, 1000);
                     });
                     this.regresarInicio();
                   } else {
-                    this.openWindow("Fallo en carga a Gestor Documental");
+                    this.openWindow('Fallo en carga a Gestor Documental');
                   }
                 },
                 (error) => {
-                  this.openWindow(error.status + ": " + error.message);
+                  this.openWindow(error.status + ': ' + error.message);
                 });
             });
 
-            
           /* },
           (error) => { },
         ); */
@@ -870,65 +859,64 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     window.open(
       url,
       title,
-      "toolbar=no," +
-        "location=no, directories=no, status=no, menubar=no," +
-        "scrollbars=no, resizable=no, copyhistory=no, " +
-        "width=" +
+      'toolbar=no,' +
+        'location=no, directories=no, status=no, menubar=no,' +
+        'scrollbars=no, resizable=no, copyhistory=no, ' +
+        'width=' +
         w +
-        ", height=" +
+        ', height=' +
         h +
-        ", top=" +
+        ', top=' +
         top +
-        ", left=" +
+        ', left=' +
         left
     );
   }
-  consultarFirmantes(){
+  consultarFirmantes() {
     let IdCargoCompras = 66;
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:'+IdCargoCompras+'&sortby=FechaInicio&order=desc&limit=1')
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:' + IdCargoCompras + '&sortby=FechaInicio&order=desc&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
             nombre: response[0].Nombre,
-            tipoId: "CC",
+            tipoId: 'CC',
             identificacion: String(response[0].Documento),
             cargo: response[0].Cargo
-          }
+          };
         } else {
           this.firmantes = undefined;
-          this.openWindow("Sin información de Sección de Compras.");
+          this.openWindow('Sin información de Sección de Compras.');
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow("Error al traer información de Sección de Compras.");
+        this.openWindow('Error al traer información de Sección de Compras.');
         this.regresarFiltro();
       });
   }
+
   consultarRepresentantes() {
-    let infoUser = this.userAuth.getPayload();
-    if (infoUser.documento) {
-      this.tercerosService.get('datos_identificacion?query=Numero:'+infoUser.documento)
-        .subscribe((response)=>{
-          if (Object.keys(response[0]).length > 0) {
-            this.representantes = {
-              nombre: response[0].TerceroId.NombreCompleto,
-              tipoId: response[0].TipoDocumentoId.CodigoAbreviacion,
-              identificacion: String(response[0].Numero),
-              cargo: ""
-            }
-          } else {
-            this.representantes = undefined;
-            this.openWindow("Error al traer información de usuario");
-            this.regresarFiltro();
-          }
-        }, (error) => {
-            this.representantes = undefined;
-            this.openWindow(error.status + ": " + error.message);
+    this.userService.getPersonaNaturalAmazon()
+      .subscribe((res: any) => {
+        if (res && res.length && res[0].Id) {
+          this.representantes = {
+            nombre: res[0].PrimerNombre.concat(' ', res[0].SegundoNombre).concat(' ', res[0].PrimerApellido).concat(' ', res[0].SegundoApellido),
+            cargo: res[0].Cargo,
+            tipoId: res[0].TipoDocumento.Abreviatura,
+            identificacion: res[0].Id,
+          };
+        } else {
+          this.representantes = undefined;
+          this.openWindow('Error al traer información de usuario');
           this.regresarFiltro();
-        })
-    }
+        }
+      }, (error) => {
+        this.representantes = undefined;
+        this.openWindow(error.status + ': ' + error.message);
+        this.regresarFiltro();
+      });
   }
+
   consultarDatosContrato() {
     this.evaluacionMidService
       .get(
@@ -974,7 +962,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     });
   }
   getCalificacion() {
-    if (Object.entries(this.evaluacionRealizada).length == 0) {
+    if (Object.entries(this.evaluacionRealizada).length === 0) {
       return this.calificacionManual;
     } else {
       for (
@@ -1016,8 +1004,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     }
   }
   diasFecha(fecha1, fecha2) {
-    var date_1 = new Date(fecha1.toString()).getTime();
-    var date_2 = new Date(fecha2.toString()).getTime();
+    let date_1 = new Date(fecha1.toString()).getTime();
+    let date_2 = new Date(fecha2.toString()).getTime();
     // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
@@ -1025,7 +1013,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       );
       this.regresarFiltro();
     } else {
-      var diff = date_2 - date_1;
+      let diff = date_2 - date_1;
 
       return diff / (1000 * 60 * 60 * 24);
     }
