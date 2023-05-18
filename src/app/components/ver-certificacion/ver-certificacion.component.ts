@@ -3,6 +3,7 @@ import { DocumentoService } from '../../@core/data/documento.service';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { Subscription } from 'rxjs';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { PopUpManager } from '../../managers/popUpManager';
 
 @Component({
   selector: 'ngx-ver-certificacion',
@@ -29,6 +30,7 @@ export class VerCertificacionComponent implements OnInit {
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
+    private pupManager: PopUpManager,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -39,7 +41,7 @@ export class VerCertificacionComponent implements OnInit {
 
   consultarIdCertificaciones() {
     // console.log('rol',this.rol)
-    const err = 'El número del contrato ' + this.numeroContrato + ' No contiene Certificaciones';
+    const err = 'El contrato número ' + this.numeroContrato + ' no contiene Certificaciones';
     const endpoint = 'documento/';
     const payload = '?limit=-1&query=Activo:true,Nombre';
     const nombre = 'certificacion_' + this.numeroContrato + '__' + this.cedula;
@@ -61,7 +63,7 @@ export class VerCertificacionComponent implements OnInit {
           if (data && data.length && Object.keys(data[0]).length) {
             this.datosCertficiaciones = data;
           } else {
-            this.openWindow(err);
+            this.pupManager.showAlertWithButton('info', 'Alerta', err, 'GLOBAL.aceptar');
             this.regresarFiltro();
           }
         });
@@ -78,7 +80,7 @@ export class VerCertificacionComponent implements OnInit {
           if (data && data.length && Object.keys(data[0]).length) {
             this.datosCertficiaciones = data;
           } else {
-            this.openWindow(err);
+            this.pupManager.showAlertWithButton('info', 'Alerta', err, 'GLOBAL.aceptar');
             this.regresarFiltro();
           }
         });
@@ -123,7 +125,7 @@ export class VerCertificacionComponent implements OnInit {
       this.download(response, '', 1000, 1000);
     })),
       (error_service) => {
-        this.openWindow('No se pudo descargar la certificacion');
+        this.pupManager.showErrorAlert(error_service.message);
         this.regresarFiltro();
       };
   }
@@ -156,11 +158,8 @@ export class VerCertificacionComponent implements OnInit {
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow(
-            'El id ' +
-            this.numeroContrato +
-            ' No contiene Certificaciones asociadas',
-          );
+          const err = 'El contrato número ' + this.numeroContrato + ' contiene Certificaciones';
+          this.pupManager.showAlertWithButton('info', 'Alerta', err, 'GLOBAL.aceptar');
         }
       });
   }
@@ -186,16 +185,9 @@ export class VerCertificacionComponent implements OnInit {
         this.consultarIdCertificaciones();
       }),
       (error_service) => {
-        this.openWindow(error_service.message);
+        this.pupManager.showErrorAlert(error_service.message);
         this.regresarFiltro();
       };
   }
-  openWindow(mensaje) {
-    const Swal = require('sweetalert2');
-    Swal.fire({
-      icon: 'error',
-      title: 'ERROR',
-      text: mensaje,
-    });
-  }
+
 }
