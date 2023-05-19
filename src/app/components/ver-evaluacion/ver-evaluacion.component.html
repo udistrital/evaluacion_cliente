@@ -71,7 +71,7 @@
       </div>
     </div>
   </div>
-  <ngx-plantilla-evaluacion [realizar]="this.realizar">
+  <ngx-plantilla-evaluacion *ngIf="!realizar" [realizar]="false" [evaluacionPrevia]="evaluacionRealizada?.ResultadoEvaluacion">
   </ngx-plantilla-evaluacion>
 </div>
 <ng-template #contentTemplate let-data>

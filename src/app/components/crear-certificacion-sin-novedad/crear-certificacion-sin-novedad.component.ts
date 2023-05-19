@@ -899,12 +899,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     this.userService.getPersonaNaturalAmazon()
       .subscribe((res: any) => {
         if (res && res.length && res[0].Id) {
-          this.representantes = {
-            nombre: res[0].PrimerNombre.concat(' ', res[0].SegundoNombre).concat(' ', res[0].PrimerApellido).concat(' ', res[0].SegundoApellido),
-            cargo: res[0].Cargo,
-            tipoId: res[0].TipoDocumento.Abreviatura,
-            identificacion: res[0].Id,
-          };
+          this.representantes = this.userService.fillRepresentante(res[0]);
         } else {
           this.representantes = undefined;
           this.openWindow('Error al traer información de usuario');

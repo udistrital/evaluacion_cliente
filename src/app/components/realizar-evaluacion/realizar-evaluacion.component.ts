@@ -21,6 +21,7 @@ export class RealizarEvaluacionComponent implements OnInit {
   realizar: boolean;
   evaluacionRealizada: any;
   idResultadoEvalucion: any;
+  idEvaluacion: any;
 
   fechaEvaluacion: any;
   jsonPDF: any;
@@ -49,31 +50,31 @@ export class RealizarEvaluacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.realizar = true;
-    // Se verifica si se ha realizado una evaluación
-    this.evaluacionCrudService.get('evaluacion?query=ContratoSuscrito:' + this.dataContrato[0].ContratoSuscrito +
-      ',Vigencia:' + this.dataContrato[0].Vigencia)
-      .subscribe((res_evaluacion) => {
-        if (Object.keys(res_evaluacion.Data[0]).length !== 0) {
+    this.consultaEvaluacion();
+    this.consultarDatosContrato();
+  }
+
+  private consultaEvaluacion() {
+    this.evaluacionCrudService.getResultadoByContratoVigencia(this.dataContrato[0].ContratoSuscrito, this.dataContrato[0].Vigencia)
+      .subscribe((res_resultado_eva: any) => {
+        this.realizar = true;
+        if (res_resultado_eva && res_resultado_eva.Data && res_resultado_eva.Data.length && Object.keys(res_resultado_eva.Data[0]).length) {
           this.openWindow('Ya hay una evaluación existente, usted procederá a modificarla.');
-          this.evaluacionCrudService.getEvaluacion('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true');
-          this.evaluacionCrudService.get('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true')
-            .subscribe((res_resultado_eva: any) => {
-              if (res_resultado_eva !== null) {
-                this.evaluacionRealizada = res_resultado_eva.Data[0];
-                this.idResultadoEvalucion = res_resultado_eva.Data[0].Id;
+          this.evaluacionRealizada = res_resultado_eva.Data[0];
+          this.idResultadoEvalucion = res_resultado_eva.Data[0].Id;
+        } else {
+          this.evaluacionCrudService.getEvaluacionByContratoVigencia(this.dataContrato[0].ContratoSuscrito, this.dataContrato[0].Vigencia)
+            .subscribe((res_evaluacion: any) => {
+              if (res_evaluacion && res_evaluacion.Data && res_evaluacion.Data.length && res_evaluacion.Data[0].Id) {
+                this.idEvaluacion = res_evaluacion.Data[0];
               }
             }, (error_service) => {
               this.openWindow(error_service.message);
             });
-        } else {
-          this.evaluacionCrudService.getEvaluacion('nuevaEvaluacion');
         }
       }, (error_service) => {
         this.openWindow(error_service.message);
       });
-
-    this.consultarDatosContrato();
   }
 
   consultarDatosContrato() {
@@ -99,7 +100,7 @@ export class RealizarEvaluacionComponent implements OnInit {
     delete data.firmantes;
 
     // Se verifica si hay una evalucion existente
-    if (!this.idResultadoEvalucion) {
+    if (!this.idResultadoEvalucion && !this.idEvaluacion) {
       const jsonEvaluacion = {
         Activo: true,
         Aprobado: true,
@@ -119,8 +120,9 @@ export class RealizarEvaluacionComponent implements OnInit {
           this.openWindow(error_service.message);
         });
 
-    } else {
-
+    } else if (!this.idResultadoEvalucion && this.idEvaluacion) {
+      this.posResultadoEvaluacion(this.idEvaluacion, data, firmantes);
+    } else if (this.idResultadoEvalucion && !this.idEvaluacion) {
       this.evaluacionCrudService.get('resultado_evaluacion?query=Activo:true,Id:' + this.idResultadoEvalucion)
         .subscribe((res_resultado_eva) => {
           if (res_resultado_eva !== null) {
@@ -151,13 +153,7 @@ export class RealizarEvaluacionComponent implements OnInit {
       subscribe((res: any) => {
         const representantes = [];
         if (res && res.length && res[0].Id) {
-          const responsable = {
-            nombre: res[0].PrimerNombre.concat(' ', res[0].SegundoNombre).concat(' ', res[0].PrimerApellido).concat(' ', res[0].SegundoApellido),
-            cargo: res[0].Cargo,
-            tipoId: res[0].TipoDocumento.Abreviatura,
-            identificacion: res[0].Id,
-          };
-          representantes.push(responsable);
+          representantes.push(this.userService.fillRepresentante(res[0]));
         }
 
         this.evaluacionCrudService.post('resultado_evaluacion', jsonResultadoEvaluacion)
@@ -273,7 +269,7 @@ export class RealizarEvaluacionComponent implements OnInit {
     this.crearJsonPDF();
 
     const blob = await new Promise<Blob>((resolve) => {
-      pdfMake.createPdf(this.makePdf2(firmantes))
+      pdfMake.createPdf(this.makePdf2())
         .getBlob((blob_) => {
           resolve(blob_);
         });
@@ -301,7 +297,7 @@ export class RealizarEvaluacionComponent implements OnInit {
       });
   }
 
-  makePdf2(firmantes: any[]) {
+  makePdf2() {
     const horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
     return {
       ageSize: 'LETTER',

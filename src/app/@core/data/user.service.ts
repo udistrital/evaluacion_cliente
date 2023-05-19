@@ -46,7 +46,16 @@ export class UserService {
                 },
             ),
         );
-      }
+    }
+
+    fillRepresentante(rep: any) {
+        return {
+            nombre: rep.PrimerNombre.concat(' ', rep.SegundoNombre).concat(' ', rep.PrimerApellido).concat(' ', rep.SegundoApellido),
+            cargo: rep.Cargo,
+            tipoId: rep.TipoDocumento.Abreviatura,
+            identificacion: rep.Id,
+        };
+    }
 
     private handleError(error: HttpErrorResponse) {
         if (error.error instanceof ErrorEvent) {
