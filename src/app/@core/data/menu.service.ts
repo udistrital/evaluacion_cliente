@@ -18,7 +18,10 @@ const path = environment.CONF_MENU_SERVICE;
 @Injectable()
 export class MenuService {
 
+  private permisos: any[];
+
   constructor(private http: HttpClient) {
+    this.permisos = [];
   }
 
   get(endpoint) {
@@ -43,6 +46,19 @@ export class MenuService {
     return this.http.delete(path + endpoint + '/' + element.Id, httpOptions).pipe(
       catchError(this.handleError),
     );
+  }
+
+  public setPermisos(configuraciones: any) {
+    this.permisos = configuraciones;
+  }
+
+  public getRoute(accion: string): any {
+    return this.findRoute(this.permisos, accion);
+  }
+
+  findRoute(menu: any[], option: string) {
+    return menu.find(opt => (opt.Url === option) ||
+      (opt.Opciones && opt.Opciones.length && this.findRoute(opt.Opciones, option)));
   }
 
   private handleError(error: HttpErrorResponse) {

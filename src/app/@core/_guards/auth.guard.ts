@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  Router,
-} from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { ImplicitAutenticationService } from '../utils/implicit_autentication.service';
+import { MenuService } from '../data/menu.service';
+import { PopUpManager } from '../../managers/popUpManager';
 
 @Injectable({
   providedIn: 'root',
@@ -14,38 +11,45 @@ export class AuthGuard implements CanActivate {
   rol: any;
   user: any;
   userService: any;
-  constructor(private router: Router, private autenticacion: ImplicitAutenticationService) { }
+  constructor(
+    private router: Router,
+    private autenticacion: ImplicitAutenticationService,
+    private menu: MenuService,
+    private pUpManager: PopUpManager
+  ) { }
 
-  canActivate(
-    route?: ActivatedRouteSnapshot,
-    state?: RouterStateSnapshot,
-  ) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
+    const allowed = !!this.menu.getRoute(state.url);
+    if (!allowed) {
+      this.pUpManager.showErrorAlert('No tiene permisos');
+    }
+
+    this.setRol();
+    return allowed;
+  }
+
+  setRol() {
     this.autenticacion.user$.subscribe((data: any) => {
       const { user, userService } = data;
       this.user = user;
       this.userService = userService;
-    })
-    return this.validacion();
-    // return valid;
+      this.validacion();
+    });
   }
 
   validacion(): boolean {
-    let valid: boolean = false;
     let payload: any;
-    if (this.user.role !== undefined) {
+    if (this.user && this.user.role) {
       payload = this.user;
-    } else {
+    } else if (this.userService) {
       payload = this.userService;
     }
-    if (payload && payload.role) {
-      for (let i = 0; i < payload.role.length; i++) {
-        if (payload.role[i] === 'ORDENADOR_DEL_GASTO') {
-          this.rol = payload.role[i];
-          valid = true;
-          break;
-        }
-      }
-      if (this.rol != 'ORDENADOR_DEL_GASTO') {
+
+    if (payload && payload.role && payload.role.length) {
+      const rolOrdenador = 'ORDENADOR_DEL_GASTO';
+      this.rol = payload.role.find(r => r === rolOrdenador);
+      if (this.rol != rolOrdenador) {
         for (let i = 0; i < payload.role.length; i++) {
           if (
             payload.role[i] === 'SUPERVISOR' ||
@@ -55,20 +59,17 @@ export class AuthGuard implements CanActivate {
             payload.role[i] === 'CONTRATISTA'
           ) {
             this.rol = payload.role[i];
-            valid = true;
             break;
           }
         }
       }
     }
-    return valid;
+
+    return !!this.rol;
   }
 
   rolActual(): any {
     return this.rol;
   }
 
-  // canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-  //     return this.canActivate(route, state);
-  // }
 }

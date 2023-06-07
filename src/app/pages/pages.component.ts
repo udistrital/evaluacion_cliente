@@ -17,8 +17,6 @@ import { MENU_ITEMS } from './pages-menu';
       <router-outlet></router-outlet>
       <footer></footer>
     </ngx-sample-layout>
-
-
   `,
 })
 export class PagesComponent implements OnInit {
@@ -58,6 +56,7 @@ export class PagesComponent implements OnInit {
   getMenu(roles) {
     this.roles = roles;
     this.menuws.get(this.roles + `/Evaluacion`).subscribe(menuResult => {
+      this.menuws.setPermisos(menuResult);
       const menuRespuesta = <any>menuResult;
       this.menuLogin.push({
         title: 'Home',
