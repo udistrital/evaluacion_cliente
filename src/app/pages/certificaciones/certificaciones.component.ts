@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthGuard } from '../../@core/_guards/auth.guard';
+import { MenuService } from '../../@core/data/menu.service';
 
 @Component({
   selector: 'ngx-certificaciones',
@@ -8,8 +8,6 @@ import { AuthGuard } from '../../@core/_guards/auth.guard';
 })
 export class CertificacionesComponent implements OnInit {
   titulo: string = 'Certificaciones';
-  /* se guarda el rol actual*/
-  rolActual: any;
 
   /*Se guarda los datos que envía el componente filtro*/
   data: any;
@@ -23,19 +21,31 @@ export class CertificacionesComponent implements OnInit {
   /*Varible para saber si debe mostrar o no el componente ver*/
   componenteRealizarCertificacion: boolean;
 
-  constructor(private authGuard: AuthGuard) {
+  permisoFiltrarContratos: boolean = false;
+  permisoCumplimiento: boolean = false;
+  permisoContractual: boolean = false;
+
+  constructor(
+    private menuService: MenuService,
+  ) {
     this.data = [];
     this.datosContratoAVer = [];
     this.datosContratoAEvaluar = [];
   }
 
   ngOnInit() {
-    this.rolActual = this.authGuard.rolActual();
-    //console.log("Este es el rol",this.rolActual)
+    this.getPermisos();
     this.componenteVer = false;
     this.componenteRealizar = false;
     this.componenteRealizarCertificacion = false;
   }
+
+  private getPermisos() {
+    this.permisoFiltrarContratos = !!this.menuService.getAccion('Filtrar contratos');
+    this.permisoCumplimiento = !!this.menuService.getAccion('Certificación de cumplimiento');
+    this.permisoContractual = !!this.menuService.getAccion('Certificación contractual');
+  }
+
   /*Guardo los datos de la consulta obtenida creada por el filtro*/
   guardarDatosConsulta(data: any) {
     this.data = data;
@@ -53,7 +63,7 @@ export class CertificacionesComponent implements OnInit {
   relizarCertificacion(data: any) {
     // console.log("esta es la data", data);
 
-    this.datosContratoAEvaluar[0] = data;    
+    this.datosContratoAEvaluar[0] = data;
     this.componenteRealizar = true;
   }
   relizarCertificacionSinNovedad(data: any) {

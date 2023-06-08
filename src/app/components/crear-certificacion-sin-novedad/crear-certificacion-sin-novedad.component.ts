@@ -31,7 +31,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   @ViewChild('contentTemplate', { read: false })
   contentTemplate: TemplateRef<any>;
   @Output() volverFiltro: EventEmitter<Boolean>;
-  @Input() rol: string;
   @Input() dataContrato: any = [];
   uidDocumento: string;
 

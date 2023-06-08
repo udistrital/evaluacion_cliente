@@ -38,7 +38,6 @@ export class CrearCertificacionComponent implements OnInit {
   contentTemplate: TemplateRef<any>;
   @Output() volverFiltro: EventEmitter<Boolean>;
   @Input() dataContrato: any = [];
-  @Input() rol: string = '';
   uidDocumento: string;
   idDocumento: number;
   novedad: string[] = [];
