@@ -4,6 +4,7 @@ import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { ImplicitAutenticationService } from '../../@core/utils/implicit_autentication.service';
 import { AuthGuard } from '../../@core/_guards/auth.guard';
 import { UserService } from '../../@core/data/user.service';
+import { MenuService } from '../../@core/data/menu.service';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class FiltroComponent implements OnInit {
   @Output() dataResponse: EventEmitter<any>;
   @Input() nombreTitulo: String;
   @Input() filtroSupervisor: boolean = false;
+  @Input() filtroTipo: boolean = false;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
 
   vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
@@ -33,7 +35,8 @@ export class FiltroComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private authService: ImplicitAutenticationService,
     private authGuard: AuthGuard,
-    private userService: UserService
+    private userService: UserService,
+    private menuService: MenuService,
   ) {
     this.dataResponse = new EventEmitter();
   }
@@ -45,7 +48,7 @@ export class FiltroComponent implements OnInit {
 
     this.autentication_data = this.authService.getPayload();
     this.rolUsuario = this.authGuard.rolActual();
-    if (this.rolUsuario == 'ORDENADOR_DEL_GASTO') {
+    if (this.rolUsuario === 'ORDENADOR_DEL_GASTO') {
       this.documento = '0';
     } else {
       this.documento = this.autentication_data.documento;
@@ -61,9 +64,21 @@ export class FiltroComponent implements OnInit {
     }
   }
 
-  private checkSupervisor() {
+  private getFiltroTipo(): string {
+    const requiereFiltro = this.filtroTipo &&
+      !this.menuService.getAccion('Evaluar todo tipo') &&
+      !!this.menuService.getAccion('Evaluar solo compras');
+
+    if (!requiereFiltro) {
+      return '';
+    }
+
+    return '&TipoContrato=Orden de Compra';
+  }
+
+  private checkSupervisor(): void {
     if (!this.filtroSupervisor) {
-      this.RealizarPeticion();
+      this.RealizarPeticion('', this.getFiltroTipo());
       return;
     }
 
@@ -73,14 +88,14 @@ export class FiltroComponent implements OnInit {
       return;
     }
 
-    this.RealizarPeticion('&Supervisor=' + documento);
+    this.RealizarPeticion('&Supervisor=' + documento, this.getFiltroTipo());
     return;
   }
 
-  RealizarPeticion(qSupervisor: string = '') {
+  RealizarPeticion(qSupervisor: string = '', qTipo: string = '') {
     if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
-      this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + qSupervisor)
+      this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + qSupervisor + qTipo)
         .subscribe((res) => {
           // console.log('respuesta del filtro',res);
           if (res.Data !== null) {
@@ -93,7 +108,8 @@ export class FiltroComponent implements OnInit {
     } else {
       if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
-        this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato=0&Vigencia=' + String(this.vigencia) + qSupervisor)
+        this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor +
+          '&NumContrato=0&Vigencia=' + String(this.vigencia) + qSupervisor + qTipo)
           .subscribe((res) => {
             if (res.Data !== null) {
               this.dataResponse.emit(res.Data);
@@ -105,7 +121,7 @@ export class FiltroComponent implements OnInit {
       } else {
         if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
           && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
-          this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia=0' + qSupervisor)
+          this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia=0' + qSupervisor + qTipo)
             .subscribe((res) => {
               if (res.Data !== null) {
                 this.dataResponse.emit(res.Data);
@@ -118,7 +134,7 @@ export class FiltroComponent implements OnInit {
           if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
             && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia='
-              + String(this.vigencia) + qSupervisor).subscribe((res) => {
+              + String(this.vigencia) + qSupervisor + qTipo).subscribe((res) => {
                 if (res.Data !== null) {
                   this.dataResponse.emit(res.Data);
                 }
@@ -130,7 +146,7 @@ export class FiltroComponent implements OnInit {
             if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
               && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
-                + this.numero_contrato + '&Vigencia=0' + qSupervisor).subscribe((res) => {
+                + this.numero_contrato + '&Vigencia=0' + qSupervisor + qTipo).subscribe((res) => {
                   if (res.Data !== null) {
 
                     this.dataResponse.emit(res.Data);
@@ -143,7 +159,7 @@ export class FiltroComponent implements OnInit {
               if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
                 && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
                 this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
-                  + this.numero_contrato + '&Vigencia=' + String(this.vigencia) + qSupervisor).subscribe((res) => {
+                  + this.numero_contrato + '&Vigencia=' + String(this.vigencia) + qSupervisor + qTipo).subscribe((res) => {
                     if (res.Data !== null) {
                       this.dataResponse.emit(res.Data);
                     }
