@@ -4,6 +4,7 @@ import { AuthGuard } from '../../@core/_guards/auth.guard';
 import { UserService } from '../../@core/data/user.service';
 import { MenuService } from '../../@core/data/menu.service';
 
+const CONTRATOS_COMPRAS: string[] = ['Orden de Compra', 'Orden de Servicios'];
 
 @Component({
   selector: 'ngx-filtro',
@@ -52,14 +53,14 @@ export class FiltroComponent implements OnInit {
 
   private getFiltroTipo(): string {
     const requiereFiltro = this.filtroTipo &&
-      !this.menuService.getAccion('Certificar todo tipo') &&
-      !!this.menuService.getAccion('Certificar solo compras');
+      !!this.menuService.getAccion('Certificar compras') !== !!this.menuService.getAccion('Certificar no compras');
 
     if (!requiereFiltro) {
       return '';
     }
 
-    return '&TipoContrato=Orden de Compra';
+    const not = !!this.menuService.getAccion('Certificar no compras') ? 'not' : '';
+    return '&TipoContrato=' + not + 'in:' + CONTRATOS_COMPRAS.join('|');
   }
 
   private checkSupervisor(): void {

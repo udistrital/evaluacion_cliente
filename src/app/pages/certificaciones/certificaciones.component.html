@@ -2,7 +2,7 @@
     <div class="col-xl ">
 
         <div *ngIf="!componenteVer && !componenteRealizar && !componenteRealizarCertificacion">
-            <ngx-filtro *ngIf="!!permisoFiltrarContratos" (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]="titulo">
+            <ngx-filtro *ngIf="!!permisoFiltrarContratos" (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]="titulo" [filtroTipo]=true>
             </ngx-filtro>
             <ngx-certificacion *ngIf="!permisoFiltrarContratos" (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]="titulo">
             </ngx-certificacion>
@@ -10,15 +10,15 @@
                 (dataToDo)="relizarCertificacion($event)" (dataToDo2)="relizarCertificacionSinNovedad($event)">
             </ngx-tabla-busqueda-certificacion>
         </div>
-        
-        <ngx-crear-certificacion-sin-novedad *ngIf="!!componenteRealizarCertificacion && !!permisoCumplimiento"
+
+        <ngx-crear-certificacion-sin-novedad *ngIf="!!componenteRealizarCertificacion"
             [dataContrato]="datosContratoAEvaluar" (volverFiltro)="habilitarFiltro($event)">
         </ngx-crear-certificacion-sin-novedad>
-        
-        <ngx-crear-certificacion *ngIf="!!componenteRealizar && !!permisoContractual" [dataContrato]="datosContratoAEvaluar"
+
+        <ngx-crear-certificacion *ngIf="!!componenteRealizar" [dataContrato]="datosContratoAEvaluar"
             (volverFiltro)="habilitarFiltro($event)">
         </ngx-crear-certificacion>
-        
+
         <ngx-ver-certificacion *ngIf="!!componenteVer" [dataContrato]="datosContratoAVer" [rol]="rolActual"
             (volverFiltro)="habilitarFiltro($event)">
         </ngx-ver-certificacion>

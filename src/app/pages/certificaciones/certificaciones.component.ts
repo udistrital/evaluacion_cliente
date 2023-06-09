@@ -22,8 +22,6 @@ export class CertificacionesComponent implements OnInit {
   componenteRealizarCertificacion: boolean;
 
   permisoFiltrarContratos: boolean = false;
-  permisoCumplimiento: boolean = false;
-  permisoContractual: boolean = false;
 
   constructor(
     private menuService: MenuService,
@@ -34,16 +32,10 @@ export class CertificacionesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getPermisos();
     this.componenteVer = false;
     this.componenteRealizar = false;
     this.componenteRealizarCertificacion = false;
-  }
-
-  private getPermisos() {
-    this.permisoFiltrarContratos = !!this.menuService.getAccion('Filtrar contratos');
-    this.permisoCumplimiento = !!this.menuService.getAccion('Certificación de cumplimiento');
-    this.permisoContractual = !!this.menuService.getAccion('Certificación contractual');
+    this.permisoFiltrarContratos = !!this.menuService.getAccion('Ver contratos ajenos');
   }
 
   /*Guardo los datos de la consulta obtenida creada por el filtro*/
