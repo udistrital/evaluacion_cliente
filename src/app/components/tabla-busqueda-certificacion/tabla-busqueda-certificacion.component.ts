@@ -29,8 +29,8 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
   }
 
   private getPermisos() {
-    this.permisoContractual = !!this.menuService.getAccion('Certificación contractual');
-    this.permisoCumplimiento = !!this.menuService.getAccion('Certificación de cumplimiento');
+    this.permisoContractual = !!this.menuService.getAccion('Crear certificación contractual');
+    this.permisoCumplimiento = !!this.menuService.getAccion('Crear certificación cumplimiento');
   }
 
   relizarCertificacion(data: any) {
