@@ -135,17 +135,17 @@ export class CrearCertificacionComponent implements OnInit {
       },
     });
     PdfMakeWrapper.useFont('TimesNewRoman');
-    let tipoContrato = '';
 
     const pdf = new PdfMakeWrapper();
     if (this.tipoContrato === 'Orden de Servicios') {
-      tipoContrato = 'ORDEN DE SERVICIO';
+      this.tipoContrato = 'ORDEN DE SERVICIO';
     } else if (this.tipoContrato === 'Contrato de Prestación de Servicios Profesionales o Apoyo a la Gestión') {
-      tipoContrato = 'PRESTACIÓN DE SERVICIOS';
+      this.tipoContrato = 'PRESTACIÓN DE SERVICIOS';
     } else if (this.tipoContrato === 'Contrato de Compra-Venta') {
-      tipoContrato = 'ORDEN DE VENTA';
+      this.tipoContrato = 'ORDEN DE VENTA';
     }
 
+    const tipoContrato = this.tipoContrato.toUpperCase();
     pdf.pageMargins([80, 100, 60, 100]);
     pdf.styles({
       Title: {
