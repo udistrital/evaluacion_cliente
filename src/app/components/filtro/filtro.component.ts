@@ -1,6 +1,5 @@
 import { Component, TemplateRef, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
-import { AuthGuard } from '../../@core/_guards/auth.guard';
 import { UserService } from '../../@core/data/user.service';
 import { MenuService } from '../../@core/data/menu.service';
 
@@ -21,15 +20,12 @@ export class FiltroComponent implements OnInit {
 
   vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
 
-  rolUsuario: any;
-
   identificacion_proveedor: any;
   numero_contrato: any;
   vigencia: any;
 
   constructor(
     private evaluacionMidService: EvaluacionmidService,
-    private authGuard: AuthGuard,
     private userService: UserService,
     private menuService: MenuService,
   ) {
@@ -40,12 +36,10 @@ export class FiltroComponent implements OnInit {
   }
 
   filtro() {
-    this.rolUsuario = this.authGuard.rolActual();
     if (((isNaN(this.numero_contrato) === true) || (this.numero_contrato === 0) || (this.numero_contrato === null)
       || (this.numero_contrato === undefined)) && ((isNaN(this.identificacion_proveedor) === true) || (this.identificacion_proveedor === 0)
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {
       this.openWindow('Debe ingresar almenos una Identificación de proveedor o un número de contrato');
-      console.info('Rol', this.rolUsuario);
     } else {
       this.checkSupervisor();
     }
