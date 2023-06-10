@@ -9,6 +9,7 @@ import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service'
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from './images';
+import { UserService } from '../../@core/data/user.service';
 
 // Set the fonts to use
 
@@ -81,6 +82,7 @@ export class CrearCertificacionComponent implements OnInit {
   firma: string = '';
   jefeDependencia: string = '';
   emailDependencia: string = '';
+  user: string = '';
 
   constructor(
     private gestorDocumental: GestorDocumentalService,
@@ -89,6 +91,7 @@ export class CrearCertificacionComponent implements OnInit {
     private AdministrativaAmazon: AdministrativaamazonService,
     private novedadesService: NovedadesService,
     private menuService: MenuService,
+    private userService: UserService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -96,6 +99,16 @@ export class CrearCertificacionComponent implements OnInit {
   ngOnInit() {
     this.consultarDatosContrato();
     this.getDependenciaEmisora();
+    this.getUsuario();
+  }
+
+  private getUsuario() {
+    this.userService.getInfoPersonaNatural()
+      .subscribe(res => {
+        if (res.length) {
+          this.user = res[0].PrimerNombre + ' ' + res[0].SegundoNombre + ' ' + res[0].PrimerApellido + ' ' + res[0].SegundoApellido;
+        }
+      })
   }
 
   private getDependenciaEmisora() {
@@ -110,7 +123,6 @@ export class CrearCertificacionComponent implements OnInit {
       this.nombreDependencia = 'Sección de Compras';
       this.emailDependencia = 'compras@udistrital.edu.co';
     }
-
   }
 
   regresarFiltro() {
@@ -786,7 +798,7 @@ export class CrearCertificacionComponent implements OnInit {
     pdf.add('\n');
     pdf.add(
       new Txt(
-        'Elaboró: David Eliot Iriarte - Contratista - OAJ' +
+        'Elaboró: ' + this.user +
         '________________________________________________________________________________' +
         '_________________________________',
       ).fontSize(6).decoration('underline').alignment('left').end,
