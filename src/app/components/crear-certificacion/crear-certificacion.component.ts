@@ -83,6 +83,7 @@ export class CrearCertificacionComponent implements OnInit {
   jefeDependencia: string = '';
   emailDependencia: string = '';
   user: string = '';
+  seleccionarOtros: boolean = false;
 
   constructor(
     private gestorDocumental: GestorDocumentalService,
@@ -112,6 +113,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   private getDependenciaEmisora() {
+    this.seleccionarOtros = !!this.menuService.getAccion('Seleccionar otros contractual');
     if (!!this.menuService.getAccion('Certificar no compras')) {
       this.firma = IMAGENES.firmaJuridica;
       this.jefeDependencia = 'JOHANNA CAROLINA CASTAÑO GONZALÉZ';
