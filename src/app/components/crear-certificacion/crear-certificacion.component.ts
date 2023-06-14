@@ -104,7 +104,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   private getUsuario() {
-    this.userService.getInfoPersonaNatural()
+    this.userService.getPersonaNaturalAmazon()
       .subscribe(res => {
         if (res.length) {
           this.user = res[0].PrimerNombre + ' ' + res[0].SegundoNombre + ' ' + res[0].PrimerApellido + ' ' + res[0].SegundoApellido;
