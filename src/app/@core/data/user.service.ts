@@ -30,7 +30,7 @@ export class UserService {
         return userObj.userService.documento;
     }
 
-    getInfoPersonaNatural() {
+    getPersonaNaturalAmazon() {
 
         const documento = this.getDocumentoUser();
         if (!documento.length) {
