@@ -131,7 +131,7 @@
                             <div>
                                 <mat-form-field appearance="fill">
                                     <mat-label>OTROS</mat-label>
-                                    <mat-select [(ngModel)]="otros_datos" [disabled]="rol=='CONTRATISTA'">
+                                    <mat-select [(ngModel)]="otros_datos" [disabled]="!seleccionarOtros">
                                         <mat-option value="1">SI</mat-option>
                                         <mat-option value="0">NO</mat-option>
                                     </mat-select>
