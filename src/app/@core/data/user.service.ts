@@ -43,7 +43,7 @@ export class UserService {
     }
 
     getAllInfoPersonaNatural(payload) {
-        const path = 'informacion_persona_natural'
+        const path = 'informacion_persona_natural';
         this.rqManager.setPath('ADMINISTRIVA_AMAZON');
         return this.rqManager.get(path + payload).pipe(
             map(

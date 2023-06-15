@@ -4,6 +4,7 @@ import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { Subscription } from 'rxjs';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { MenuService } from '../../@core/data/menu.service';
+import { PopUpManager } from '../../managers/popUpManager';
 
 @Component({
   selector: 'ngx-ver-certificacion',
@@ -28,6 +29,7 @@ export class VerCertificacionComponent implements OnInit {
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
     private menuService: MenuService,
+    private pupManager: PopUpManager,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -114,7 +116,7 @@ export class VerCertificacionComponent implements OnInit {
       this.download(response, '', 1000, 1000);
     })),
       (error_service) => {
-        this.openWindow('No se pudo descargar la certificacion');
+        this.pupManager.showErrorAlert(error_service.message);
         this.regresarFiltro();
       };
   }
@@ -169,7 +171,7 @@ export class VerCertificacionComponent implements OnInit {
         this.getCertificacionesCreadas();
       }),
       (error_service) => {
-        this.openWindow(error_service.message);
+        this.pupManager.showErrorAlert(error_service.message);
         this.regresarFiltro();
       };
   }
