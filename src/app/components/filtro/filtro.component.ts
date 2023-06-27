@@ -79,8 +79,9 @@ export class FiltroComponent implements OnInit {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + qSupervisor + qTipo)
         .subscribe((res) => {
           // console.log('respuesta del filtro',res);
-          if (res.Data !== null) {
-            this.dataResponse.emit(res.Data);
+          if (res.Data !== null && res.Data.length) {
+            const filtrados = res.Data.filter(c => c.ContratoSuscrito !== 'Objeto de longitud cero');
+            this.dataResponse.emit(filtrados);
           }
         }, (error_service) => {
           this.openWindow(error_service);
@@ -92,8 +93,9 @@ export class FiltroComponent implements OnInit {
         this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor +
           '&NumContrato=0&Vigencia=' + String(this.vigencia) + qSupervisor + qTipo)
           .subscribe((res) => {
-            if (res.Data !== null) {
-              this.dataResponse.emit(res.Data);
+            if (res.Data !== null && res.Data.length) {
+              const filtrados = res.Data.filter(c => c.ContratoSuscrito !== 'Objeto de longitud cero');
+              this.dataResponse.emit(filtrados);
             }
           }, (error_service) => {
             this.openWindow(error_service);
@@ -104,8 +106,9 @@ export class FiltroComponent implements OnInit {
           && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia=0' + qSupervisor + qTipo)
             .subscribe((res) => {
-              if (res.Data !== null) {
-                this.dataResponse.emit(res.Data);
+              if (res.Data !== null && res.Data.length) {
+                const filtrados = res.Data.filter(c => c.ContratoSuscrito !== 'Objeto de longitud cero');
+                this.dataResponse.emit(filtrados);
               }
             }, (error_service) => {
               this.openWindow(error_service);
@@ -116,8 +119,9 @@ export class FiltroComponent implements OnInit {
             && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia='
               + String(this.vigencia) + qSupervisor + qTipo).subscribe((res) => {
-                if (res.Data !== null) {
-                  this.dataResponse.emit(res.Data);
+                if (res.Data !== null && res.Data.length) {
+                  const filtrados = res.Data.filter(c => c.ContratoSuscrito !== 'Objeto de longitud cero');
+                  this.dataResponse.emit(filtrados);
                 }
               }, (error_service) => {
                 this.openWindow(error_service);
@@ -128,9 +132,9 @@ export class FiltroComponent implements OnInit {
               && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0' + qSupervisor + qTipo).subscribe((res) => {
-                  if (res.Data !== null) {
-
-                    this.dataResponse.emit(res.Data);
+                  if (res.Data !== null && res.Data.length) {
+                    const filtrados = res.Data.filter(c => c.ContratoSuscrito !== 'Objeto de longitud cero');
+                    this.dataResponse.emit(filtrados);
                   }
                 }, (error_service) => {
                   this.openWindow(error_service);
@@ -141,8 +145,9 @@ export class FiltroComponent implements OnInit {
                 && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
                 this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                   + this.numero_contrato + '&Vigencia=' + String(this.vigencia) + qSupervisor + qTipo).subscribe((res) => {
-                    if (res.Data !== null) {
-                      this.dataResponse.emit(res.Data);
+                    if (res.Data !== null && res.Data.length) {
+                      const filtrados = res.Data.filter(c => c.ContratoSuscrito !== 'Objeto de longitud cero');
+                      this.dataResponse.emit(filtrados);
                     }
                   }, (error_service) => {
                     this.openWindow(error_service);
