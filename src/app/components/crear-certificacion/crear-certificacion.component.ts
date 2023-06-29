@@ -8,7 +8,7 @@ import { NovedadesService } from '../../@core/data/novedades.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { MenuService } from '../../@core/data/menu.service';
-import { IMAGENES } from './images';
+import { IMAGENES } from '../images';
 import { UserService } from '../../@core/data/user.service';
 
 // Set the fonts to use
