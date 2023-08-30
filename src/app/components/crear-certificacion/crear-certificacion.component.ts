@@ -125,7 +125,7 @@ export class CrearCertificacionComponent implements OnInit {
     this.datosTabla = [];
     var cadena1 =
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
-      'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
+      'datos que administra la Oficina de Contratación de la Universidad Distrital Francisco José de Caldas, ';
     var cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
     var cadena3 =
       ', suscribió en esta Entidad lo siguiente:';
@@ -223,7 +223,7 @@ export class CrearCertificacionComponent implements OnInit {
           text: [
             {
               text:
-                '\n \n UNIVERSIDAD DISTRITAL \n  FRANCISCO JOSÉ DE CALDAS \n  Oficina Asesora Jurídica ',
+                '\n \n UNIVERSIDAD DISTRITAL \n  FRANCISCO JOSÉ DE CALDAS \n  Oficina de Contratación ',
               style: 'body1',
               bold: true,
             },
@@ -297,7 +297,7 @@ export class CrearCertificacionComponent implements OnInit {
         {
           unbreakable: true,
           text:
-            'JAVIER BOLAÑOS ZAMBRANO\nJEFE OFICINA ASESORA JURÍDICA',
+            'DIANA XIMENA PIRACHICÁN MARTÍNEZ\nJEFE OFICINA DE CONTRATACIÓN',
           style: 'body1',
           bold: true,
           alignment: 'left',
@@ -1636,7 +1636,7 @@ export class CrearCertificacionComponent implements OnInit {
           );
 
           pdf.add(
-            new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' +
+            new Txt('EL (LA) JEFE DE LA OFICINA DE CONTRATACIÓN DE LA UNIVERSIDAD DISTRITAL ' +
               'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
                 'Title',
               ).end,
@@ -1793,12 +1793,12 @@ export class CrearCertificacionComponent implements OnInit {
           }
         } else {
           this.firmantes = undefined;
-          this.openWindow("Sin información de Oficina Asesora Jurídica.");
+          this.openWindow("Sin información de Oficina de contratación.");
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow("Error al traer información de Oficina Asesora Jurídica.");
+        this.openWindow("Error al traer información de Oficina de contratación.");
         this.regresarFiltro();
       });
   }
