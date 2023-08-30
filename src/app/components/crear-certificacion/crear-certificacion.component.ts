@@ -9,7 +9,6 @@ import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service'
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
-import { UserService } from '../../@core/data/user.service';
 
 // Set the fonts to use
 
@@ -92,7 +91,6 @@ export class CrearCertificacionComponent implements OnInit {
     private AdministrativaAmazon: AdministrativaamazonService,
     private novedadesService: NovedadesService,
     private menuService: MenuService,
-    private userService: UserService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -104,27 +102,15 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   private getUsuario() {
-    this.userService.getPersonaNaturalAmazon()
-      .subscribe(res => {
-        if (res.length) {
-          this.user = res[0].PrimerNombre + ' ' + res[0].SegundoNombre + ' ' + res[0].PrimerApellido + ' ' + res[0].SegundoApellido;
-        }
-      })
+    this.user = 'JULIO CÉSAR OTÁLORA';
   }
 
   private getDependenciaEmisora() {
     this.seleccionarOtros = !!this.menuService.getAccion('Seleccionar otros contractual');
-    if (!!this.menuService.getAccion('Certificar no compras')) {
-      this.firma = IMAGENES.firmaJuridica;
-      this.jefeDependencia = 'JOHANNA CAROLINA CASTAÑO GONZALÉZ';
-      this.nombreDependencia = 'Oficina Asesora Jurídica';
-      this.emailDependencia = 'juridica@udistrital.edu.co';
-    } else {
-      this.firma = IMAGENES.firmaCompras;
-      this.jefeDependencia = 'RAFAEL ENRIQUE ARANZALEZ GARCIA';
-      this.nombreDependencia = 'Sección de Compras';
-      this.emailDependencia = 'compras@udistrital.edu.co';
-    }
+    this.jefeDependencia = 'DIANA XIMENA PIRACHICÁN MARTÍNEZ';
+    this.firma = IMAGENES.firma;
+    this.nombreDependencia = 'Oficina de Contratación';
+    this.emailDependencia = 'compras@udistrital.edu.co';
   }
 
   regresarFiltro() {

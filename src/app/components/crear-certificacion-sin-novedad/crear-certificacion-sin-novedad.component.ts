@@ -325,7 +325,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           text: [
             {
               text:
-                '\n \n UNIVERSIDAD DISTRITAL \n  FRANCISCO JOSÉ DE CALDAS \n  Sección de compras ',
+                '\n \n UNIVERSIDAD DISTRITAL \n  FRANCISCO JOSÉ DE CALDAS \n  Oficina de Contratación ',
               style: 'body1',
               bold: true,
             },
@@ -477,7 +477,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       ],
       firmaPagina: [
         {
-          text: 'TULIO BERNARDO ISAZA SANTAMARIA  \n JEFE SECCIÓN DE COMPRAS',
+          text: 'DIANA XIMENA PIRACHICÁN MARTÍNEZ  \n OFICINA DE CONTRATACIÓN',
           style: 'body1',
           bold: true,
           alignment: 'center',
@@ -582,7 +582,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
             pdf.add(
               new Txt(
-                'EL SUSCRITO JEFE DE LA SECCIÓN DE COMPRAS DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS',
+                'EL SUSCRITO JEFE DE LA OFICINA DE CONTRATACIÓN DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS',
               ).style('Title').end,
             );
             pdf.add(new Txt('NIT: 899.999.230-7').style('Title').end);
