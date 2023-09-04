@@ -156,7 +156,7 @@ export class CrearCertificacionComponent implements OnInit {
 
     }
 
-    pdf.pageMargins([80, 100, 60, 100]);
+    pdf.pageMargins([80, 100, 60, 60]);
     pdf.styles({
       Title: {
         bold: true,
@@ -222,8 +222,11 @@ export class CrearCertificacionComponent implements OnInit {
         {
           text: [
             {
-              text:
-                '\n \n UNIVERSIDAD DISTRITAL \n  FRANCISCO JOSÉ DE CALDAS \n  Oficina de Contratación ',
+              text: `
+                UNIVERSIDAD DISTRITAL
+                FRANCISCO JOSÉ DE CALDAS
+                Vicerrectoría Administrativa y Financiera
+                Oficina de Contratación`,
               style: 'body1',
               bold: true,
             },
@@ -279,30 +282,6 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
-      texPieDePagina: [
-        {
-          text: [
-            {
-              text:
-                `Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 
-                Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. 
-                Resolución No. 23096 del 15 de diciembre de 2016`,
-              style: 'body2',
-              bold: true,
-            },
-          ],
-        },
-      ],
-      firmaPagina: [
-        {
-          unbreakable: true,
-          text:
-            'DIANA XIMENA PIRACHICÁN MARTÍNEZ\nJEFE OFICINA DE CONTRATACIÓN',
-          style: 'body1',
-          bold: true,
-          alignment: 'left',
-        },
-      ],
       contrato: [
         {
           text: [
@@ -320,112 +299,6 @@ export class CrearCertificacionComponent implements OnInit {
             },
           ],
         },
-      ],
-      footerTable: [
-        {
-          table: [
-            {
-              text: ''
-            }
-          ],
-          margins: [40, 40]
-        }
-      ],
-      footer: [
-        {
-          text: [
-            {
-              text: '____________________',
-              style: {
-                alignment: 'right',
-                fontSize: 8
-              }
-            },
-          ],
-        },
-      ],
-      footer1: [
-        {
-          text: [
-            {
-              text: 'Línea de ateción gratuita',
-              decoration: 'underline',
-              style: {
-                alignment: 'right',
-                fontSize: 8,
-              },
-            },
-          ],
-        },
-      ],
-      footer2: [
-        {
-          text: [
-            {
-              text: '01  800  091  44  10',
-              bold: true,
-              style: {
-                alignment: 'right',
-                fontSize: 8
-              }
-            },
-          ],
-        },
-      ],
-      footer3: [
-        {
-          text: [
-            {
-              text:
-                '\n\n\nCarrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia',
-              style: {
-                alignment: 'left',
-                fontSize: 8
-              }
-            },
-          ],
-        },
-      ],
-      footer4: [
-        {
-          text: [
-            {
-              text: 'www.udistrital.edu.co',
-              style: {
-                alignment: 'right',
-                fontSize: 8
-              }
-            }
-          ]
-        }
-      ],
-      footer5: [
-        {
-          text: [
-            {
-              text:
-                'Acreditación Institucional de Alta Calidad. Resolución No. 23096 del 15 de diciembre de 2016',
-              style: {
-                alignment: 'left',
-                bold: false,
-                fontSize: 8
-              }
-            },
-          ],
-        },
-      ],
-      footer7: [
-        {
-          text: [
-            {
-              text: 'jurídica@udistrital.edu.co',
-              style: {
-                alignment: 'right',
-                fontSize: 8
-              }
-            }
-          ]
-        }
       ],
       escudoImagen: [
         {
@@ -1685,21 +1558,42 @@ export class CrearCertificacionComponent implements OnInit {
           pdf.add('\n');
           pdf.add(
             new Txt(
-              'Elaboró: David Eliot Iriarte - Contratista - OAJ' +
-              '________________________________________________________________________________' +
-              '_________________________________'
-            ).fontSize(6).decoration('underline').alignment('left').end
+              'Elaboró: Julio César Otálora Neisa - Contratista' +
+              '                                                                                                                                         ' +
+              '                                                                                           ',
+            ).fontSize(6).decoration('underline').alignment('left').end,
           );
 
-          pdf.footer(
-            new Table([
-              [
-                docDefinition.footer3.concat(docDefinition.footer5),
-                docDefinition.footer.concat(docDefinition.footer1).concat(docDefinition.footer2)
-                  .concat(docDefinition.footer4).concat(docDefinition.footer7)
-              ],
-            ]).layout('noBorders').margin([80, 0, 60, 0]).widths(['*', 85]).end,
-          );
+          pdf.footer({
+            columns: [
+              {
+                stack: [
+                  { text: ' ', fontSize: 8 },
+                  { text: ' ', fontSize: 8 },
+                  { text: 'PBX 601 3239300 ext. 1859 - 1862', fontSize: 8 },
+                  { text: 'Calle 13 n.° 31 -75, Bogotá D. C., Colombia', fontSize: 8 },
+                  { text: 'Acreditación Institucional en Alta Calidad. Resolución No. 02365 3 del 10 de diciembre de 2021', fontSize: 7 },
+                ],
+                width: '65%',
+                alignment: 'left',
+                margin: [50, 0],
+              },
+              {
+                stack: [
+                  { text: 'Línea de atención gratuita', decoration: 'underline' },
+                  { text: '01  800  091  44  10', bold: true },
+                  { text: 'www.udistrital.edu.coo' },
+                  { text: 'procesoscontratacion@udistrital.edu.co' },
+                  { text: 'tramitescontratacion@udistrital.edu.co' },
+                ],
+                width: '35%',
+                alignment: 'right',
+                fontSize: 8,
+                margin: [40, 0],
+              },
+            ],
+          });
+
 
           pdf.create().getBlob((blob) => {
             const file2 = {
@@ -1781,7 +1675,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   consultarFirmantes(){
-    let IdCargoJuridica = 78;
+    let IdCargoJuridica = 281;
     this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:'+IdCargoJuridica+'&sortby=FechaInicio&order=desc&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
