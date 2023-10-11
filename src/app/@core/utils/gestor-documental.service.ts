@@ -7,14 +7,14 @@ import { DocumentoService } from '../data/documento.service';
 import { Documento } from '../data/models/documento';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GestorDocumentalService {
 
   constructor(
     private anyService: RequestManager,
     private documentoService: DocumentoService,
-    private sanitization: DomSanitizer
+    private sanitization: DomSanitizer,
   ) { }
 
   getUrlFile(base64, minetype) {
@@ -23,10 +23,10 @@ export class GestorDocumentalService {
       fetch(url)
         .then(res => res.blob())
         .then(blob => {
-          const file = new File([blob], "File name", { type: minetype })
-          const url = URL.createObjectURL(file);
-          resolve(url);
-        })
+          const file = new File([blob], 'File name', { type: minetype });
+          const url_ = URL.createObjectURL(file);
+          resolve(url_);
+        });
     });
   }
 
@@ -54,11 +54,11 @@ export class GestorDocumentalService {
         IdTipoDocumento: file.IdDocumento,
         nombre: file.nombre,
         metadatos: file.metadatos ? file.metadatos : {},
-        descripcion: file.descripcion ? file.descripcion : "",
-        file: await this.fileToBase64(file.file)
-      }]
+        descripcion: file.descripcion ? file.descripcion : '',
+        file: await this.fileToBase64(file.file),
+      }];
       this.anyService.setPath('GESTOR_DOCUMENTAL_MID');
-      this.anyService.post('document/upload',sendFileData)
+      this.anyService.post('document/upload', sendFileData)
         .subscribe((dataResponse) => {
           documentos.push(dataResponse);
           if (documentos.length === files.length) {
@@ -66,7 +66,7 @@ export class GestorDocumentalService {
           }
         }, (error) => {
           documentsSubject.error(error);
-        })
+        });
     });
     return documents$;
   }
@@ -80,13 +80,13 @@ export class GestorDocumentalService {
         IdTipoDocumento: file.IdDocumento,
         nombre: file.nombre,
         metadatos: file.metadatos ? file.metadatos : {},
-        descripcion: file.descripcion ? file.descripcion : "",
+        descripcion: file.descripcion ? file.descripcion : '',
         file: await this.fileToBase64(file.file),
         firmantes: file.firmantes ? file.firmantes : [],
-        representantes: file.representantes ? file.representantes : []
-      }]
+        representantes: file.representantes ? file.representantes : [],
+      }];
       this.anyService.setPath('GESTOR_DOCUMENTAL_MID');
-      this.anyService.post('document/firma_electronica',sendFileDataandSigners)
+      this.anyService.post('document/firma_electronica', sendFileDataandSigners)
         .subscribe((dataResponse) => {
           documentos.push(dataResponse);
           if (documentos.length === files.length) {
@@ -94,9 +94,9 @@ export class GestorDocumentalService {
           }
         }, (error) => {
           documentsSubject.error(error);
-        })
+        });
     });
-    return documents$
+    return documents$;
   }
 
   getFiles(files) {
@@ -105,25 +105,25 @@ export class GestorDocumentalService {
     const documentos = files;
     let i = 0;
     files.map((file, index) => {
-      this.documentoService.get('documento/'+file.id)
+      this.documentoService.get('documento/' + file.id)
         .subscribe((doc: Documento) => {
           this.anyService.setPath('GESTOR_DOCUMENTAL_MID');
-          this.anyService.get('document/'+doc.Enlace)
+          this.anyService.get('document/' + doc.Enlace)
             .subscribe(async (f: any) => {
               const url = await this.getUrlFile(f.file, f['file:content']['mime-type']);
-              documentos[index] = { ...documentos[index], ...{ url: url}, ...{ Documento: this.sanitization.bypassSecurityTrustUrl(url) } }
+              documentos[index] = { ...documentos[index], ...{ url: url }, ...{ Documento: this.sanitization.bypassSecurityTrustUrl(url) } };
               i += 1;
               if (i === files.length) {
                 documentsSubject.next(documentos);
               }
             }, (error) => {
               documentsSubject.error(error);
-            })
+            });
         }, (error) => {
           documentsSubject.error(error);
-        })
+        });
     });
-    return documents$
+    return documents$;
   }
 
   getByUUID(uuid) {
@@ -131,14 +131,14 @@ export class GestorDocumentalService {
     const documents$ = documentsSubject.asObservable();
     let documento = null;
     this.anyService.setPath('GESTOR_DOCUMENTAL_MID');
-    this.anyService.get('document/'+uuid)
+    this.anyService.get('document/' + uuid)
       .subscribe(async (f: any) => {
         const url = await this.getUrlFile(f.file, f['file:content']['mime-type']);
-        documento = url
+        documento = url;
         documentsSubject.next(documento);
       }, (error) => {
         documentsSubject.error(error);
-      })
+      });
     return documents$;
   }
 
