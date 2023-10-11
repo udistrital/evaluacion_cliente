@@ -794,7 +794,7 @@ export class CrearCertificacionComponent implements OnInit {
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
         this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
-        // this.consultarNovedades();
+        this.consultarNovedades();
         // console.log(this.idContrato);
         this.AdministrativaAmazon.get(
           'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
@@ -828,7 +828,6 @@ export class CrearCertificacionComponent implements OnInit {
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
-        console.info(this.allNovedades);
         this.datosNovedades.push('Sin novedades');
         for (let i = 0; i < data.length; i++) {
           switch (data[i].tiponovedad) {
