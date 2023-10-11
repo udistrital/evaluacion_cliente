@@ -33,7 +33,7 @@ export class ImplicitAutenticationService {
     httpOptions: { headers: HttpHeaders; };
     constructor(private httpClient: HttpClient) {
         this.init(this.environment);
-        document.addEventListener("visibilitychange", () => {
+        document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 const expires = this.setExpiresAt();
                 this.autologout(expires);
@@ -44,7 +44,9 @@ export class ImplicitAutenticationService {
         this.environment = entorno;
         const id_token = window.localStorage.getItem('id_token');
         if (window.localStorage.getItem('id_token') === null) {
-            var params = {}, queryString = location.hash.substring(1), regex = /([^&=]+)=([^&]*)/g;
+            const params = {};
+            const queryString = location.hash.substring(1);
+            const regex = /([^&=]+)=([^&]*)/g;
             let m;
             while (m = regex.exec(queryString)) {
                 params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
@@ -55,7 +57,7 @@ export class ImplicitAutenticationService {
             const query = 'https://' + window.location.host + '?' + queryString;
             req.open('GET', query, true);
             if (!!params['id_token']) {
-                //if token setear
+                // if token setear
                 const id_token_array = (params['id_token']).split('.');
                 const payload = JSON.parse(atob(id_token_array[1]));
                 window.localStorage.setItem('access_token', params['access_token']);
@@ -109,14 +111,14 @@ export class ImplicitAutenticationService {
             const userTemp = payload.email;
             this.user = { user: userTemp };
             this.httpClient.post<any>(this.environment.AUTENTICACION_MID, {
-                user: (payload.email)
+                user: (payload.email),
             }, this.httpOptions)
                 .pipe(retry(3))
                 .subscribe((res: any) => {
                     this.clearUrl();
                     localStorage.setItem('user', btoa(JSON.stringify({ ...{ user: payload }, ...{ userService: res } })));
                     this.userSubject.next({ ...{ user: payload }, ...{ userService: res } });
-                }, (error) => (console.log(error))
+                }, (error) => (console.info(error)),
                 );
             this.httpOptions = {
                 headers: new HttpHeaders({
@@ -150,18 +152,18 @@ export class ImplicitAutenticationService {
             } else {
                 payload = userService;
             }
-        })
+        });
         return payload;
     }
 
 
 
     public logoutValid() {
-        var state;
-        var valid = true;
-        var queryString = location.search.substring(1);
-        var regex = /([^&=]+)=([^&]*)/g;
-        var m;
+        let state;
+        let valid = true;
+        const queryString = location.search.substring(1);
+        const regex = /([^&=]+)=([^&]*)/g;
+        let m;
         while (!!(m = regex.exec(queryString))) {
             state = decodeURIComponent(m[2]);
         }
@@ -243,7 +245,7 @@ export class ImplicitAutenticationService {
             } else {
                 const timerDelay = expiresIn > this.timeLogoutBefore ? expiresIn - this.timeLogoutBefore : this.timeLogoutBefore;
                 if (!isNaN(expiresIn)) {
-                    console.log(`%cFecha expiración: %c${new Date(expires)}`, 'color: blue', 'color: green');
+                    console.info(`%cFecha expiración: %c${new Date(expires)}`, 'color: blue', 'color: green');
                     of(null).pipe(delay(timerDelay - this.timeLogoutBefore)).subscribe((data) => {
                         this.logout('logout-auto');
                     });
@@ -255,7 +257,7 @@ export class ImplicitAutenticationService {
                                 icon: 'info',
                                 title: `Su sesión se cerrará en ${this.timeAlert / 60000} minutos`,
                                 showConfirmButton: false,
-                                timer: this.timeActiveAlert
+                                timer: this.timeActiveAlert,
                             });
                         });
                     }

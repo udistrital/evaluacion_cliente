@@ -182,44 +182,44 @@ export class VerEvaluacionComponent implements OnInit {
   }
 
   obtenerObservaciones() {
-    var obsStruct = {};
-    if (this.evaluacionRealizada.observaciones != undefined) {
+    let obsStruct = {};
+    if (this.evaluacionRealizada.observaciones !== undefined) {
       this.observacionesPdf = this.evaluacionRealizada.observaciones;
       obsStruct = [
         {
-          text: "Observaciones", bold: true, style: 'header',
+          text: 'Observaciones', bold: true, style: 'header',
         },
         {
           text: '\n' + this.evaluacionRealizada.observaciones, style: 'tableSeciones',
-        }
-      ]
+        },
+      ];
     }
-    return obsStruct
+    return obsStruct;
   }
 
   tablaEvaluadores() {
-    var evaStruct = [];
-    var medidas = [350, 150, 27];
-    var tabla = [];
-    if (this.evaluacionRealizada.evaluadores != undefined && this.evaluacionRealizada.evaluadores.length != 0) {
+    let evaStruct = [];
+    const medidas = [350, 150, 27];
+    const tabla = [];
+    if (this.evaluacionRealizada.evaluadores !== undefined && this.evaluacionRealizada.evaluadores.length !== 0) {
       tabla.push(
         [
           { text: 'NOMBRE DEL EVALUADOR', alignment: 'center', bold: true },
-          { text: 'FIRMA', alignment: 'center', bold: true }
-        ]
+          { text: 'FIRMA', alignment: 'center', bold: true },
+        ],
       );
-      for (var eva in this.evaluacionRealizada.evaluadores) {
+      for (const eva in this.evaluacionRealizada.evaluadores) {
         medidas.push(90);
         tabla.push(
           [
-            { text: "\n" + this.evaluacionRealizada.evaluadores[eva] + "\n\n" },
-            { text: "" }
-          ]
+            { text: '\n' + this.evaluacionRealizada.evaluadores[eva] + '\n\n' },
+            { text: '' },
+          ],
         );
       }
       evaStruct = [
         {
-          text: "\nEvaluadores\n", bold: true, style: 'header'
+          text: '\nEvaluadores\n', bold: true, style: 'header',
         },
         {
           style: 'table',
@@ -227,8 +227,8 @@ export class VerEvaluacionComponent implements OnInit {
             widths: medidas,
             body: tabla,
           },
-        }
-      ]
+        },
+      ];
       return evaStruct;
     }
   }

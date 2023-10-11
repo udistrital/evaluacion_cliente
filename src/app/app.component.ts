@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
       if (user && userService) {
         this.route.navigateByUrl('pages');
       }
-    })
+    });
   }
   ngOnInit(): void {
     this.analytics.trackPageViews();

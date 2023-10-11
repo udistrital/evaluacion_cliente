@@ -75,7 +75,7 @@ export class HeaderComponent implements OnInit {
       this.autenticacion.user$.subscribe((data: any) => {
         const {user, userService} = data;
         this.username = typeof user.email !== 'undefined' ? user.email : typeof userService.email !== 'undefined' ? userService.email : '';
-      })
+      });
     }
     return this.autenticacion.live();
   }

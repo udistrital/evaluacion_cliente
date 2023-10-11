@@ -14,7 +14,7 @@ const httpOptions = {
 const path = environment.NOVEDADES_SERVICE;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NovedadesService {
 

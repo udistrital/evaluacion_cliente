@@ -101,7 +101,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private evaluacionMidService: EvaluacionmidService,
     private evaluacionCrudService: EvaluacioncrudService,
     private AdministrativaAmazon: AdministrativaamazonService,
-    private NumerosAletrasService: NumerosAletrasService,
+    private numerosAletrasService: NumerosAletrasService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -157,7 +157,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
     this.consultarDatosContrato();
   }
-    regresarFiltro() {
+  regresarFiltro() {
     this.volverFiltro.emit(true);
   }
 
@@ -300,7 +300,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           text: [
             { text: '-' + tipoContrato + ' ', style: 'body1' },
             { text: this.dataContrato[0].ContratoSuscrito, style: 'body1' },
-            { text: ' DE ' + this.dataContrato[0].Vigencia, style: 'body1' }
+            { text: ' DE ' + this.dataContrato[0].Vigencia, style: 'body1' },
           ],
         },
       ],
@@ -312,8 +312,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             {
               text:
                 ' ' +
-                this.NumerosAletrasService.convertir(
-                  parseInt(this.valorContrato),
+                this.numerosAletrasService.convertir(
+                  parseInt(this.valorContrato, 10),
                 ),
               style: 'body1',
             },
@@ -341,8 +341,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             { text: 'DURACIÓN:  ', style: 'body1', bold: true },
             {
               text:
-                this.NumerosAletrasService.convertir(
-                  parseInt(this.duracionContrato),
+                this.numerosAletrasService.convertir(
+                  parseInt(this.duracionContrato, 10),
                 ).slice(0, -7) +
                 '' +
                 this.duracionContrato +
@@ -358,8 +358,8 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             { text: 'DURACIÓN:  ', style: 'body1', bold: true },
             {
               text:
-                this.NumerosAletrasService.convertir(
-                  parseInt(this.duracionContrato),
+                this.numerosAletrasService.convertir(
+                  parseInt(this.duracionContrato, 10),
                 ).slice(0, -7) +
                 '(' +
                 this.duracionContrato +
@@ -492,33 +492,33 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
     // -------------------------------------------------------------------------------------
 
-    let arreglo = [];
-    let arreglo2 = [];
+    const arreglo = [];
+    const arreglo2 = [];
     if (this.listaNovedades != null) {
-      for (var i = 0; i < this.listaNovedades.length; i++) {
-        if (this.listaNovedades[i] == 'cesion') {
+      for (let i = 0; i < this.listaNovedades.length; i++) {
+        if (this.listaNovedades[i] === 'cesion') {
           this.novedadCesion = true;
         }
-        if (this.listaNovedades[i] == 'adicion') {
+        if (this.listaNovedades[i] === 'adicion') {
           this.novedadAdiccion = true;
         }
-        if (this.listaNovedades[i] == 'prorroga') {
+        if (this.listaNovedades[i] === 'prorroga') {
           this.novedadProrroga = true;
         }
-        if (this.listaNovedades[i] == 'suspension') {
+        if (this.listaNovedades[i] === 'suspension') {
           this.novedadSuspension = true;
         }
-        if (this.listaNovedades[i] == 'terminacionLiquidacion') {
+        if (this.listaNovedades[i] === 'terminacionLiquidacion') {
           this.novedadTerminacion = true;
         }
-        if (this.listaNovedades[i] == 'observaciones') {
+        if (this.listaNovedades[i] === 'observaciones') {
           this.nuevo_texto = true;
         }
       }
     }
 
-    if (this.novedadAdiccion == true) {
-      for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
+    if (this.novedadAdiccion === true) {
+      for (let i = 0; i < this.numeroNovedadesAddiccion; i++) {
         if (
           parseInt(this.valorAdicion[i], 10) >
           parseInt(this.valorContrato, 10) * 0.5
@@ -549,305 +549,305 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
             '_cumplimiento');
         file.key = file.Id;
       }); */
-      /* this.nuxeoService
-        .getDocumentos$(arreglo, this.documentoService)
-        .pipe(take(1))
-        .subscribe(
-          (response) => { */
-            this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+    /* this.nuxeoService
+      .getDocumentos$(arreglo, this.documentoService)
+      .pipe(take(1))
+      .subscribe(
+        (response) => { */
+    this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
-            pdf.add(
-              new Table([
-                [
-                  docDefinition.escudoImagen,
-                  docDefinition.valorCabe,/* 
+    pdf.add(
+      new Table([
+        [
+          docDefinition.escudoImagen,
+          docDefinition.valorCabe, /*
                   new Txt('Código de autenticidad:' + response['Enlace'])
                     .bold()
                     .alignment('right')
                     .fontSize(9).end, */
-                ],
-              ]).layout('noBorders').end,
-            );
-            pdf.add('\n');
+        ],
+      ]).layout('noBorders').end,
+    );
+    pdf.add('\n');
 
-            pdf.add(
-              new Txt(
-                'EL SUSCRITO JEFE DE LA OFICINA DE CONTRATACIÓN DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS',
-              ).style('Title').end,
-            );
-            pdf.add(new Txt('NIT: 899.999.230-7').style('Title').end);
-            pdf.add('\n');
+    pdf.add(
+      new Txt(
+        'EL SUSCRITO JEFE DE LA OFICINA DE CONTRATACIÓN DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS',
+      ).style('Title').end,
+    );
+    pdf.add(new Txt('NIT: 899.999.230-7').style('Title').end);
+    pdf.add('\n');
 
-            pdf.add(new Txt('CERTIFICA').style('Title').end);
+    pdf.add(new Txt('CERTIFICA').style('Title').end);
 
-            pdf.add('\n');
-            // ------------------------------ se arma el primer parrafo
-            if (this.tipoPersona == 'NATURAL') {
-              pdf.add(docDefinition.content[0]);
-            } else if (this.tipoPersona == 'JURIDICA') {
-              pdf.add(docDefinition.content1[0]);
-            }
+    pdf.add('\n');
+    // ------------------------------ se arma el primer parrafo
+    if (this.tipoPersona === 'NATURAL') {
+      pdf.add(docDefinition.content[0]);
+    } else if (this.tipoPersona === 'JURIDICA') {
+      pdf.add(docDefinition.content1[0]);
+    }
 
-            pdf.add(docDefinition.line);
-            pdf.add('\n');
-            // --------------- numero de contrato
-            pdf.add(docDefinition.content4);
-            pdf.add('\n');
-            // -------------------------------- Objeto
-            pdf.add(docDefinition.content2);
-            pdf.add('\n');
-            // -------------------------------- fehca de suscripcion
-            pdf.add(docDefinition.fechaSub);
-            pdf.add('\n');
-            if (this.fecha_Inicio == '1') {
-              pdf.add(docDefinition.fechainicio);
-              pdf.add('\n');
-            }
-            if (this.fecha_final == '1') {
-              pdf.add(docDefinition.fechafin);
-              pdf.add('\n');
-            }
-            if (this.valor_Contrato == '1') {
-              pdf.add(docDefinition.valorContra);
-            }
-            pdf.add('\n');
-            if (this.duracion_contrato == '1') {
+    pdf.add(docDefinition.line);
+    pdf.add('\n');
+    // --------------- numero de contrato
+    pdf.add(docDefinition.content4);
+    pdf.add('\n');
+    // -------------------------------- Objeto
+    pdf.add(docDefinition.content2);
+    pdf.add('\n');
+    // -------------------------------- fehca de suscripcion
+    pdf.add(docDefinition.fechaSub);
+    pdf.add('\n');
+    if (this.fecha_Inicio === '1') {
+      pdf.add(docDefinition.fechainicio);
+      pdf.add('\n');
+    }
+    if (this.fecha_final === '1') {
+      pdf.add(docDefinition.fechafin);
+      pdf.add('\n');
+    }
+    if (this.valor_Contrato === '1') {
+      pdf.add(docDefinition.valorContra);
+    }
+    pdf.add('\n');
+    if (this.duracion_contrato === '1') {
 
-              if (parseInt(this.duracionContrato) > 12) {
-                pdf.add(docDefinition.duraContraDias);
+      if (parseInt(this.duracionContrato, 10) > 12) {
+        pdf.add(docDefinition.duraContraDias);
 
-              } else if (parseInt(this.duracionContrato) <= 12) {
-                pdf.add(docDefinition.duraContraMes);
-              }
-            }
-            pdf.add('\n');
-            if (this.calificacionManual !== "") {
-              pdf.add(docDefinition.resultadoEva);
-              pdf.add('\n');
-            }
-            if (this.observaciones == '1') {
-              pdf.add(docDefinition.textObservaciones);
-              pdf.add('\n');
-            }
+      } else if (parseInt(this.duracionContrato, 10) <= 12) {
+        pdf.add(docDefinition.duraContraMes);
+      }
+    }
+    pdf.add('\n');
+    if (this.calificacionManual !== '') {
+      pdf.add(docDefinition.resultadoEva);
+      pdf.add('\n');
+    }
+    if (this.observaciones === '1') {
+      pdf.add(docDefinition.textObservaciones);
+      pdf.add('\n');
+    }
 
-            pdf.add('\n');
-            if (this.novedadCesion == true) {
-              for (var i = 0; i < this.numeroNovedadesCesion; i++) {
-                var contador = i + 1;
-                pdf.add(
-                  new Txt(
-                    'CESIÓN N° ' +
-                    contador +
-                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia,
-                  ).bold().end,
-                );
-              }
-            }
-            if (this.novedadAdiccion == true) {
-              for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
-                var contador = i + 1;
-                pdf.add(
-                  new Txt(
-                    'ADDICIÓN N° ' +
-                    contador +
-                    ` DEL CONTRATO DE ${tipoContrato}  NO ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia,
-                  ).bold().end,
-                );
+    pdf.add('\n');
+    if (this.novedadCesion === true) {
+      for (let i = 0; i < this.numeroNovedadesCesion; i++) {
+        const contador = i + 1;
+        pdf.add(
+          new Txt(
+            'CESIÓN N° ' +
+            contador +
+            ` DEL CONTRATO DE ${tipoContrato} NO ` +
+            this.dataContrato[0].ContratoSuscrito +
+            '-' +
+            this.dataContrato[0].Vigencia,
+          ).bold().end,
+        );
+      }
+    }
+    if (this.novedadAdiccion === true) {
+      for (let i = 0; i < this.numeroNovedadesAddiccion; i++) {
+        const contador = i + 1;
+        pdf.add(
+          new Txt(
+            'ADDICIÓN N° ' +
+            contador +
+            ` DEL CONTRATO DE ${tipoContrato}  NO ` +
+            this.dataContrato[0].ContratoSuscrito +
+            '-' +
+            this.dataContrato[0].Vigencia,
+          ).bold().end,
+        );
 
-                pdf.add(
-                  new Txt(
-                    'VALOR: $' +
-                    this.numeromiles(this.valorAdicion[i]) +
-                    ' ' +
-                    this.NumerosAletrasService.convertir(
-                      parseInt(this.valorAdicion[i])
-                    ),
-                  ).bold().end,
-                );
-              }
-              pdf.add('\n');
-            }
-            if (this.novedadProrroga == true) {
-              for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
-                var contador = i + 1;
-                pdf.add(
-                  new Txt(
-                    'Prórroga N° ' +
-                    contador +
-                    ` DEL CONTRATO DE ${tipoContrato} NO ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia,
-                  ).bold().end,
-                );
-                if (this.diasProrroga[i].length == 0) {
-                  pdf.add(
-                    new Txt(
-                      'DURACIÓN:' +
-                      this.NumerosAletrasService.convertir(
-                        parseInt(this.mesesProrroga[i]),
-                      ).slice(0, -7) +
-                      '' +
-                      this.mesesProrroga[i] +
-                      ' Meses',
-                    ).bold().end,
-                  );
-                } else if (this.mesesProrroga[i].length == 0) {
-                  pdf.add(
-                    new Txt(
-                      'DURACIÓN:' +
-                      this.NumerosAletrasService.convertir(
-                        parseInt(this.diasProrroga[i]),
-                      ).slice(0, -7) +
-                      '' +
-                      this.diasProrroga[i] +
-                      ' DÍAS',
-                    ).bold().end,
-                  );
-                } else if (this.mesesProrroga[i] == '1') {
-                  pdf.add(
-                    new Txt(
-                      'DURACIÓN:' +
-                      this.diasProrroga[i] +
-                      ' DÍAS Y ' +
-                      this.mesesProrroga[i] +
-                      ' Mes',
-                    ).bold().end,
-                  );
-                } else {
-                  pdf.add(
-                    new Txt(
-                      'DURACIÓN:' +
-                      this.diasProrroga[i] +
-                      ' DÍAS Y ' +
-                      this.mesesProrroga[i] +
-                      ' Meses',
-                    ).bold().end,
-                  );
-                }
-              }
-              pdf.add('\n');
-            }
-            if (this.novedadTerminacion == true) {
-              pdf.add(docDefinition.novedadContraTerminacion);
-            }
-            if (this.novedadSuspension == true) {
-              pdf.add(docDefinition.novedadContraSuspension);
-            }
-            pdf.add(
-              new Txt(
-                'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion,
-              )
-                .alignment('left')
-                .fontSize(9).end,
-            );
+        pdf.add(
+          new Txt(
+            'VALOR: $' +
+            this.numeromiles(this.valorAdicion[i]) +
+            ' ' +
+            this.numerosAletrasService.convertir(
+              parseInt(this.valorAdicion[i], 10),
+            ),
+          ).bold().end,
+        );
+      }
+      pdf.add('\n');
+    }
+    if (this.novedadProrroga === true) {
+      for (let i = 0; i < this.numeroNovedadesProrroga; i++) {
+        const contador = i + 1;
+        pdf.add(
+          new Txt(
+            'Prórroga N° ' +
+            contador +
+            ` DEL CONTRATO DE ${tipoContrato} NO ` +
+            this.dataContrato[0].ContratoSuscrito +
+            '-' +
+            this.dataContrato[0].Vigencia,
+          ).bold().end,
+        );
+        if (this.diasProrroga[i].length === 0) {
+          pdf.add(
+            new Txt(
+              'DURACIÓN:' +
+              this.numerosAletrasService.convertir(
+                parseInt(this.mesesProrroga[i], 10),
+              ).slice(0, -7) +
+              '' +
+              this.mesesProrroga[i] +
+              ' Meses',
+            ).bold().end,
+          );
+        } else if (this.mesesProrroga[i].length === 0) {
+          pdf.add(
+            new Txt(
+              'DURACIÓN:' +
+              this.numerosAletrasService.convertir(
+                parseInt(this.diasProrroga[i], 10),
+              ).slice(0, -7) +
+              '' +
+              this.diasProrroga[i] +
+              ' DÍAS',
+            ).bold().end,
+          );
+        } else if (this.mesesProrroga[i] === '1') {
+          pdf.add(
+            new Txt(
+              'DURACIÓN:' +
+              this.diasProrroga[i] +
+              ' DÍAS Y ' +
+              this.mesesProrroga[i] +
+              ' Mes',
+            ).bold().end,
+          );
+        } else {
+          pdf.add(
+            new Txt(
+              'DURACIÓN:' +
+              this.diasProrroga[i] +
+              ' DÍAS Y ' +
+              this.mesesProrroga[i] +
+              ' Meses',
+            ).bold().end,
+          );
+        }
+      }
+      pdf.add('\n');
+    }
+    if (this.novedadTerminacion === true) {
+      pdf.add(docDefinition.novedadContraTerminacion);
+    }
+    if (this.novedadSuspension === true) {
+      pdf.add(docDefinition.novedadContraSuspension);
+    }
+    pdf.add(
+      new Txt(
+        'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion,
+      )
+        .alignment('left')
+        .fontSize(9).end,
+    );
 
-            pdf.add(
-              new Table([
-                [
-                  docDefinition.firmaImagen,
-                  {
-                    rowSpan: 2,
-                    text:
-                      '\n\n\n\n____________________\n' +
-                      'Firma del supervisor',
-                    style: {
-                      alignment: 'center',
-                      bold: true
-                    }
-                  }
-                ],
-                [
-                  docDefinition.firmaPagina,
-                ]
-              ]).layout('noBorders').alignment('center').widths([240, 160]).absolutePosition(75, 655).end
-            );
+    pdf.add(
+      new Table([
+        [
+          docDefinition.firmaImagen,
+          {
+            rowSpan: 2,
+            text:
+              '\n\n\n\n____________________\n' +
+              'Firma del supervisor',
+            style: {
+              alignment: 'center',
+              bold: true,
+            },
+          },
+        ],
+        [
+          docDefinition.firmaPagina,
+        ],
+      ]).layout('noBorders').alignment('center').widths([240, 160]).absolutePosition(75, 655).end,
+    );
 
-            pdf.footer({
-              columns: [
-                {
-                  stack: [
-                    { text: ' ', fontSize: 8 },
-                    { text: ' ', fontSize: 8 },
-                    { text: 'PBX 601 3239300 ext. 1859 - 1862', fontSize: 8 },
-                    { text: 'Calle 13 n.° 31 -75, Bogotá D. C., Colombia', fontSize: 8 },
-                    { text: 'Acreditación Institucional en Alta Calidad. Resolución No. 02365 3 del 10 de diciembre de 2021', fontSize: 7 },
-                  ],
-                  width: '65%',
-                  alignment: 'left',
-                  margin: [50, 0],
-                },
-                {
-                  stack: [
-                    { text: 'Línea de atención gratuita', decoration: 'underline' },
-                    { text: '01  800  091  44  10', bold: true },
-                    { text: 'www.udistrital.edu.coo' },
-                    { text: 'procesoscontratacion@udistrital.edu.co' },
-                    { text: 'tramitescontratacion@udistrital.edu.co' },
-                  ],
-                  width: '35%',
-                  alignment: 'right',
-                  fontSize: 8,
-                  margin: [40, 0],
-                },
-              ],
-            });
+    pdf.footer({
+      columns: [
+        {
+          stack: [
+            { text: ' ', fontSize: 8 },
+            { text: ' ', fontSize: 8 },
+            { text: 'PBX 601 3239300 ext. 1859 - 1862', fontSize: 8 },
+            { text: 'Calle 13 n.° 31 -75, Bogotá D. C., Colombia', fontSize: 8 },
+            { text: 'Acreditación Institucional en Alta Calidad. Resolución No. 02365 3 del 10 de diciembre de 2021', fontSize: 7 },
+          ],
+          width: '65%',
+          alignment: 'left',
+          margin: [50, 0],
+        },
+        {
+          stack: [
+            { text: 'Línea de atención gratuita', decoration: 'underline' },
+            { text: '01  800  091  44  10', bold: true },
+            { text: 'www.udistrital.edu.coo' },
+            { text: 'procesoscontratacion@udistrital.edu.co' },
+            { text: 'tramitescontratacion@udistrital.edu.co' },
+          ],
+          width: '35%',
+          alignment: 'right',
+          fontSize: 8,
+          margin: [40, 0],
+        },
+      ],
+    });
 
-            pdf.create().getBlob((blob) => {
-              const file2 = {
-                IdDocumento: 16,
-                file: blob,
-                nombre: '',
-                //documento: response['Enlace'],
-              };
-              arreglo2.push(file2);
-              arreglo2.forEach((file) => {
-                (file.Id = file.nombre),
-                  (file.nombre =
-                    'certificacion_' +
-                    file.Id +
-                    this.numeroContrato +
-                    '__' +
-                    this.cedula +
-                    '_cumplimiento');
-                file.key = file.Id;
-              });
+    pdf.create().getBlob((blob) => {
+      const file2 = {
+        IdDocumento: 16,
+        file: blob,
+        nombre: '',
+        // documento: response['Enlace'],
+      };
+      arreglo2.push(file2);
+      arreglo2.forEach((file) => {
+        (file.Id = file.nombre),
+          (file.nombre =
+            'certificacion_' +
+            file.Id +
+            this.numeroContrato +
+            '__' +
+            this.cedula +
+            '_cumplimiento');
+        file.key = file.Id;
+      });
 
-              this.gestorDocumental.uploadFiles(arreglo2)
-/*               this.nuxeoService
-                .updateDocument$(arreglo2, this.documentoService) */
-                .subscribe((response: any[]) => {
-                  if (response[0].Status == "200") {
-                    pdf
-                    .create()
-                    .download(
-                      'Certificacion_' +
-                      this.numeroContrato +
-                      '__' +
-                      this.cedula +
-                      '_cumplimiento',
-                    );
-                    this.regresarInicio();
-                  } else {
-                    this.openWindow("Fallo en carga a Gestor Documental");
-                  }
-                },
-                (error) => {
-                  this.openWindow(error.status + ": " + error.message);
-                });
-            });
+      this.gestorDocumental.uploadFiles(arreglo2)
+        /*               this.nuxeoService
+                        .updateDocument$(arreglo2, this.documentoService) */
+        .subscribe((response: any[]) => {
+          if (response[0].Status === '200') {
+            pdf
+              .create()
+              .download(
+                'Certificacion_' +
+                this.numeroContrato +
+                '__' +
+                this.cedula +
+                '_cumplimiento',
+              );
+            this.regresarInicio();
+          } else {
+            this.openWindow('Fallo en carga a Gestor Documental');
+          }
+        },
+          (error) => {
+            this.openWindow(error.status + ': ' + error.message);
+          });
+    });
 
-            
-          /* },
-          (error) => { },
-        ); */
-    //});
+
+    /* },
+    (error) => { },
+  ); */
+    // });
 
   }
 
@@ -907,7 +907,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     });
   }
   getCalificacion() {
-    if (Object.entries(this.evaluacionRealizada).length == 0) {
+    if (Object.entries(this.evaluacionRealizada).length === 0) {
       return this.calificacionManual;
     } else {
       for (
@@ -928,7 +928,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   }
   crearNovedades() {
     this.numeroNovedadesArr.length = 0;
-    for (var i = 0; i < this.numeroNovedadesCesion; i++) {
+    for (let i = 0; i < this.numeroNovedadesCesion; i++) {
       // console.log(i);
       this.numeroNovedadesArr.push('');
     }
@@ -938,19 +938,19 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       this.numeroNovedadesArrOtro.push('');
     }*/
     this.numeroNovedadesArrProrroga.length = 0;
-    for (var i = 0; i < this.numeroNovedadesProrroga; i++) {
+    for (let i = 0; i < this.numeroNovedadesProrroga; i++) {
       // console.log(i);
       this.numeroNovedadesArrProrroga.push('');
     }
 
     this.numeroNovedadesArrAdiccion.length = 0;
-    for (var i = 0; i < this.numeroNovedadesAddiccion; i++) {
+    for (let i = 0; i < this.numeroNovedadesAddiccion; i++) {
       this.numeroNovedadesArrAdiccion.push('');
     }
   }
   diasFecha(fecha1, fecha2) {
-    var date_1 = new Date(fecha1.toString()).getTime();
-    var date_2 = new Date(fecha2.toString()).getTime();
+    const date_1 = new Date(fecha1.toString()).getTime();
+    const date_2 = new Date(fecha2.toString()).getTime();
     // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
@@ -958,7 +958,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       );
       this.regresarFiltro();
     } else {
-      var diff = date_2 - date_1;
+      const diff = date_2 - date_1;
 
       return diff / (1000 * 60 * 60 * 24);
     }

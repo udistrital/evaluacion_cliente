@@ -662,7 +662,8 @@ export class CrearCertificacionComponent implements OnInit {
     pdf.add('\n');
     pdf.add(
       new Txt(
-        `El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y probatoria según lo establecido en la ley 527 de 1999.`,
+        'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
+        'probatoria según lo establecido en la ley 527 de 1999.',
       ).alignment('justify').fontSize(10).bold().end,
     );
     pdf.add('\n');
@@ -683,7 +684,7 @@ export class CrearCertificacionComponent implements OnInit {
             { text: 'PBX 601 3239300 ext. 1859 - 1862', fontSize: 8 },
             { text: 'Calle 13 n.° 31 -75, Bogotá D. C., Colombia', fontSize: 8 },
             { text: 'Acreditación Institucional en Alta Calidad. Resolución No. 02365 3 del 10 de diciembre de 2021', fontSize: 7 },
-        ],
+          ],
           width: '65%',
           alignment: 'left',
           margin: [50, 0],
@@ -794,7 +795,7 @@ export class CrearCertificacionComponent implements OnInit {
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
         this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
-        // this.consultarNovedades();
+        this.consultarNovedades();
         // console.log(this.idContrato);
         this.AdministrativaAmazon.get(
           'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
@@ -828,7 +829,6 @@ export class CrearCertificacionComponent implements OnInit {
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
-        console.info(this.allNovedades);
         this.datosNovedades.push('Sin novedades');
         for (let i = 0; i < data.length; i++) {
           switch (data[i].tiponovedad) {

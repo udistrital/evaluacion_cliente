@@ -39,7 +39,7 @@ export class PlantillaEvaluacionComponent {
           this.CargarUltimaPlantilla();
         } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
           this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
-          if (this.json.evaluadores != undefined) {
+          if (this.json.evaluadores !== undefined) {
             this.evaluadoresArray = this.json.evaluadores;
             for (let i = 0; i < this.evaluadoresArray.length; i++) {
               this.review_btn.push(false);
@@ -69,7 +69,8 @@ export class PlantillaEvaluacionComponent {
       this.json.evaluadores = this.evaluadoresArray;
       for (let i = 0; i < this.json.Secciones.length; i++) {
         for (let k = 0; k < this.json.Secciones[i].Seccion_hija_id.length; k++) {
-          if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 && this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
+          if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 &&
+            this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
             if (this.json.Secciones[i].Seccion_hija_id[k]['Condicion'].length > 0) {
               if (this.json.Secciones[i].Seccion_hija_id[k - 1]['Item'][2].Valor.Nombre ===
                 this.json.Secciones[i].Seccion_hija_id[k]['Condicion'][0]['Nombre']) {
@@ -116,25 +117,25 @@ export class PlantillaEvaluacionComponent {
   }
 
   agregarEvaluador() {
-    this.evaluadoresArray.push("");
+    this.evaluadoresArray.push('');
     this.review_btn.push(false);
   }
 
   asignarEvaluador(evaluador: any, i: number) {
 
-    var index = this.evaluadoresArray.indexOf(evaluador);
-    if (index == -1) {
+    const index = this.evaluadoresArray.indexOf(evaluador);
+    if (index === -1) {
       this.evaluadoresArray[i] = evaluador;
-      this.openWindow("Evaluador agregado!", "");
+      this.openWindow('Evaluador agregado!', '');
     } else {
-      this.openWindow("El evaluador ya fue agregado!", "Alerta");
+      this.openWindow('El evaluador ya fue agregado!', 'Alerta');
     }
     this.review_btn[i] = true;
   }
 
   eliminarEvaluador(evaluador: any, i: number) {
-    var index = this.evaluadoresArray.indexOf(evaluador);
-    if (index != -1) {
+    const index = this.evaluadoresArray.indexOf(evaluador);
+    if (index !== -1) {
       this.evaluadoresArray.splice(i, 1);
       this.review_btn.splice(i, 1);
     }
