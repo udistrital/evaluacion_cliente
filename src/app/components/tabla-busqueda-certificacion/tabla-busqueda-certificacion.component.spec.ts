@@ -8,7 +8,7 @@ describe('TablaBusquedaCertificacionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TablaBusquedaCertificacionComponent ]
+      declarations: [ TablaBusquedaCertificacionComponent ],
     })
     .compileComponents();
   }));
