@@ -106,9 +106,9 @@ export class CrearCertificacionComponent implements OnInit {
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
-    private NumerosAletrasService: NumerosAletrasService,
+    private numerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
-    private NovedadesService: NovedadesService,
+    private novedadesService: NovedadesService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -123,13 +123,12 @@ export class CrearCertificacionComponent implements OnInit {
 
   crearPdf() {
     this.datosTabla = [];
-    var cadena1 =
+    const cadena1 =
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
       'datos que administra la Oficina Asesora Jurídica de la Universidad Distrital Francisco José de Caldas, ';
-    var cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
-    var cadena3 =
-      ', suscribió en esta Entidad lo siguiente:';
-    var date = new Date();
+    const cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
+    const cadena3 = ', suscribió en esta Entidad lo siguiente:';
+    const date = new Date();
 
     PdfMakeWrapper.setFonts(pdfFontTime, {
       TimesNewRoman: {
@@ -140,17 +139,17 @@ export class CrearCertificacionComponent implements OnInit {
       },
     });
     PdfMakeWrapper.useFont('TimesNewRoman');
-    var tipoContrato = '';
+    let tipoContrato = '';
 
     const pdf = new PdfMakeWrapper();
-    if (this.idTipoContrato == 14) {
+    if (this.idTipoContrato === 14) {
       tipoContrato = 'ORDEN DE SERVICIO';
 
-    } else if (this.idTipoContrato == 6) {
+    } else if (this.idTipoContrato === 6) {
 
       tipoContrato = 'PRESTACIÓN DE SERVICIOS';
 
-    } else if (this.idTipoContrato == 7) {
+    } else if (this.idTipoContrato === 7) {
       tipoContrato = 'ORDEN DE VENTA';
 
 
@@ -186,10 +185,10 @@ export class CrearCertificacionComponent implements OnInit {
         fontSize: 9,
         bold: false,
         alignment: 'justify',
-      }
+      },
     });
 
-    var docDefinition = {
+    const docDefinition = {
       content: [
         {
           text: [
@@ -208,8 +207,8 @@ export class CrearCertificacionComponent implements OnInit {
             headerRows: 0,
             widths: [175, '*'],
             body: this.datosTabla,
-          }
-        }
+          },
+        },
       ],
       line: [
         {
@@ -236,7 +235,7 @@ export class CrearCertificacionComponent implements OnInit {
             { text: 'DURACION:  ', style: 'body1', bold: true },
             {
               text:
-                this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
+                this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
                 '' +
                 this.duracionContrato +
                 ' DIAS',
@@ -251,7 +250,7 @@ export class CrearCertificacionComponent implements OnInit {
             { text: 'DURACION:  ', style: 'body1', bold: true },
             {
               text:
-                this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
+                this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
                 '(' +
                 this.duracionContrato +
                 ') MESES',
@@ -284,8 +283,8 @@ export class CrearCertificacionComponent implements OnInit {
           text: [
             {
               text:
-                `Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 
-                Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad. 
+                `Carrera 7 No. 40 B – 53 Piso 9° PBX: 3239300
+                Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia \n Acreditación Institucional de Alta Calidad.
                 Resolución No. 23096 del 15 de diciembre de 2016`,
               style: 'body2',
               bold: true,
@@ -325,11 +324,11 @@ export class CrearCertificacionComponent implements OnInit {
         {
           table: [
             {
-              text: ''
-            }
+              text: '',
+            },
           ],
-          margins: [40, 40]
-        }
+          margins: [40, 40],
+        },
       ],
       footer: [
         {
@@ -338,8 +337,8 @@ export class CrearCertificacionComponent implements OnInit {
               text: '____________________',
               style: {
                 alignment: 'right',
-                fontSize: 8
-              }
+                fontSize: 8,
+              },
             },
           ],
         },
@@ -366,8 +365,8 @@ export class CrearCertificacionComponent implements OnInit {
               bold: true,
               style: {
                 alignment: 'right',
-                fontSize: 8
-              }
+                fontSize: 8,
+              },
             },
           ],
         },
@@ -380,8 +379,8 @@ export class CrearCertificacionComponent implements OnInit {
                 '\n\n\nCarrera 7 No. 40 B – 53 Piso 9° PBX: 3239300 Ext: 1911 – 1919 – 1912 Bogotá D.C. – Colombia',
               style: {
                 alignment: 'left',
-                fontSize: 8
-              }
+                fontSize: 8,
+              },
             },
           ],
         },
@@ -393,11 +392,11 @@ export class CrearCertificacionComponent implements OnInit {
               text: 'www.udistrital.edu.co',
               style: {
                 alignment: 'right',
-                fontSize: 8
-              }
-            }
-          ]
-        }
+                fontSize: 8,
+              },
+            },
+          ],
+        },
       ],
       footer5: [
         {
@@ -408,8 +407,8 @@ export class CrearCertificacionComponent implements OnInit {
               style: {
                 alignment: 'left',
                 bold: false,
-                fontSize: 8
-              }
+                fontSize: 8,
+              },
             },
           ],
         },
@@ -421,11 +420,11 @@ export class CrearCertificacionComponent implements OnInit {
               text: 'jurídica@udistrital.edu.co',
               style: {
                 alignment: 'right',
-                fontSize: 8
-              }
-            }
-          ]
-        }
+                fontSize: 8,
+              },
+            },
+          ],
+        },
       ],
       escudoImagen: [
         {
@@ -1329,8 +1328,8 @@ export class CrearCertificacionComponent implements OnInit {
     };
     // -------------------------------------------------------------------------------------
 
-    let arreglo = [];
-    let arreglo2 = [];
+    const arreglo = [];
+    const arreglo2 = [];
 
     for (let i = 0; i < this.datosNovedades.length; i++) {
 
@@ -1342,53 +1341,53 @@ export class CrearCertificacionComponent implements OnInit {
         { text: 'CONTRATO N° y FECHA:', style: 'tabla1' },
         {
           text: this.dataContrato[0].ContratoSuscrito + '-' + this.dataContrato[0].Vigencia +
-            ' - ' + this.formato(this.fechaSuscrip.slice(0, 10)), style: 'tabla2'
-        }
-      ]
+            ' - ' + this.formato(this.fechaSuscrip.slice(0, 10)), style: 'tabla2',
+        },
+      ],
     );
 
     this.datosTabla.push(
       [
         { text: 'TIPO DE CONTRATO:', style: 'tabla1' },
-        { text: 'CONTRATO DE ' + tipoContrato, style: 'tabla2' }
-      ]
+        { text: 'CONTRATO DE ' + tipoContrato, style: 'tabla2' },
+      ],
     );
 
     this.datosTabla.push(
       [
         { text: 'OBJETO:', style: 'tabla1' },
-        { text: this.objeto, style: 'tabla2' }
-      ]
+        { text: this.objeto, style: 'tabla2' },
+      ],
     );
 
     this.datosTabla.push(
       [
         { text: 'ACTIVIDADES ESPECÍFICAS:', style: 'tabla1' },
-        { text: this.actividadEspecifica.toUpperCase(), style: 'tabla2' }
-      ]
+        { text: this.actividadEspecifica.toUpperCase(), style: 'tabla2' },
+      ],
     );
 
-    if (this.valor_contrato == '1') {
+    if (this.valor_contrato === '1') {
       this.datosTabla.push(
         [
           { text: 'VALOR DEL CONTRATO:', style: 'tabla1' },
           {
-            text: this.NumerosAletrasService.convertir(parseInt(this.valorContrato)).toLowerCase() +
+            text: this.numerosAletrasService.convertir(parseInt(this.valorContrato, 10)).toLowerCase() +
               '(' + this.numeromiles(this.valorContrato) + '). ',
             style: 'tabla2',
           },
-        ]
+        ],
       );
     }
 
-    if (this.duracion_contrato == '1') {
+    if (this.duracion_contrato === '1') {
       let textoDuracion = '';
-      if (parseInt(this.duracionContrato) > 12) {
-        textoDuracion = this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
+      if (parseInt(this.duracionContrato, 10) > 12) {
+        textoDuracion = this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
           '' + this.duracionContrato + ' DIAS';
 
-      } else if (parseInt(this.duracionContrato) < 12) {
-        textoDuracion = this.NumerosAletrasService.convertir(parseInt(this.duracionContrato)).slice(0, -7) +
+      } else if (parseInt(this.duracionContrato, 10) < 12) {
+        textoDuracion = this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
           '(' + this.duracionContrato + ') MESES';
       }
       this.datosTabla.push(
@@ -1400,22 +1399,22 @@ export class CrearCertificacionComponent implements OnInit {
               ', contados a partir del acta de inicio, previo cumplimiento ' +
               'de los requisitos de perfeccionamiento y ejecución, sin superar ' +
               'el tiempo de la vigencia fiscal.',
-            style: 'tabla2'
-          }
-        ]
+            style: 'tabla2',
+          },
+        ],
       );
     }
 
-    if (this.fecha_Inicio == '1') {
+    if (this.fecha_Inicio === '1') {
       this.datosTabla.push(
         [
           { text: 'FECHA DE INICIO:', style: 'tabla1' },
-          { text: this.formato(this.fechaInicio.slice(0, 10)), style: 'tabla2' }
-        ]
+          { text: this.formato(this.fechaInicio.slice(0, 10)), style: 'tabla2' },
+        ],
       );
     }
 
-    for (var i = 0; i < this.novedad.length; i++) {
+    for (let i = 0; i < this.novedad.length; i++) {
 
       switch (this.novedad[i]) {
         case 'Suspension':
@@ -1431,9 +1430,9 @@ export class CrearCertificacionComponent implements OnInit {
                   this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension.slice(0, 10)) +
                   ' HASTA El ' +
                   this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension.slice(0, 10)),
-                style: 'tabla2'
+                style: 'tabla2',
               },
-            ]
+            ],
           );
           this.contadorSuspen++;
           break;
@@ -1446,10 +1445,10 @@ export class CrearCertificacionComponent implements OnInit {
                   this.dataContrato[0].ContratoSuscrito +
                   '-' +
                   this.dataContrato[0].Vigencia +
-                  '. Fecha de la cesión: ' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion.slice(0,10)),
-                style: 'tabla2'
-              }
-            ]
+                  '. Fecha de la cesión: ' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
           );
           this.contadorCesion++;
           break;
@@ -1460,9 +1459,9 @@ export class CrearCertificacionComponent implements OnInit {
               {
                 text: 'Fecha de reinicio del contrato: ' +
                   this.formato(this.novedadReinicio[this.contadorReinicio].fechareinicio),
-                style: 'tabla2'
-              }
-            ]
+                style: 'tabla2',
+              },
+            ],
           );
           this.contadorReinicio++;
           break;
@@ -1472,9 +1471,9 @@ export class CrearCertificacionComponent implements OnInit {
               { text: 'FECHA DE LIQUIDACIÓN:', style: 'tabla1' },
               {
                 text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
-                style: 'tabla2'
-              }
-            ]
+                style: 'tabla2',
+              },
+            ],
           );
           break;
         case 'Terminacion':
@@ -1482,10 +1481,10 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'TERMINACIÓN:', style: 'tabla1' },
               {
-                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0,10)),
-                style: 'tabla2'
-              }
-            ]
+                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
           );
           break;
         case 'Adicion':
@@ -1498,9 +1497,9 @@ export class CrearCertificacionComponent implements OnInit {
                   'Se adicionó el valor de ' + this.numeromiles(this.novedadAdicion[this.contadorAdicion].valoradicion) +
                   '.\n\n' + ' Fecha de la adición: ' +
                   this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
-                style: 'tabla2'
-              }
-            ]
+                style: 'tabla2',
+              },
+            ],
           );
           this.contadorAdicion++;
           break;
@@ -1511,9 +1510,9 @@ export class CrearCertificacionComponent implements OnInit {
               { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
               {
                 text: 'Prórroga de (' + this.formato(this.novedadProrroga[this.contadorProrroga].tiempoprorroga) +
-                  ') día(s).', style: 'tabla2'
-              }
-            ]
+                  ') día(s).', style: 'tabla2',
+              },
+            ],
           );
           this.contadorProrroga++;
           break;
@@ -1525,9 +1524,9 @@ export class CrearCertificacionComponent implements OnInit {
               {
                 text: 'Se adicionó el valor de ' + this.numeromiles(this.novedadAdiPro[this.contadorAdiPro].valoradicion) +
                   '. Prórroga de (' + this.formato(this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga) + ') día(s).',
-                style: 'tabla2'
-              }
-            ]
+                style: 'tabla2',
+              },
+            ],
           );
           this.contadorAdiPro++;
           break;
@@ -1536,10 +1535,10 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'NOVEDAD INICIO: ', style: 'tabla1' },
               {
-                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro.slice(0,10)),
-                style: 'tabla2'
-              }
-            ]
+                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
           );
           this.contadorInicio++;
           break;
@@ -1547,38 +1546,38 @@ export class CrearCertificacionComponent implements OnInit {
 
     }
 
-    if (this.fecha_final == '1') {
+    if (this.fecha_final === '1') {
       this.datosTabla.push(
         [
           { text: 'FECHA DE TERMINACIÓN:', style: 'tabla1' },
           {
             text: this.formato(this.fechaFin.slice(0, 10)),
-            style: 'tabla2'
-          }
-        ]
+            style: 'tabla2',
+          },
+        ],
       );
     }
 
     this.datosTabla.push(
       [
         { text: 'ESTADO DEL CONTRATO:', style: 'tabla1' },
-        { text: this.estado_contrato, style: 'tabla2' }
-      ]
+        { text: this.estado_contrato, style: 'tabla2' },
+      ],
     );
 
-    if (this.otros_datos == '1') {
+    if (this.otros_datos === '1') {
       this.datosTabla.push(
         [
           { text: 'OTROS:', style: 'tabla1' },
-          { text: this.otrosDatos, style: 'tabla2' }
-        ]
+          { text: this.otrosDatos, style: 'tabla2' },
+        ],
       );
     } else {
       this.datosTabla.push(
         [
           { text: 'OTROS:', style: 'tabla1' },
-          { text: 'N/A', style: 'tabla2' }
-        ]
+          { text: 'N/A', style: 'tabla2' },
+        ],
       );
     }
 
@@ -1589,9 +1588,9 @@ export class CrearCertificacionComponent implements OnInit {
           text: 'El contrato de que trata la presente certificación no genera ' +
             'relación laboral entre el contratista y la Universidad ' +
             'Distrital Francisco José de Caldas.',
-          style: 'tabla2'
-        }
-      ]
+          style: 'tabla2',
+        },
+      ],
     );
 
     /* pdf.create().getBlob((blob) => {
@@ -1619,136 +1618,136 @@ export class CrearCertificacionComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (response: any[]) => { */
-          // console.log('esta es la respuesta de nuxeo', response['Enlace']);
-          this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+    // console.log('esta es la respuesta de nuxeo', response['Enlace']);
+    this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
-          pdf.add(
-            new Table([
-              [
-                docDefinition.escudoImagen,
-                docDefinition.valorCabe,
-                /* new Txt('Código de autenticidad:' + "")
-                  .bold()
-                  .alignment('right')
-                  .fontSize(7).end, */
-              ],
-            ]).layout('noBorders').absolutePosition(80, 6).end,
-          );
+    pdf.add(
+      new Table([
+        [
+          docDefinition.escudoImagen,
+          docDefinition.valorCabe,
+          /* new Txt('Código de autenticidad:' + '')
+            .bold()
+            .alignment('right')
+            .fontSize(7).end, */
+        ],
+      ]).layout('noBorders').absolutePosition(80, 6).end,
+    );
 
-          pdf.add(
-            new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' +
-              'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
-                'Title',
-              ).end,
-          );
+    pdf.add(
+      new Txt('EL (LA) JEFE DE LA OFICINA ASESORA JURÍDICA DE LA UNIVERSIDAD DISTRITAL ' +
+        'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
+          'Title',
+        ).end,
+    );
 
-          pdf.add('\n');
-          pdf.add(new Txt('CERTIFICA:').style('Title').end);
+    pdf.add('\n');
+    pdf.add(new Txt('CERTIFICA:').style('Title').end);
 
-          pdf.add('\n');
-          // ------------------------------ se arma el primer parrafo
-          pdf.add(docDefinition.content[0]);
+    pdf.add('\n');
+    // ------------------------------ se arma el primer parrafo
+    pdf.add(docDefinition.content[0]);
 
-          pdf.add(docDefinition.line);
+    pdf.add(docDefinition.line);
 
-          pdf.add(docDefinition.contentTable);
+    pdf.add(docDefinition.contentTable);
 
-          pdf.add('\n\n');
+    pdf.add('\n\n');
 
-          pdf.add(
-            new Txt(
-              'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion
-              /* this.horaCreacion.slice(0, 10) +
-              ' - ' +
-              this.horaCreacion.slice(11, 19), */
-            )
-              .alignment('left')
-              .fontSize(9).end,
-          );
-          /* pdf.add(
-            new Table([
-              [
-                docDefinition.firmaImagen,
-              ],
-              [
-                docDefinition.firmaPagina
-              ]
-            ]).alignment('left').layout('noBorders').dontBreakRows(true).end
-          ); */
-          pdf.add('\n');
-          /* pdf.add(
-            new Txt(
-              'El presente es un documento público expedido con firma mecánica que garantiza ' +
-              'su plena validez jurídica y probatoria según lo establecido en la ley 527 de 1999.'
-            ).alignment('justify').fontSize(10).bold().end
-          ); */
-          pdf.add('\n');
-          pdf.add(
-            new Txt(
-              'Elaboró: David Eliot Iriarte - Contratista - OAJ' +
-              '________________________________________________________________________________' +
-              '_________________________________'
-            ).fontSize(6).decoration('underline').alignment('left').end
-          );
+    pdf.add(
+      new Txt(
+        'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion,
+        /* this.horaCreacion.slice(0, 10) +
+        ' - ' +
+        this.horaCreacion.slice(11, 19), */
+      )
+        .alignment('left')
+        .fontSize(9).end,
+    );
+    /* pdf.add(
+      new Table([
+        [
+          docDefinition.firmaImagen,
+        ],
+        [
+          docDefinition.firmaPagina
+        ]
+      ]).alignment('left').layout('noBorders').dontBreakRows(true).end
+    ); */
+    pdf.add('\n');
+    /* pdf.add(
+      new Txt(
+        'El presente es un documento público expedido con firma mecánica que garantiza ' +
+        'su plena validez jurídica y probatoria según lo establecido en la ley 527 de 1999.'
+      ).alignment('justify').fontSize(10).bold().end
+    ); */
+    pdf.add('\n');
+    pdf.add(
+      new Txt(
+        'Elaboró: David Eliot Iriarte - Contratista - OAJ' +
+        '________________________________________________________________________________' +
+        '_________________________________',
+      ).fontSize(6).decoration('underline').alignment('left').end,
+    );
 
-          pdf.footer(
-            new Table([
-              [
-                docDefinition.footer3.concat(docDefinition.footer5),
-                docDefinition.footer.concat(docDefinition.footer1).concat(docDefinition.footer2)
-                  .concat(docDefinition.footer4).concat(docDefinition.footer7)
-              ],
-            ]).layout('noBorders').margin([80, 0, 60, 0]).widths(['*', 85]).end,
-          );
+    pdf.footer(
+      new Table([
+        [
+          docDefinition.footer3.concat(docDefinition.footer5),
+          docDefinition.footer.concat(docDefinition.footer1).concat(docDefinition.footer2)
+            .concat(docDefinition.footer4).concat(docDefinition.footer7),
+        ],
+      ]).layout('noBorders').margin([80, 0, 60, 0]).widths(['*', 85]).end,
+    );
 
-          pdf.create().getBlob((blob) => {
-            const file2 = {
-              IdDocumento: 16,
-              file: blob,
-              nombre: '',
-              firmantes: [],
-              representantes: [],
-              //documento: response[0].res.Enlace,
-            };
-            arreglo2.push(file2);
-            arreglo2.forEach((file) => {
-              (file.Id = file.nombre),
-                (file.nombre =
-                  'certificacion_' +
-                  file.Id +
-                  this.numeroContrato +
-                  '__' +
-                  this.cedula +
-                  '_contractual');
-              file.key = file.Id;
-              file.firmantes.push(this.firmantes);
-            });
+    pdf.create().getBlob((blob) => {
+      const file2 = {
+        IdDocumento: 16,
+        file: blob,
+        nombre: '',
+        firmantes: [],
+        representantes: [],
+        // documento: response[0].res.Enlace,
+      };
+      arreglo2.push(file2);
+      arreglo2.forEach((file) => {
+        (file.Id = file.nombre),
+          (file.nombre =
+            'certificacion_' +
+            file.Id +
+            this.numeroContrato +
+            '__' +
+            this.cedula +
+            '_contractual');
+        file.key = file.Id;
+        file.firmantes.push(this.firmantes);
+      });
 
-            this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
-            /* this.nuxeoService
-              .updateDocument$(arreglo2, this.documentoService) */
-              .subscribe((response: any[]) => {
-                if (response[0].Status == "200") {
-                  this.gestorDocumental.getByUUID(response[0].res.Enlace)
-                    .subscribe((file) => {
-                      this.download(file, "", 1000, 1000);
-                    });
-                  this.regresarInicio();
-                } else {
-                  this.openWindow("Fallo en carga a Gestor Documental");
-                }
-              },
-              (error) => {
-                this.openWindow(error.status + ": " + error.message);
+      this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
+        /* this.nuxeoService
+          .updateDocument$(arreglo2, this.documentoService) */
+        .subscribe((response: any[]) => {
+          if (response[0].Status === '200') {
+            this.gestorDocumental.getByUUID(response[0].res.Enlace)
+              .subscribe((file) => {
+                this.download(file, '', 1000, 1000);
               });
-          });
-
-          
-        /* },
-        (error) => {
-          this.openWindow(error);
+            this.regresarInicio();
+          } else {
+            this.openWindow('Fallo en carga a Gestor Documental');
+          }
         },
-      );*/
+          (error) => {
+            this.openWindow(error.status + ': ' + error.message);
+          });
+    });
+
+
+    /* },
+    (error) => {
+      this.openWindow(error);
+    },
+  );*/
   }
   regresarInicio() {
     const Swal = require('sweetalert2');
@@ -1766,39 +1765,39 @@ export class CrearCertificacionComponent implements OnInit {
     window.open(
       url,
       title,
-      "toolbar=no," +
-        "location=no, directories=no, status=no, menubar=no," +
-        "scrollbars=no, resizable=no, copyhistory=no, " +
-        "width=" +
-        w +
-        ", height=" +
-        h +
-        ", top=" +
-        top +
-        ", left=" +
-        left
+      'toolbar=no,' +
+      'location=no, directories=no, status=no, menubar=no,' +
+      'scrollbars=no, resizable=no, copyhistory=no, ' +
+      'width=' +
+      w +
+      ', height=' +
+      h +
+      ', top=' +
+      top +
+      ', left=' +
+      left,
     );
   }
 
-  consultarFirmantes(){
-    let IdCargoJuridica = 78;
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:'+IdCargoJuridica+'&sortby=FechaInicio&order=desc&limit=1')
+  consultarFirmantes() {
+    const IdCargoJuridica = 78;
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:' + IdCargoJuridica + '&sortby=FechaInicio&order=desc&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
             nombre: response[0].Nombre,
-            tipoId: "CC",
+            tipoId: 'CC',
             identificacion: String(response[0].Documento),
-            cargo: response[0].Cargo
-          }
+            cargo: response[0].Cargo,
+          };
         } else {
           this.firmantes = undefined;
-          this.openWindow("Sin información de Oficina Asesora Jurídica.");
+          this.openWindow('Sin información de Oficina Asesora Jurídica.');
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow("Error al traer información de Oficina Asesora Jurídica.");
+        this.openWindow('Error al traer información de Oficina Asesora Jurídica.');
         this.regresarFiltro();
       });
   }
@@ -1860,12 +1859,12 @@ export class CrearCertificacionComponent implements OnInit {
       };
   }
   consultarNovedades() {
-    this.NovedadesService.get(
-      'novedad/' + this.numeroContrato + '/' + this.dataContrato[0].Vigencia
+    this.novedadesService.get(
+      'novedad/' + this.numeroContrato + '/' + this.dataContrato[0].Vigencia,
     ).subscribe(
       (data: any) => {
         this.allNovedades = data;
-        //console.info(this.allNovedades);
+        // console.info(this.allNovedades);
         this.datosNovedades.push('Sin novedades');
         for (let i = 0; i < data.length; i++) {
           switch (data[i].tiponovedad) {
@@ -1909,14 +1908,14 @@ export class CrearCertificacionComponent implements OnInit {
         }
       },
       (err) => {
-        console.log(err);
+        console.error(err);
         this.datosNovedades.push('Sin novedades');
       },
     );
   }
   diasFecha(fecha1, fecha2) {
-    var date_1 = new Date(fecha1.toString()).getTime();
-    var date_2 = new Date(fecha2.toString()).getTime();
+    const date_1 = new Date(fecha1.toString()).getTime();
+    const date_2 = new Date(fecha2.toString()).getTime();
     // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
@@ -1924,14 +1923,14 @@ export class CrearCertificacionComponent implements OnInit {
       );
       this.regresarFiltro();
     } else {
-      var diff = date_2 - date_1;
+      const diff = date_2 - date_1;
 
       return diff / (1000 * 60 * 60 * 24);
     }
   }
   formato(texto) {
     if (texto == null) {
-      return "";
+      return '';
     } else {
       return texto.toString().replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');
     }

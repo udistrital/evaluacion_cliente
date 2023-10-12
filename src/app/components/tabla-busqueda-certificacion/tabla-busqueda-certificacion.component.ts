@@ -5,7 +5,7 @@ import { AuthGuard } from '../../@core/_guards/auth.guard';
 @Component({
   selector: 'ngx-tabla-busqueda-certificacion',
   templateUrl: './tabla-busqueda-certificacion.component.html',
-  styleUrls: ['./tabla-busqueda-certificacion.component.scss']
+  styleUrls: ['./tabla-busqueda-certificacion.component.scss'],
 })
 export class TablaBusquedaCertificacionComponent implements OnInit {
   rolActual: any;
@@ -28,20 +28,20 @@ export class TablaBusquedaCertificacionComponent implements OnInit {
   }
 
   relizarCertificacion(data: any) {
-    //console.log(data);
+    // console.log(data);
     this.dataToDo.emit(data);
   }
   relizarCertificacionSinNovedad(data: any) {
-    //console.log(data);
+    // console.log(data);
     this.dataToDo2.emit(data);
   }
 
-  verCertificacion(data: any) {    
-    
+  verCertificacion(data: any) {
+
     this.dataView.emit(data);
   }
 
-  
-  
+
+
 
 }

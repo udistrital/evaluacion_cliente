@@ -173,7 +173,7 @@ export class RealizarEvaluacionComponent implements OnInit {
           }, (error_service) => {
             this.openWindow(error_service.message);
           });
-      })
+      });
 
   }
 

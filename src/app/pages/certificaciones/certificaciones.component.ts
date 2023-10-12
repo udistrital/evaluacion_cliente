@@ -31,7 +31,7 @@ export class CertificacionesComponent implements OnInit {
 
   ngOnInit() {
     this.rolActual = this.authGuard.rolActual();
-    //console.log("Este es el rol",this.rolActual)
+    // console.log("Este es el rol",this.rolActual)
     this.componenteVer = false;
     this.componenteRealizar = false;
     this.componenteRealizarCertificacion = false;
@@ -53,7 +53,7 @@ export class CertificacionesComponent implements OnInit {
   relizarCertificacion(data: any) {
     // console.log("esta es la data", data);
 
-    this.datosContratoAEvaluar[0] = data;    
+    this.datosContratoAEvaluar[0] = data;
     this.componenteRealizar = true;
   }
   relizarCertificacionSinNovedad(data: any) {

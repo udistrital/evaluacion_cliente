@@ -15,17 +15,17 @@ export class AuthGuard implements CanActivate {
     private router: Router,
     private autenticacion: ImplicitAutenticationService,
     private menu: MenuService,
-    private pUpManager: PopUpManager
+    private pUpManager: PopUpManager,
   ) { }
 
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
-    const allowed =!!this.menu.getRoute(state.url)
+    const allowed = !!this.menu.getRoute(state.url);
     if (!allowed) {
       this.pUpManager.showErrorAlert('No tiene permisos');
     }
-    
+
     this.setRol();
     return allowed;
   }
@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
     if (payload && payload.role && payload.role.length) {
       const rolOrdenador = 'ORDENADOR_DEL_GASTO';
       this.rol = payload.role.find(r => r === rolOrdenador);
-      if (this.rol != rolOrdenador) {
+      if (this.rol !== rolOrdenador) {
         for (let i = 0; i < payload.role.length; i++) {
           if (
             payload.role[i] === 'SUPERVISOR' ||

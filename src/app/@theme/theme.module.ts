@@ -277,8 +277,8 @@ const NB_THEME_PROVIDERS = [
   exports: [...BASE_MODULES, ...NB_MODULES, MAT_MODULES, ...COMPONENTS, ...PIPES],
   declarations: [...COMPONENTS, ...PIPES],
   entryComponents: [...ENTRY_COMPONENTS],
-  providers:[
-    
+  providers: [
+
   ],
 })
 export class ThemeModule {

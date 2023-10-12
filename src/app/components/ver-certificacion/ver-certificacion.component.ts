@@ -47,7 +47,7 @@ export class VerCertificacionComponent implements OnInit {
     const nombre = 'certificacion_' + this.numeroContrato + '__' + this.cedula;
 
     if (this.rol === 'CONTRATISTA' || this.rol === 'ASISTENTE_JURIDICA' || this.rol === 'ASISTENTE_COMPRAS') {
-      var tipoCertificacion = '_contractual';
+      let tipoCertificacion = '_contractual';
       if (this.rol === 'ASISTENTE_COMPRAS') {
         tipoCertificacion = '_cumplimiento';
       }

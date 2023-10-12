@@ -42,7 +42,7 @@ export class FiltroComponent implements OnInit {
 
     this.autentication_data = this.authService.getPayload();
     this.rolUsuario = this.authGuard.rolActual();
-    if (this.rolUsuario == 'ORDENADOR_DEL_GASTO') {
+    if (this.rolUsuario === 'ORDENADOR_DEL_GASTO') {
       this.documento = '0';
     } else {
       this.documento = this.autentication_data.documento;
@@ -52,7 +52,7 @@ export class FiltroComponent implements OnInit {
         || (this.identificacion_proveedor === null) || (this.identificacion_proveedor === undefined))) {
       this.openWindow('Debe ingresar almenos una Identificación de proveedor o un número de contrato');
       console.info('Rol', this.rolUsuario);
-      console.log('Documento', this.documento);
+      console.info('Documento', this.documento);
     } else {
       this.RealizarPeticion();
     }
