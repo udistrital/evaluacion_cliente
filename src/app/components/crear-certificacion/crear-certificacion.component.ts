@@ -10,8 +10,6 @@ import { GestorDocumentalService } from '../../@core/utils/gestor-documental.ser
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
 
-// Set the fonts to use
-
 @Component({
   selector: 'ngx-crear-certificacion',
   templateUrl: './crear-certificacion.component.html',
@@ -36,12 +34,12 @@ export class CrearCertificacionComponent implements OnInit {
   fechaInicio: string = '';
   fechaFin: string = '';
   otrosDatos: string;
+  estadoContrato: string;
   // los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_contrato: string;
   duracion_contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
-  estado_contrato: string;
   otros_datos: string = '0';
   // ---------------------Novedades----------------------------------------------------
   listaNovedades: string[] = [];
@@ -57,15 +55,6 @@ export class CrearCertificacionComponent implements OnInit {
   novedadProrroga: any[] = [];
   novedadAdiPro: any[] = [];
   novedadInicio: any[] = [];
-
-  contadorSuspen: number = 0;
-  contadorCesion: number = 0;
-  contadorReinicio: number = 0;
-  contadorModificacion: number = 0;
-  contadorAdicion: number = 0;
-  contadorProrroga: number = 0;
-  contadorAdiPro: number = 0;
-  contadorInicio: number = 0;
 
   numeroNovedadesCesion: number;
   numeroNovedadesOtro: number;
@@ -123,8 +112,18 @@ export class CrearCertificacionComponent implements OnInit {
       'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
       'datos que administra la ' + this.nombreDependencia + ' de la Universidad Distrital Francisco José de Caldas, ';
     const cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
-    const cadena3 =
-      ', suscribió en esta Entidad lo siguiente:';
+    const cadena3 = ', suscribió en esta Entidad lo siguiente:';
+
+    if (this.tipoContrato === 'Orden de Servicios') {
+      this.tipoContrato = 'ORDEN DE SERVICIO';
+    } else if (this.tipoContrato === 'Contrato de Prestación de Servicios Profesionales o Apoyo a la Gestión') {
+      this.tipoContrato = 'PRESTACIÓN DE SERVICIOS';
+    } else if (this.tipoContrato === 'Contrato de Compra-Venta') {
+      this.tipoContrato = 'ORDEN DE VENTA';
+    }
+
+    const tipoContrato = this.tipoContrato.toUpperCase();
+    const filasNovedades = this.procesarNovedades(tipoContrato);
 
     PdfMakeWrapper.setFonts(pdfFontTime, {
       TimesNewRoman: {
@@ -137,15 +136,6 @@ export class CrearCertificacionComponent implements OnInit {
     PdfMakeWrapper.useFont('TimesNewRoman');
 
     const pdf = new PdfMakeWrapper();
-    if (this.tipoContrato === 'Orden de Servicios') {
-      this.tipoContrato = 'ORDEN DE SERVICIO';
-    } else if (this.tipoContrato === 'Contrato de Prestación de Servicios Profesionales o Apoyo a la Gestión') {
-      this.tipoContrato = 'PRESTACIÓN DE SERVICIOS';
-    } else if (this.tipoContrato === 'Contrato de Compra-Venta') {
-      this.tipoContrato = 'ORDEN DE VENTA';
-    }
-
-    const tipoContrato = this.tipoContrato.toUpperCase();
     pdf.pageMargins([80, 100, 60, 60]);
     pdf.styles({
       Title: {
@@ -399,137 +389,7 @@ export class CrearCertificacionComponent implements OnInit {
       );
     }
 
-    for (let i = 0; i < this.novedad.length; i++) {
-
-      switch (this.novedad[i]) {
-        case 'Suspension':
-          this.datosTabla.push(
-            [
-              { text: 'NOVEDAD CONTRACTUAL:', style: 'tabla1' },
-              {
-                text:
-                  'ACTA DE SUSPENSIÓN DE ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].periodosuspension) +
-                  ' DIAS' +
-                  ' DESDE El ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension.slice(0, 10)) +
-                  ' HASTA El ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorSuspen++;
-          break;
-        case 'Cesion':
-          this.datosTabla.push(
-            [
-              { text: 'CESIÓN:', style: 'tabla1' },
-              {
-                text: `N° ${this.contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
-                  this.dataContrato[0].ContratoSuscrito +
-                  '-' +
-                  this.dataContrato[0].Vigencia +
-                  '. Fecha de la cesión: ' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorCesion++;
-          break;
-        case 'Reinicio':
-          this.datosTabla.push(
-            [
-              { text: 'REINICIO:', style: 'tabla1' },
-              {
-                text: 'Fecha de reinicio del contrato: ' +
-                  this.formato(this.novedadReinicio[this.contadorReinicio].fechareinicio),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorReinicio++;
-          break;
-        case 'Liquidacion':
-          this.datosTabla.push(
-            [
-              { text: 'FECHA DE LIQUIDACIÓN:', style: 'tabla1' },
-              {
-                text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
-                style: 'tabla2',
-              },
-            ],
-          );
-          break;
-        case 'Terminacion':
-          this.datosTabla.push(
-            [
-              { text: 'TERMINACIÓN:', style: 'tabla1' },
-              {
-                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          break;
-        case 'Adicion':
-          this.contadorModificacion++;
-          this.datosTabla.push(
-            [
-              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              {
-                text:
-                  'Se adicionó el valor de ' + this.numeromiles(this.novedadAdicion[this.contadorAdicion].valoradicion) +
-                  '.\n\n' + ' Fecha de la adición: ' +
-                  this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorAdicion++;
-          break;
-        case 'Prorroga':
-          this.contadorModificacion++;
-          this.datosTabla.push(
-            [
-              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              {
-                text: 'Prórroga de (' + this.formato(this.novedadProrroga[this.contadorProrroga].tiempoprorroga) +
-                  ') día(s).', style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorProrroga++;
-          break;
-        case 'Adicion/Prorroga':
-          this.contadorModificacion++;
-          this.datosTabla.push(
-            [
-              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              {
-                text: 'Se adicionó el valor de ' + this.numeromiles(this.novedadAdiPro[this.contadorAdiPro].valoradicion) +
-                  '. Prórroga de (' + this.formato(this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga) + ') día(s).',
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorAdiPro++;
-          break;
-        case 'Inicio':
-          this.datosTabla.push(
-            [
-              { text: 'NOVEDAD INICIO: ', style: 'tabla1' },
-              {
-                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorInicio++;
-          break;
-      }
-
-    }
+    this.datosTabla.push(...filasNovedades);
 
     if (this.fecha_final === '1') {
       this.datosTabla.push(
@@ -546,7 +406,7 @@ export class CrearCertificacionComponent implements OnInit {
     this.datosTabla.push(
       [
         { text: 'ESTADO DEL CONTRATO:', style: 'tabla1' },
-        { text: this.estado_contrato, style: 'tabla2' },
+        { text: this.estadoContrato, style: 'tabla2' },
       ],
     );
 
@@ -756,6 +616,160 @@ export class CrearCertificacionComponent implements OnInit {
     },
   );*/
   }
+
+  private procesarNovedades(tipoContrato: string) {
+    let contadorSuspen: number = 0;
+    let contadorCesion: number = 0;
+    let contadorReinicio: number = 0;
+    let contadorModificacion: number = 0;
+    let contadorAdicion: number = 0;
+    let contadorProrroga: number = 0;
+    let contadorAdiPro: number = 0;
+    let contadorInicio: number = 0;
+    const filasNovedades = [];
+    const style = 'tabla1';
+
+    for (let i = 0; i < this.novedad.length; i++) {
+      switch (this.novedad[i]) {
+        case 'Suspension':
+          filasNovedades.push(
+            [
+              { text: 'NOVEDAD CONTRACTUAL:', style },
+              {
+                text:
+                  'ACTA DE SUSPENSIÓN DE ' +
+                  this.formato(this.novedadSuspension[contadorSuspen].periodosuspension) +
+                  ' DIAS' +
+                  ' DESDE El ' +
+                  this.formato(this.novedadSuspension[contadorSuspen].fechasuspension.slice(0, 10)) +
+                  ' HASTA El ' +
+                  this.formato(this.novedadSuspension[contadorSuspen].fechafinsuspension.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorSuspen++;
+          break;
+        case 'Cesion':
+          if (this.contratistaInicialId === this.novedadCesion[contadorCesion].cedente) {
+            this.fechaFin = this.novedadCesion[contadorCesion].fechacesion;
+            filasNovedades.push(
+              [
+                { text: 'CESIÓN:', style },
+                {
+                  text: `N° ${contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
+                    this.dataContrato[0].ContratoSuscrito +
+                    '-' +
+                    this.dataContrato[0].Vigencia +
+                    '. Fecha de la cesión: ' + this.formato(this.novedadCesion[contadorCesion].fechacesion.slice(0, 10)),
+                  style: 'tabla2',
+                },
+              ],
+            );
+          }
+          contadorCesion++;
+          break;
+        case 'Reinicio':
+          filasNovedades.push(
+            [
+              { text: 'REINICIO:', style },
+              {
+                text: 'Fecha de reinicio del contrato: ' +
+                  this.formato(this.novedadReinicio[contadorReinicio].fechareinicio),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorReinicio++;
+          break;
+        case 'Liquidacion':
+          filasNovedades.push(
+            [
+              { text: 'FECHA DE LIQUIDACIÓN:', style },
+              {
+                text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
+                style: 'tabla2',
+              },
+            ],
+          );
+          break;
+        case 'Terminacion':
+          filasNovedades.push(
+            [
+              { text: 'TERMINACIÓN:', style },
+              {
+                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          break;
+        case 'Adicion':
+          contadorModificacion++;
+          filasNovedades.push(
+            [
+              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + contadorModificacion, style },
+              {
+                text:
+                  'Se adicionó el valor de ' + this.numeromiles(this.novedadAdicion[contadorAdicion].valoradicion) +
+                  '.\n\n' + ' Fecha de la adición: ' +
+                  this.formato(this.novedadAdicion[contadorAdicion].fechaadicion.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorAdicion++;
+          break;
+        case 'Prorroga':
+          contadorModificacion++;
+          filasNovedades.push(
+            [
+              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + contadorModificacion, style },
+              {
+                text: 'Prórroga de (' + this.formato(this.novedadProrroga[contadorProrroga].tiempoprorroga) +
+                  ') día(s).', style: 'tabla2',
+              },
+            ],
+          );
+          contadorProrroga++;
+          break;
+        case 'Adicion/Prorroga':
+          contadorModificacion++;
+          const fechaFin = new Date(this.fechaFin);
+          const fechaProrroga = new Date(this.novedadAdiPro[contadorAdiPro].fechaadicion);
+          fechaProrroga.setDate(fechaProrroga.getDate() - 1);
+          if (fechaProrroga.toISOString() === fechaFin.toISOString()) {
+            this.fechaFin = this.novedadAdiPro[contadorAdiPro].fechafinefectiva;
+            filasNovedades.push(
+              [
+                { text: 'MODIFICACIÓN CONTRACTUAL No. ' + contadorModificacion, style },
+                {
+                  text: 'Se adicionó el valor de ' + this.numeromiles(this.novedadAdiPro[contadorAdiPro].valoradicion) +
+                    '. Prórroga de (' + this.formato(this.novedadAdiPro[contadorAdiPro].tiempoprorroga) + ') día(s).',
+                  style: 'tabla2',
+                },
+              ],
+            );
+            contadorAdiPro++;
+          }
+          break;
+        case 'Inicio':
+          filasNovedades.push(
+            [
+              { text: 'NOVEDAD INICIO: ', style },
+              {
+                text: 'Fecha registro: ' + this.formato(this.novedadInicio[contadorInicio].fecharegistro.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorInicio++;
+          break;
+      }
+    }
+
+    return filasNovedades;
+  }
   regresarInicio() {
     const Swal = require('sweetalert2');
     Swal.fire({
@@ -776,24 +790,21 @@ export class CrearCertificacionComponent implements OnInit {
         this.dataContrato[0].Vigencia,
       )
       .subscribe((res_contrato) => {
-        // console.log('aca esta el contrato', res_contrato);
+
         this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
-        this.valorContrato =
-          res_contrato.Data[0].contrato_general.ValorContrato;
+        this.valorContrato = res_contrato.Data[0].contrato_general.ValorContrato;
+        this.contratistaInicialId = res_contrato.Data[0].contrato_general.Contratista;
+        this.numeroContrato = res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
+        this.fechaSuscrip = res_contrato.Data[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
+        this.duracionContrato = res_contrato.Data[0].contrato_general.PlazoEjecucion;
+        this.idContrato = res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
+        this.tipoContrato = res_contrato.Data[0].contrato_general.TipoContrato.TipoContrato;
+
         this.cedula = res_contrato.Data[0].informacion_proveedor.NumDocumento;
         this.nombre = res_contrato.Data[0].informacion_proveedor.NomProveedor;
-        this.numeroContrato =
-          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
-        this.fechaSuscrip =
-          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
-        this.duracionContrato =
-          res_contrato.Data[0].contrato_general.PlazoEjecucion;
-        this.idContrato =
-          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
 
-        this.tipoContrato = res_contrato.Data[0].contrato_general.TipoContrato.TipoContrato;
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
-        this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
+        this.estadoContrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
         this.consultarNovedades();
         // console.log(this.idContrato);
