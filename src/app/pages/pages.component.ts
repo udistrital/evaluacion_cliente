@@ -17,8 +17,6 @@ import { MENU_ITEMS } from './pages-menu';
       <router-outlet></router-outlet>
       <footer></footer>
     </ngx-sample-layout>
-
-
   `,
 })
 export class PagesComponent implements OnInit {
@@ -46,23 +44,24 @@ export class PagesComponent implements OnInit {
       let roles: any;
       if (user.role !== undefined) {
         const roleUser = typeof user.role !== 'undefined' ? user.role : [];
-        roles = (roleUser).filter((data: any) => (data.indexOf('/') === -1));
+        roles = (roleUser).filter((role: any) => (role.indexOf('/') === -1));
       } else {
         const roleUserService = typeof userService.role !== 'undefined' ? userService.role : [];
-        roles = (roleUserService).filter((data: any) => (data.indexOf('/') === -1));
+        roles = (roleUserService).filter((role: any) => (role.indexOf('/') === -1));
       }
       this.getMenu(roles);
-    })
+    });
   }
 
   getMenu(roles) {
     this.roles = roles;
     this.menuws.get(this.roles + `/Evaluacion`).subscribe(menuResult => {
+      this.menuws.setPermisos(menuResult);
       const menuRespuesta = <any>menuResult;
       this.menuLogin.push({
         title: 'Home',
         icon: 'nb-home',
-        link: '/pages/dashboard'
+        link: '/pages/dashboard',
       });
       if (menuRespuesta !== null) {
         for (let i = 0; i < menuRespuesta.length; i++) {
@@ -70,7 +69,7 @@ export class PagesComponent implements OnInit {
             title: menuRespuesta[i]['Nombre'],
             link: menuRespuesta[i]['Url'],
             icon: 'nb-compose',
-          })
+          });
         }
       }
       this.menu = this.menuLogin;

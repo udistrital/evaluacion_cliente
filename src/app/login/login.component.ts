@@ -4,7 +4,7 @@ import { ImplicitAutenticationService } from '../@core/utils/implicit_autenticat
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
 
@@ -12,7 +12,7 @@ export class LoginComponent implements OnInit {
   appname = 'agora';
   basePathAssets = 'https://pruebasassets.portaloas.udistrital.edu.co/';
   @Input('isloading') isloading: boolean = false;
-  @Output('loginEvent') loginEvent: EventEmitter<any> = new EventEmitter(); 
+  @Output('loginEvent') loginEvent: EventEmitter<any> = new EventEmitter();
 
   login() {
     this.isloading = true;

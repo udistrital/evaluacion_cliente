@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewChild, TemplateRef, Input, Output, EventEmitter } from '@angular/core';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
-import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { NbWindowService } from '@nebular/theme';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { UserService } from '../../@core/data/user.service';
-
 
 @Component({
   selector: 'ngx-plantilla-evaluacion',
@@ -16,8 +14,10 @@ import { UserService } from '../../@core/data/user.service';
 export class PlantillaEvaluacionComponent implements OnInit {
 
   @Input() realizar: any;
+  @Input() evaluacionPrevia: any;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
   @Output() jsonEvaluacion: EventEmitter<any>;
+
   json: any = {};
   evaluacionCompleta: boolean;
   evaRealizada: boolean;
@@ -27,7 +27,6 @@ export class PlantillaEvaluacionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private evaluacionMidService: EvaluacionmidService,
-    private evaluacioncrudService: EvaluacioncrudService,
     private userService: UserService,
     private windowService: NbWindowService,
   ) {
@@ -37,41 +36,30 @@ export class PlantillaEvaluacionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.evaluacioncrudService.evaluacionRealizada$
-      .subscribe((response: any) => {
-        if (response.length === 0) {
-          this.json = {};
-        } else if (response.Data === undefined) {
-          this.json = {};
-          if (Object.keys(response[0]).length === 0) {
-            this.CargarUltimaPlantilla();
-          }
-        } else if (Object.keys(response.Data[0]).length === 0) {
-          this.json = {};
-          this.CargarUltimaPlantilla();
-        } else if (response.length !== 0 && Object.keys(response.Data[0]).length !== 0) {
-          this.json = JSON.parse(response.Data[0].ResultadoEvaluacion);
-          if (this.json.evaluadores && this.json.evaluadores.length) {
-            this.evaluadoresForm = this.fb.group({ evaluadores: this.fb.array([]) });
-            for (const ev of this.json.evaluadores) {
-              this.userService.getAllInfoPersonaNatural('?query=Id:' + ev)
-                .subscribe(res => {
-                  if (res && res.length) {
-                    const evaluador = this.fb.group({
-                      evaluador: {
-                        value: res[0],
-                        disabled: !this.realizar,
-                      },
-                    });
-                    this.evaluadoresForm_.push(evaluador);
-                    this.cambiosEvaluador(evaluador.get('evaluador').valueChanges);
-                  }
+    if (this.evaluacionPrevia) {
+      this.json = JSON.parse(this.evaluacionPrevia);
+      this.evaRealizada = true;
+      if (this.json.evaluadores && this.json.evaluadores.length) {
+        this.evaluadoresForm = this.fb.group({ evaluadores: this.fb.array([]) });
+        for (const ev of this.json.evaluadores) {
+          this.userService.getAllInfoPersonaNatural('?query=Id:' + ev)
+            .subscribe(res => {
+              if (res && res.length) {
+                const evaluador = this.fb.group({
+                  evaluador: {
+                    value: res[0],
+                    disabled: !this.realizar,
+                  },
                 });
-            }
-          }
-          this.evaRealizada = true;
+                this.evaluadoresForm_.push(evaluador);
+                this.cambiosEvaluador(evaluador.get('evaluador').valueChanges);
+              }
+            });
         }
-      });
+      }
+    } else {
+      this.CargarUltimaPlantilla();
+    }
   }
 
   CargarUltimaPlantilla() {
@@ -110,7 +98,8 @@ export class PlantillaEvaluacionComponent implements OnInit {
       this.json.firmantes = firmantes;
       for (let i = 0; i < this.json.Secciones.length; i++) {
         for (let k = 0; k < this.json.Secciones[i].Seccion_hija_id.length; k++) {
-          if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 && this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
+          if (this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 12 &&
+            this.json.Secciones[i].Seccion_hija_id[k]['Item'][0].Tamano !== 13) {
             if (this.json.Secciones[i].Seccion_hija_id[k]['Condicion'].length > 0) {
               if (this.json.Secciones[i].Seccion_hija_id[k - 1]['Item'][2].Valor.Nombre ===
                 this.json.Secciones[i].Seccion_hija_id[k]['Condicion'][0]['Nombre']) {
@@ -170,10 +159,6 @@ export class PlantillaEvaluacionComponent implements OnInit {
   }
 
   private loadEvaluadores(text: string) {
-    if (typeof (text) !== 'string' || text.length < 3) {
-
-    }
-
     const payload = '?fields=Id,Cargo,PrimerNombre,SegundoNombre,PrimerApellido,SegundoApellido,TipoDocumento&limit=0&query=Id__icontains:';
     const queryOptions$ = typeof (text) === 'string' && text.length > 3 ?
       this.userService.getAllInfoPersonaNatural(payload + text.replace(/\D/g, '')) :

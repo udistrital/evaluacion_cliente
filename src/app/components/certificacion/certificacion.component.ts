@@ -52,7 +52,7 @@ export class CertificacionComponent implements OnInit {
     this.evaluacionMidService
       .get(
         'filtroProveedor?ProvID=' +
-        String(this.identificacion_proveedor)
+        String(this.identificacion_proveedor),
       )
       .subscribe((res_proveedor) => {
         this.evaluacionMidService

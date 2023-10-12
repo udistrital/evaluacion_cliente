@@ -8,7 +8,7 @@ describe('CrearCertificacionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CrearCertificacionComponent ]
+      declarations: [ CrearCertificacionComponent ],
     })
     .compileComponents();
   }));
