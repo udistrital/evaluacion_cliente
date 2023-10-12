@@ -159,10 +159,6 @@ export class PlantillaEvaluacionComponent implements OnInit {
   }
 
   private loadEvaluadores(text: string) {
-    if (typeof (text) !== 'string' || text.length < 3) {
-
-    }
-
     const payload = '?fields=Id,Cargo,PrimerNombre,SegundoNombre,PrimerApellido,SegundoApellido,TipoDocumento&limit=0&query=Id__icontains:';
     const queryOptions$ = typeof (text) === 'string' && text.length > 3 ?
       this.userService.getAllInfoPersonaNatural(payload + text.replace(/\D/g, '')) :
