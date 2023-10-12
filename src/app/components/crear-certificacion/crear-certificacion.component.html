@@ -26,7 +26,8 @@
             </div>
             <!-- Div para los datos del contrato   -->
             <div class="row">
-                <div class="col-4" *ngIf="false && (this.rol=='ORDENADOR_DEL_GASTO'||this.rol=='ASISTENTE_JURIDICA')">
+                <!-- <div class="col-4" *ngIf="this.rol=='ORDENADOR_DEL_GASTO'||this.rol=='ASISTENTE_JURIDICA'"> -->
+                <div class="col-4" *ngIf="true">
                     <p>Novedades.</p>
                     <div class="col text-center">
                         <div>
@@ -130,7 +131,7 @@
                             <div>
                                 <mat-form-field appearance="fill">
                                     <mat-label>OTROS</mat-label>
-                                    <mat-select [(ngModel)]="otros_datos" [disabled]="rol=='CONTRATISTA'">
+                                    <mat-select [(ngModel)]="otros_datos" [disabled]="!seleccionarOtros">
                                         <mat-option value="1">SI</mat-option>
                                         <mat-option value="0">NO</mat-option>
                                     </mat-select>

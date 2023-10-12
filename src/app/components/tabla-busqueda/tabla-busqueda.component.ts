@@ -9,8 +9,6 @@ export class TablaBusquedaComponent implements OnInit {
   @Input() dataContratos: any = [];
   @Output() dataToDo: any = {};
   @Output() dataView: any = {};
-  logueado: boolean = false;
-
 
   constructor() {
     this.dataToDo = new EventEmitter();

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="col-xl">
         <div *ngIf="!componenteVer && !componenteRealizar">
-            <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo></ngx-filtro>
+            <ngx-filtro (dataResponse)="guardarDatosConsulta($event)" [nombreTitulo]=titulo [filtroSupervisor]=true></ngx-filtro>
             <ngx-tabla-busqueda [dataContratos]="this.data" (dataView)="verEvaluacion($event)"
                 (dataToDo)="relizarEvaluacion($event)"></ngx-tabla-busqueda>
         </div>

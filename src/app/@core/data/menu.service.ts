@@ -61,6 +61,15 @@ export class MenuService {
       (opt.Opciones && opt.Opciones.length && this.findRoute(opt.Opciones, option)));
   }
 
+  getAccion(accion: string): any {
+    return this.findAccion(this.permisos, accion);
+  }
+
+  findAccion(menu: any[], option: string) {
+    return menu.find(opt => (opt.TipoOpcion === 'Acción' && opt.Nombre === option) ||
+      (opt.Opciones && opt.Opciones.length && this.findAccion(opt.Opciones, option)));
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
