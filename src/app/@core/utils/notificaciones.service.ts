@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Rx';
 import { environment } from './../../../environments/environment';
 import { ConfiguracionService } from './../data/configuracion.service';
-import { from, interval } from 'rxjs';
+import { Subject, from, interval } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
-import { map } from 'rxjs-compat/operators/map';
 import { ImplicitAutenticationService } from './implicit_autentication.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { NotificacionEstadoUsuario } from '../data/models/notificacion_estado_usuario';
 
 const {  production } = environment;
@@ -62,7 +60,7 @@ export class NotificacionesService {
             this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role).filter((data: any) => (data.indexOf('/') === -1));
             this.messagesSubject
                 .pipe(
-                    map((msn) => {
+                    map((msn: any) => {
                         if (msn.Estado === 'conected') {
                             this.send_ping();
                         } else {
