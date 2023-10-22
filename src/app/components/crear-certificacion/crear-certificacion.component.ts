@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PdfMakeWrapper, Table } from 'pdfmake-wrapper';
 import { Txt } from 'pdfmake-wrapper';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
@@ -9,8 +9,7 @@ import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service'
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
-
-// Set the fonts to use
+import * as moment from 'moment';
 
 @Component({
   selector: 'ngx-crear-certificacion',
@@ -18,30 +17,27 @@ import { IMAGENES } from '../images';
   styleUrls: ['./crear-certificacion.component.scss'],
 })
 export class CrearCertificacionComponent implements OnInit {
-  @ViewChild('contentTemplate', { read: false })
-  contentTemplate: TemplateRef<any>;
   @Output() volverFiltro: EventEmitter<Boolean>;
   @Input() dataContrato: any = [];
+
   novedad: string[] = [];
   objeto: string;
   cedula: string;
-  numeroContrato: string;
   actividadEspecifica: string = '';
   valorContrato: string;
   nombre: string;
   tipoContrato: string;
-  fechaSuscrip: string = '';
-  duracionContrato: string = '';
-  idContrato: string = '';
+  duracionContrato: number = 0;
+  valorPorDia: number = 0;
   fechaInicio: string = '';
   fechaFin: string = '';
   otrosDatos: string;
+  estadoContrato: string;
   // los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_contrato: string;
   duracion_contrato: string;
   fecha_Inicio: string;
   fecha_final: string;
-  estado_contrato: string;
   otros_datos: string = '0';
   // ---------------------Novedades----------------------------------------------------
   listaNovedades: string[] = [];
@@ -58,25 +54,15 @@ export class CrearCertificacionComponent implements OnInit {
   novedadAdiPro: any[] = [];
   novedadInicio: any[] = [];
 
-  contadorSuspen: number = 0;
-  contadorCesion: number = 0;
-  contadorReinicio: number = 0;
-  contadorModificacion: number = 0;
-  contadorAdicion: number = 0;
-  contadorProrroga: number = 0;
-  contadorAdiPro: number = 0;
-  contadorInicio: number = 0;
-
   numeroNovedadesCesion: number;
   numeroNovedadesOtro: number;
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
   // ----------------------------------------------------------------------------------
-  horaCreacion: string = '';
-
   datosTabla: any[] = [];
 
+  horaCreacion: string = '';
   nombreDependencia: string = '';
   firma: string = '';
   jefeDependencia: string = '';
@@ -119,12 +105,22 @@ export class CrearCertificacionComponent implements OnInit {
 
   crearPdf() {
     this.datosTabla = [];
-    const cadena1 =
-      'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de ' +
-      'datos que administra la ' + this.nombreDependencia + ' de la Universidad Distrital Francisco José de Caldas, ';
+    const cadena1 = 'Que de acuerdo con la información que reposa en la carpeta contractual y en las bases de datos que administra la '
+      + this.nombreDependencia + ' de la Universidad Distrital Francisco José de Caldas, ';
     const cadena2 = ', identicado(a) con cédula de ciudadanía No. ';
-    const cadena3 =
-      ', suscribió en esta Entidad lo siguiente:';
+    const cadena3 = ', suscribió en esta Entidad lo siguiente:';
+
+    if (this.tipoContrato === 'Orden de Servicios') {
+      this.tipoContrato = 'ORDEN DE SERVICIO';
+    } else if (this.tipoContrato === 'Contrato de Prestación de Servicios Profesionales o Apoyo a la Gestión') {
+      this.tipoContrato = 'PRESTACIÓN DE SERVICIOS';
+    } else if (this.tipoContrato === 'Contrato de Compra-Venta') {
+      this.tipoContrato = 'ORDEN DE VENTA';
+    }
+
+    const tipoContrato = this.tipoContrato.toUpperCase();
+    const filasNovedades = this.procesarNovedades(tipoContrato);
+    this.contarDias();
 
     PdfMakeWrapper.setFonts(pdfFontTime, {
       TimesNewRoman: {
@@ -137,15 +133,6 @@ export class CrearCertificacionComponent implements OnInit {
     PdfMakeWrapper.useFont('TimesNewRoman');
 
     const pdf = new PdfMakeWrapper();
-    if (this.tipoContrato === 'Orden de Servicios') {
-      this.tipoContrato = 'ORDEN DE SERVICIO';
-    } else if (this.tipoContrato === 'Contrato de Prestación de Servicios Profesionales o Apoyo a la Gestión') {
-      this.tipoContrato = 'PRESTACIÓN DE SERVICIOS';
-    } else if (this.tipoContrato === 'Contrato de Compra-Venta') {
-      this.tipoContrato = 'ORDEN DE VENTA';
-    }
-
-    const tipoContrato = this.tipoContrato.toUpperCase();
     pdf.pageMargins([80, 100, 60, 60]);
     pdf.styles({
       Title: {
@@ -167,36 +154,38 @@ export class CrearCertificacionComponent implements OnInit {
         bold: false,
         alignment: 'justify',
       },
+      subtitle: {
+        fontSize: 9,
+        alignment: 'justify',
+      },
       tabla1: {
         fontSize: 9,
         bold: true,
         alignment: 'left',
       },
       tabla2: {
-        fontSize: 9,
+        fontSize: 8,
         bold: false,
         alignment: 'justify',
       },
     });
 
     const docDefinition = {
-      content: [
-        {
-          text: [
-            { text: cadena1, style: 'body' },
-            { text: this.nombre, style: 'body1' }, // nombre
-            { text: cadena2, style: 'body' },
-            { text: this.cedula, style: 'body1', bold: true }, // cedula
-            { text: cadena3, style: 'body' },
-            { text: '', style: 'body' },
-          ],
-        },
-      ],
+      content: {
+        text: [
+          { text: cadena1, style: 'subtitle' },
+          { text: this.nombre, style: 'subtitle', bold: true },
+          { text: cadena2, style: 'subtitle' },
+          { text: this.cedula, style: 'subtitle', bold: true },
+          { text: cadena3, style: 'subtitle' },
+          { text: '', style: 'subtitle' },
+        ],
+      },
       contentTable: [
         {
           table: {
             headerRows: 0,
-            widths: [175, '*'],
+            widths: ['38%', '62%'],
             body: this.datosTabla,
           },
         },
@@ -204,7 +193,7 @@ export class CrearCertificacionComponent implements OnInit {
       line: [
         {
           text:
-            '___________________________________________________________________________________',
+            '\n',
           style: 'body',
         },
       ],
@@ -223,80 +212,12 @@ export class CrearCertificacionComponent implements OnInit {
           ],
         },
       ],
-      duraContraDias: [
-        {
-          text: [
-            { text: 'DURACION:  ', style: 'body1', bold: true },
-            {
-              text:
-                this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
-                '' +
-                this.duracionContrato +
-                ' DIAS',
-              style: 'body',
-            },
-          ],
-        },
-      ],
-      duraContraMes: [
-        {
-          text: [
-            { text: 'DURACION:  ', style: 'body1', bold: true },
-            {
-              text:
-                this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
-                '(' +
-                this.duracionContrato +
-                ') MESES',
-              style: 'body',
-            },
-          ],
-        },
-      ],
-      fechainicio: [
-        {
-          text: [
-            { text: 'FECHA DE INICIO:  ', style: 'body1', bold: true },
-            {
-              text: this.formato(this.fechaInicio.slice(0, 10)),
-              style: 'body',
-            },
-          ],
-        },
-      ],
-      fechafin: [
-        {
-          text: [
-            { text: 'FECHA DE FINALIZACION:  ', style: 'body1', bold: true },
-            { text: this.formato(this.fechaFin.slice(0, 10)), style: 'body' },
-          ],
-        },
-      ],
       firmaPagina: [
         {
-          unbreakable: true,
           text: this.jefeDependencia + '\n' + this.nombreDependencia.toUpperCase(),
           style: 'body1',
           bold: true,
           alignment: 'left',
-        },
-      ],
-      contrato: [
-        {
-          text: [
-            {
-              text: `CONTRATO DE ${tipoContrato} NO. :  `,
-              style: 'body1',
-              bold: true,
-            },
-            {
-              text:
-                this.dataContrato[0].ContratoSuscrito +
-                '-' +
-                this.dataContrato[0].Vigencia,
-              style: 'body',
-            },
-          ],
         },
       ],
       escudoImagen: [
@@ -309,7 +230,6 @@ export class CrearCertificacionComponent implements OnInit {
       ],
       firmaImagen: [
         {
-          unbreakable: true,
           image: this.firma,
           alignment: 'left',
           width: 165,
@@ -326,7 +246,7 @@ export class CrearCertificacionComponent implements OnInit {
         { text: 'CONTRATO N° y FECHA:', style: 'tabla1' },
         {
           text: this.dataContrato[0].ContratoSuscrito + '-' + this.dataContrato[0].Vigencia +
-            ' - ' + this.formato(this.fechaSuscrip.slice(0, 10)), style: 'tabla2',
+            ' - ' + this.formato(this.fechaInicio.slice(0, 10)), style: 'tabla2',
         },
       ],
     );
@@ -358,7 +278,7 @@ export class CrearCertificacionComponent implements OnInit {
           { text: 'VALOR DEL CONTRATO:', style: 'tabla1' },
           {
             text: this.numerosAletrasService.convertir(parseInt(this.valorContrato, 10)).toLowerCase() +
-              '(' + this.numeromiles(this.valorContrato) + '). ',
+              '($' + this.numeromiles(this.valorContrato) + '). ',
             style: 'tabla2',
           },
         ],
@@ -367,23 +287,24 @@ export class CrearCertificacionComponent implements OnInit {
 
     if (this.duracion_contrato === '1') {
       let textoDuracion = '';
-      if (parseInt(this.duracionContrato, 10) > 12) {
-        textoDuracion = this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
-          '' + this.duracionContrato + ' DIAS';
+      const meses = Math.trunc(this.duracionContrato / 30);
+      const dias = this.duracionContrato % 30;
 
-      } else if (parseInt(this.duracionContrato, 10) < 12) {
-        textoDuracion = this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
-          '(' + this.duracionContrato + ') MESES';
+      if (meses > 0) {
+        textoDuracion = this.numerosAletrasService.convertir(meses).slice(0, -7) + '(' + meses + ') mes(es)';
+      }
+      if (dias > 0) {
+        if (meses > 0) {
+          textoDuracion += ' y ';
+        }
+        textoDuracion += this.numerosAletrasService.convertir(dias).slice(0, -7) + '(' + dias + ') día(s)';
       }
       this.datosTabla.push(
         [
           { text: 'PLAZO DEL CONTRATO:', style: 'tabla1' },
           {
-            text:
-              textoDuracion +
-              ', contados a partir del acta de inicio, previo cumplimiento ' +
-              'de los requisitos de perfeccionamiento y ejecución, sin superar ' +
-              'el tiempo de la vigencia fiscal.',
+            text: textoDuracion + ', contados a partir del acta de inicio, ' +
+              'previo cumplimiento de los requisitos de perfeccionamiento y ejecución, sin superar el tiempo de la vigencia fiscal.',
             style: 'tabla2',
           },
         ],
@@ -399,137 +320,7 @@ export class CrearCertificacionComponent implements OnInit {
       );
     }
 
-    for (let i = 0; i < this.novedad.length; i++) {
-
-      switch (this.novedad[i]) {
-        case 'Suspension':
-          this.datosTabla.push(
-            [
-              { text: 'NOVEDAD CONTRACTUAL:', style: 'tabla1' },
-              {
-                text:
-                  'ACTA DE SUSPENSIÓN DE ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].periodosuspension) +
-                  ' DIAS' +
-                  ' DESDE El ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechasuspension.slice(0, 10)) +
-                  ' HASTA El ' +
-                  this.formato(this.novedadSuspension[this.contadorSuspen].fechafinsuspension.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorSuspen++;
-          break;
-        case 'Cesion':
-          this.datosTabla.push(
-            [
-              { text: 'CESIÓN:', style: 'tabla1' },
-              {
-                text: `N° ${this.contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
-                  this.dataContrato[0].ContratoSuscrito +
-                  '-' +
-                  this.dataContrato[0].Vigencia +
-                  '. Fecha de la cesión: ' + this.formato(this.novedadCesion[this.contadorCesion].fechacesion.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorCesion++;
-          break;
-        case 'Reinicio':
-          this.datosTabla.push(
-            [
-              { text: 'REINICIO:', style: 'tabla1' },
-              {
-                text: 'Fecha de reinicio del contrato: ' +
-                  this.formato(this.novedadReinicio[this.contadorReinicio].fechareinicio),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorReinicio++;
-          break;
-        case 'Liquidacion':
-          this.datosTabla.push(
-            [
-              { text: 'FECHA DE LIQUIDACIÓN:', style: 'tabla1' },
-              {
-                text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
-                style: 'tabla2',
-              },
-            ],
-          );
-          break;
-        case 'Terminacion':
-          this.datosTabla.push(
-            [
-              { text: 'TERMINACIÓN:', style: 'tabla1' },
-              {
-                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          break;
-        case 'Adicion':
-          this.contadorModificacion++;
-          this.datosTabla.push(
-            [
-              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              {
-                text:
-                  'Se adicionó el valor de ' + this.numeromiles(this.novedadAdicion[this.contadorAdicion].valoradicion) +
-                  '.\n\n' + ' Fecha de la adición: ' +
-                  this.formato(this.novedadAdicion[this.contadorAdicion].fechaadicion.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorAdicion++;
-          break;
-        case 'Prorroga':
-          this.contadorModificacion++;
-          this.datosTabla.push(
-            [
-              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              {
-                text: 'Prórroga de (' + this.formato(this.novedadProrroga[this.contadorProrroga].tiempoprorroga) +
-                  ') día(s).', style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorProrroga++;
-          break;
-        case 'Adicion/Prorroga':
-          this.contadorModificacion++;
-          this.datosTabla.push(
-            [
-              { text: 'MODIFICACIÓN CONTRACTUAL No. ' + this.contadorModificacion, style: 'tabla1' },
-              {
-                text: 'Se adicionó el valor de ' + this.numeromiles(this.novedadAdiPro[this.contadorAdiPro].valoradicion) +
-                  '. Prórroga de (' + this.formato(this.novedadAdiPro[this.contadorAdiPro].tiempoprorroga) + ') día(s).',
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorAdiPro++;
-          break;
-        case 'Inicio':
-          this.datosTabla.push(
-            [
-              { text: 'NOVEDAD INICIO: ', style: 'tabla1' },
-              {
-                text: 'Fecha registro: ' + this.formato(this.novedadInicio[this.contadorInicio].fecharegistro.slice(0, 10)),
-                style: 'tabla2',
-              },
-            ],
-          );
-          this.contadorInicio++;
-          break;
-      }
-
-    }
+    this.datosTabla.push(...filasNovedades);
 
     if (this.fecha_final === '1') {
       this.datosTabla.push(
@@ -546,7 +337,7 @@ export class CrearCertificacionComponent implements OnInit {
     this.datosTabla.push(
       [
         { text: 'ESTADO DEL CONTRATO:', style: 'tabla1' },
-        { text: this.estado_contrato, style: 'tabla2' },
+        { text: this.estadoContrato, style: 'tabla2' },
       ],
     );
 
@@ -570,54 +361,27 @@ export class CrearCertificacionComponent implements OnInit {
       [
         { text: 'OBSERVACIONES:', style: 'tabla1' },
         {
-          text: 'El contrato de que trata la presente certificación no genera ' +
-            'relación laboral entre el contratista y la Universidad ' +
-            'Distrital Francisco José de Caldas.',
+          text: 'El contrato de que trata la presente certificación no genera relación laboral entre ' +
+            'el contratista y la Universidad Distrital Francisco José de Caldas.',
           style: 'tabla2',
         },
       ],
     );
 
-    /* pdf.create().getBlob((blob) => {
-      const file = {
-        IdDocumento: 16,
-        file: blob,
-        nombre: '',
-      };
-      arreglo.push(file);
-      arreglo.forEach((file) => {
-        (file.Id = file.nombre),
-          (file.nombre =
-            'certificacion_' +
-            file.Id +
-            this.numeroContrato +
-            '__' +
-            this.cedula +
-            '_contractual');
-        file.key = file.Id;
-      });
-    }); */
-
-    /* this.nuxeoService
-      .getDocumentos$(arreglo, this.documentoService)
-      .pipe(take(1))
-      .subscribe(
-        (response: any[]) => { */
-    // console.log('esta es la respuesta de nuxeo', response['Enlace']);
     this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
-    pdf.add(
-      new Table([
-        [
-          docDefinition.escudoImagen,
-          docDefinition.valorCabe,
-          /* new Txt('Código de autenticidad:' + "")
-            .bold()
-            .alignment('right')
-            .fontSize(7).end, */
+    pdf.header({
+      layout: 'noBorders',
+      margin: [80, 0, 0, 0],
+      table: {
+        body: [
+          [
+            docDefinition.escudoImagen,
+            docDefinition.valorCabe,
+          ],
         ],
-      ]).layout('noBorders').absolutePosition(80, 6).end,
-    );
+      },
+    });
 
     pdf.add(
       new Txt('EL (LA) JEFE DE LA ' + this.nombreDependencia.toUpperCase() + ' DE LA UNIVERSIDAD DISTRITAL ' +
@@ -631,7 +395,7 @@ export class CrearCertificacionComponent implements OnInit {
 
     pdf.add('\n');
     // ------------------------------ se arma el primer parrafo
-    pdf.add(docDefinition.content[0]);
+    pdf.add(docDefinition.content);
 
     pdf.add(docDefinition.line);
 
@@ -639,34 +403,25 @@ export class CrearCertificacionComponent implements OnInit {
 
     pdf.add('\n\n');
 
-    pdf.add(
-      new Txt(
-        'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion,
-        /* this.horaCreacion.slice(0, 10) +
-        ' - ' +
-        this.horaCreacion.slice(11, 19), */
-      )
-        .alignment('left')
-        .fontSize(9).end,
-    );
-    pdf.add(
-      new Table([
+    const filasFirma = {
+      stack:
         [
+          { text: 'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion, style: 'subtitle' },
+          { text: '\n' },
           docDefinition.firmaImagen,
-        ],
-        [
           docDefinition.firmaPagina,
+          { text: '\n' },
+          {
+            text: 'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
+              'probatoria según lo establecido en la ley 527 de 1999.',
+            style: 'body1',
+          },
+          { text: '\n\n' },
         ],
-      ]).alignment('left').layout('noBorders').dontBreakRows(true).end,
-    );
-    pdf.add('\n');
-    pdf.add(
-      new Txt(
-        'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
-        'probatoria según lo establecido en la ley 527 de 1999.',
-      ).alignment('justify').fontSize(10).bold().end,
-    );
-    pdf.add('\n');
+      unbreakable: true,
+    };
+
+    pdf.add(filasFirma);
     pdf.add(
       new Txt(
         'Elaboró: ' + this.user + ' - Contratista' +
@@ -687,7 +442,7 @@ export class CrearCertificacionComponent implements OnInit {
           ],
           width: '65%',
           alignment: 'left',
-          margin: [50, 0],
+          margin: [80, 0, 0, 0],
         },
         {
           stack: [
@@ -700,7 +455,7 @@ export class CrearCertificacionComponent implements OnInit {
           width: '35%',
           alignment: 'right',
           fontSize: 8,
-          margin: [40, 0],
+          margin: [0, 0, 60, 0],
         },
       ],
     });
@@ -710,7 +465,6 @@ export class CrearCertificacionComponent implements OnInit {
         IdDocumento: 16,
         file: blob,
         nombre: '',
-        // documento: response[0].res.Enlace,
       };
       arreglo2.push(file2);
       arreglo2.forEach((file) => {
@@ -718,7 +472,7 @@ export class CrearCertificacionComponent implements OnInit {
           (file.nombre =
             'certificacion_' +
             file.Id +
-            this.numeroContrato +
+            this.dataContrato[0].ContratoSuscrito +
             '__' +
             this.cedula +
             '_contractual');
@@ -726,15 +480,13 @@ export class CrearCertificacionComponent implements OnInit {
       });
 
       this.gestorDocumental.uploadFiles(arreglo2)
-        /* this.nuxeoService
-          .updateDocument$(arreglo2, this.documentoService) */
         .subscribe((response: any[]) => {
           if (response[0].Status === '200') {
             pdf
               .create()
               .download(
                 'Certificacion_' +
-                this.numeroContrato +
+                this.dataContrato[0].ContratoSuscrito +
                 '__' +
                 this.cedula +
                 '_contractual',
@@ -749,12 +501,199 @@ export class CrearCertificacionComponent implements OnInit {
           });
     });
 
+  }
 
-    /* },
-    (error) => {
-      this.openWindow(error);
-    },
-  );*/
+  private contarDias() {
+    const fechaInicio = moment(this.fechaInicio.slice(0, 10) + 'T12:00:00Z');
+    const fechaFin = moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z');
+    const monthDiff = fechaFin.clone().add(1, 'days').diff(fechaInicio, 'months');
+    const fechaFinSub = fechaFin.clone().subtract(monthDiff, 'month');
+    let diasMesUltimo = fechaFinSub.date();
+    let diasMesInicial = fechaInicio.date();
+    if (diasMesUltimo === fechaFinSub.daysInMonth()) {
+      diasMesUltimo = 30;
+    }
+
+    if (diasMesInicial === fechaInicio.daysInMonth()) {
+      diasMesInicial = 30;
+    }
+
+    let dias = diasMesUltimo - diasMesInicial + 1;
+    if (dias < 0) {
+      dias += 30;
+    }
+    this.duracionContrato = monthDiff * 30 + dias;
+  }
+
+  private procesarNovedades(tipoContrato: string) {
+    let contadorSuspen: number = 0;
+    let contadorCesion: number = 0;
+    let contadorReinicio: number = 0;
+    let contadorModificacion: number = 0;
+    let contadorAdicion: number = 0;
+    let contadorProrroga: number = 0;
+    let contadorAdiPro: number = 0;
+    let contadorInicio: number = 0;
+    let fechaProrroga: Date;
+
+    const filasNovedades = [];
+    const filasProrroga = [];
+    const style = 'tabla1';
+
+    const textModificacion = 'MODIFICACIÓN CONTRACTUAL No.';
+
+    for (let i = 0; i < this.novedad.length; i++) {
+      switch (this.novedad[i]) {
+        case 'Suspension':
+          filasNovedades.push(
+            [
+              { text: 'NOVEDAD CONTRACTUAL:', style },
+              {
+                text:
+                  'ACTA DE SUSPENSIÓN DE ' +
+                  this.formato(this.novedadSuspension[contadorSuspen].periodosuspension) +
+                  ' DIAS' +
+                  ' DESDE El ' +
+                  this.formato(this.novedadSuspension[contadorSuspen].fechasuspension.slice(0, 10)) +
+                  ' HASTA El ' +
+                  this.formato(this.novedadSuspension[contadorSuspen].fechafinsuspension.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorSuspen++;
+          break;
+        case 'Cesion':
+          const cedente = this.novedadCesion[contadorCesion].cedente;
+          if (this.dataContrato[0].IdProveedor === cedente) {
+            const fechaCesion = new Date(this.novedadCesion[contadorCesion].fechacesion);
+            fechaCesion.setTime(fechaCesion.getTime() - 24 * 60 * 60 * 1000);
+            filasNovedades.push(
+              [
+                { text: 'CESIÓN:', style },
+                {
+                  text: `N° ${contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
+                    `${this.dataContrato[0].ContratoSuscrito} - ${this.dataContrato[0].Vigencia}. ` +
+                    'Fecha de la cesión: ' + this.formato(this.novedadCesion[contadorCesion].fechacesion.slice(0, 10)),
+                  style: 'tabla2',
+                },
+              ],
+            );
+          }
+          contadorCesion++;
+          break;
+        case 'Reinicio':
+          filasNovedades.push(
+            [
+              { text: 'REINICIO:', style },
+              {
+                text: 'Fecha de reinicio del contrato: ' +
+                  this.formato(this.novedadReinicio[contadorReinicio].fechareinicio),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorReinicio++;
+          break;
+        case 'Liquidacion':
+          filasNovedades.push(
+            [
+              { text: 'FECHA DE LIQUIDACIÓN:', style },
+              {
+                text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
+                style: 'tabla2',
+              },
+            ],
+          );
+          break;
+        case 'Terminacion':
+          filasNovedades.push(
+            [
+              { text: 'TERMINACIÓN:', style },
+              {
+                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          break;
+        case 'Adicion':
+          contadorModificacion++;
+          filasNovedades.push(
+            [
+              { text: `${textModificacion} ${contadorModificacion}:`, style },
+              {
+                text:
+                  'Se adicionó el valor de $' + this.numeromiles(this.novedadAdicion[contadorAdicion].valoradicion) +
+                  '.\n\n' + ' Fecha de la adición: ' +
+                  this.formato(this.novedadAdicion[contadorAdicion].fechaadicion.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorAdicion++;
+          break;
+        case 'Prorroga':
+          contadorModificacion++;
+          filasNovedades.push(
+            [
+              { text: `${textModificacion} ${contadorModificacion}:`, style },
+              {
+                text: 'Prórroga de (' + this.formato(this.novedadProrroga[contadorProrroga].tiempoprorroga) +
+                  ') día(s).', style: 'tabla2',
+              },
+            ],
+          );
+          contadorProrroga++;
+          break;
+        case 'Adicion/Prorroga':
+          contadorModificacion++;
+          const fechaFin = new Date(this.novedadAdiPro[contadorAdiPro].fechafinefectiva).toISOString();
+          fechaProrroga = new Date(this.novedadAdiPro[contadorAdiPro].fechaadicion);
+
+          const tiempo = this.novedadAdiPro[contadorAdiPro].tiempoprorroga;
+          const valoradicion = this.novedadAdiPro[contadorAdiPro].valoradicion;
+          const valorTotal = parseInt(valoradicion, 10) + parseInt(this.valorContrato, 10);
+
+          const text = 'Se adicionó valor de ' + this.numerosAletrasService.convertir(parseInt(valoradicion, 10)).toLowerCase() +
+            'pesos MCTE. ($' + this.numeromiles(valoradicion) + '). Prórroga de (' + tiempo + ') día(s).\n\n\n' +
+            'PRIMERO MODIFICAR EL VALOR el cual quedará así: El Valor del presente contrato es de ' +
+            this.numerosAletrasService.convertir(valorTotal).toLowerCase() + 'pesos MCTE. ($' +
+            this.numeromiles(valorTotal) + ') — SEGUNDO MODIFICAR EL PLAZO DE EJECUCIÓN: el cual quedará así: PLAZO DE EJECUCIÓN: ' +
+            'el plazo del contrato será hasta el ' + this.formato(fechaFin.slice(0, 10)) + ', contados a partir del acta de inicio, ' +
+            'previo cumplimiento de los requisitos de perfeccionamiento y ejecución, sin superar el tiempo de la vigencia fiscal.';
+
+          filasProrroga.push(
+            [
+              { text: `${textModificacion} ${contadorModificacion}:`, style },
+              {
+                text,
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorAdiPro++;
+          break;
+        case 'Inicio':
+          filasNovedades.push(
+            [
+              { text: 'NOVEDAD INICIO: ', style },
+              {
+                text: 'Fecha registro: ' + this.formato(this.novedadInicio[contadorInicio].fecharegistro.slice(0, 10)),
+                style: 'tabla2',
+              },
+            ],
+          );
+          contadorInicio++;
+          break;
+      }
+    }
+
+    if (fechaProrroga > new Date(this.fechaInicio)) {
+      filasNovedades.unshift(...filasProrroga);
+    }
+
+    return filasNovedades;
   }
   regresarInicio() {
     const Swal = require('sweetalert2');
@@ -768,114 +707,131 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   consultarDatosContrato() {
+    this.consultarContratista();
+
+    const payloadContrato = 'datosContrato?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
+      '&VigenciaContrato=' + this.dataContrato[0].Vigencia;
     this.evaluacionMidService
-      .get(
-        'datosContrato?NumContrato=' +
-        this.dataContrato[0].ContratoSuscrito +
-        '&VigenciaContrato=' +
-        this.dataContrato[0].Vigencia,
-      )
+      .get(payloadContrato)
       .subscribe((res_contrato) => {
-        // console.log('aca esta el contrato', res_contrato);
-        this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
-        this.valorContrato =
-          res_contrato.Data[0].contrato_general.ValorContrato;
-        this.cedula = res_contrato.Data[0].informacion_proveedor.NumDocumento;
-        this.nombre = res_contrato.Data[0].informacion_proveedor.NomProveedor;
-        this.numeroContrato =
-          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContratoSuscrito;
-        this.fechaSuscrip =
-          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].FechaSuscripcion;
-        this.duracionContrato =
-          res_contrato.Data[0].contrato_general.PlazoEjecucion;
-        this.idContrato =
-          res_contrato.Data[0].contrato_general.ContratoSuscrito[0].NumeroContrato.Id;
 
-        this.tipoContrato = res_contrato.Data[0].contrato_general.TipoContrato.TipoContrato;
-        this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
-        this.estado_contrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
+        if (res_contrato && res_contrato.Data && res_contrato.Data.length) {
+          this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
+          this.valorContrato = res_contrato.Data[0].contrato_general.ValorContrato;
+          this.tipoContrato = res_contrato.Data[0].contrato_general.TipoContrato.TipoContrato;
+          this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
+          this.estadoContrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
-        this.consultarNovedades();
-        // console.log(this.idContrato);
-        this.AdministrativaAmazon.get(
-          'contrato_general?query=ContratoSuscrito.NumeroContratoSuscrito:' +
-          this.dataContrato[0].ContratoSuscrito +
-          ',VigenciaContrato:' +
-          this.dataContrato[0].Vigencia,
-        ).subscribe(
-          (res_Contrato) => {
-            // console.log('esta es la nueva respuesta',res_Contrato);
-            this.AdministrativaAmazon.get(
-              'acta_inicio?query=NumeroContrato:' + res_Contrato[0].Id,
-            ).subscribe(
-              (res_Acta) => {
-                this.fechaInicio = res_Acta[0].FechaInicio;
-                this.fechaFin = res_Acta[0].FechaFin;
-              },
-              (err) => { },
-            );
-          },
-          (err) => { },
-        );
+          const plazo = res_contrato.Data[0].contrato_general.PlazoEjecucion;
+          this.valorPorDia = res_contrato.Data[0].contrato_general.ValorContrato / (plazo > 12 ? plazo : plazo * 30);
+
+          if (res_contrato.Data[0].contrato_general.Contratista === this.dataContrato[0].IdProveedor) {
+            const payloadActaInicio = 'acta_inicio?query=NumeroContrato:' + res_contrato.Data[0].contrato_general.Id;
+            this.AdministrativaAmazon
+              .get(payloadActaInicio)
+              .subscribe(
+                (actaInicio) => {
+                  this.fechaInicio = actaInicio[0].FechaInicio;
+                  this.fechaFin = new Date(actaInicio[0].FechaFin).toISOString();
+                  this.consultarNovedades();
+                },
+                (err) => { },
+              );
+          } else {
+            this.consultarNovedades();
+          }
+        }
+
       }),
       (error_service) => {
         this.openWindow(error_service);
         this.regresarFiltro();
       };
   }
-  consultarNovedades() {
-    this.novedadesService.get(
-      'novedad/' + this.numeroContrato + '/' + this.dataContrato[0].Vigencia,
-    ).subscribe(
-      (data: any) => {
-        this.allNovedades = data;
-        this.datosNovedades.push('Sin novedades');
-        for (let i = 0; i < data.length; i++) {
-          switch (data[i].tiponovedad) {
-            case 1:
-              this.datosNovedades.push('Suspension');
-              this.novedadSuspension.push(data[i]);
-              break;
-            case 2:
-              this.datosNovedades.push('Cesion');
-              this.novedadCesion.push(data[i]);
-              break;
-            case 3:
-              this.datosNovedades.push('Reinicio');
-              this.novedadReinicio.push(data[i]);
-              break;
-            case 4:
-              this.datosNovedades.push('Liquidacion');
-              this.novedadLiquidacion.push(data[i]);
-              break;
-            case 5:
-              this.datosNovedades.push('Terminacion');
-              this.novedadTerminacion.push(data[i]);
-              break;
-            case 6:
-              this.datosNovedades.push('Adicion');
-              this.novedadAdicion.push(data[i]);
-              break;
-            case 7:
-              this.datosNovedades.push('Prorroga');
-              this.novedadProrroga.push(data[i]);
-              break;
-            case 8:
-              this.datosNovedades.push('Adicion/Prorroga');
-              this.novedadAdiPro.push(data[i]);
-              break;
-            case 9:
-              this.datosNovedades.push('Inicio');
-              this.novedadInicio.push(data[i]);
-              break;
+  private consultarContratista() {
+    const payloadContratista = 'informacion_proveedor?fields=NomProveedor,NumDocumento&query=Id:' + this.dataContrato[0].IdProveedor;
+    this.AdministrativaAmazon
+      .get(payloadContratista)
+      .subscribe(
+        (contratista) => {
+          if (contratista && contratista.length) {
+            this.cedula = contratista[0].NumDocumento;
+            this.nombre = contratista[0].NomProveedor;
           }
-        }
-      },
-      (err) => {
-        console.info(err);
-        this.datosNovedades.push('Sin novedades');
-      },
-    );
+        },
+        (err) => { },
+      );
+  }
+  consultarNovedades() {
+    const payloadNovedades = 'novedad/' + this.dataContrato[0].ContratoSuscrito + '/' + this.dataContrato[0].Vigencia;
+    this.novedadesService.get(payloadNovedades)
+      .subscribe(
+        (data: any) => {
+          this.allNovedades = data;
+          this.datosNovedades.push('Sin novedades');
+          for (let i = 0; i < data.length; i++) {
+            switch (data[i].tiponovedad) {
+              case 1:
+                this.datosNovedades.push('Suspension');
+                this.novedadSuspension.push(data[i]);
+                break;
+              case 2:
+                const fechaCesion = new Date(data[i].fechacesion);
+                if (this.dataContrato[0].IdProveedor === data[i].cedente) { // Cedente termina y puede incluir novedad
+                  fechaCesion.setTime(fechaCesion.getTime() - 24 * 60 * 60 * 1000);
+                  this.fechaFin = fechaCesion.toISOString();
+                  this.datosNovedades.push('Cesion');
+                  this.novedadCesion.push(data[i]);
+                } else if (this.dataContrato[0].IdProveedor === data[i].cesionario) { // Cesionario inicia acá y no puede incluir novedad
+                  this.fechaInicio = fechaCesion.toISOString();
+                  if (this.fechaFin === '') {
+                    this.fechaFin = new Date(data[i].fechafinefectiva).toISOString();
+                  }
+                }
+                break;
+              case 3:
+                this.datosNovedades.push('Reinicio');
+                this.novedadReinicio.push(data[i]);
+                break;
+              case 4:
+                this.datosNovedades.push('Liquidacion');
+                this.novedadLiquidacion.push(data[i]);
+                break;
+              case 5:
+                this.datosNovedades.push('Terminacion');
+                this.novedadTerminacion.push(data[i]);
+                break;
+              case 6:
+                this.datosNovedades.push('Adicion');
+                this.novedadAdicion.push(data[i]);
+                break;
+              case 7:
+                this.datosNovedades.push('Prorroga');
+                this.novedadProrroga.push(data[i]);
+                break;
+              case 8:
+                const fechaInicioAdicion = moment(data[i].fechaadicion.slice(0, 10) + 'T12:00:00Z').subtract(1, 'days');
+                const fechaFinContrato = this.fechaFin ? moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z') : '';
+                if (fechaFinContrato === '' || fechaFinContrato.format() === fechaInicioAdicion.format()) {
+                  if (this.fechaFin !== '') {
+                    this.datosNovedades.push('Adicion/Prorroga');
+                    this.novedadAdiPro.push(data[i]);
+                  }
+                  this.fechaFin = new Date(data[i].fechafinefectiva).toISOString();
+                }
+                break;
+              case 9:
+                this.datosNovedades.push('Inicio');
+                this.novedadInicio.push(data[i]);
+                break;
+            }
+          }
+        },
+        (err) => {
+          console.info(err);
+          this.datosNovedades.push('Sin novedades');
+        },
+      );
   }
   diasFecha(fecha1, fecha2) {
     const date_1 = new Date(fecha1.toString()).getTime();

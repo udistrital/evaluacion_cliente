@@ -3,7 +3,6 @@ import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NbWindowService } from '@nebular/theme';
-import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
