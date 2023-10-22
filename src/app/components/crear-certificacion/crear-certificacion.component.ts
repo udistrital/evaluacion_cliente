@@ -9,6 +9,7 @@ import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service'
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
+import * as moment from 'moment';
 
 @Component({
   selector: 'ngx-crear-certificacion',
@@ -26,7 +27,8 @@ export class CrearCertificacionComponent implements OnInit {
   valorContrato: string;
   nombre: string;
   tipoContrato: string;
-  duracionContrato: string = '';
+  duracionContrato: number = 0;
+  valorPorDia: number = 0;
   fechaInicio: string = '';
   fechaFin: string = '';
   otrosDatos: string;
@@ -58,10 +60,9 @@ export class CrearCertificacionComponent implements OnInit {
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
   // ----------------------------------------------------------------------------------
-  horaCreacion: string = '';
-
   datosTabla: any[] = [];
 
+  horaCreacion: string = '';
   nombreDependencia: string = '';
   firma: string = '';
   jefeDependencia: string = '';
@@ -119,6 +120,7 @@ export class CrearCertificacionComponent implements OnInit {
 
     const tipoContrato = this.tipoContrato.toUpperCase();
     const filasNovedades = this.procesarNovedades(tipoContrato);
+    this.contarDias();
 
     PdfMakeWrapper.setFonts(pdfFontTime, {
       TimesNewRoman: {
@@ -212,7 +214,6 @@ export class CrearCertificacionComponent implements OnInit {
       ],
       firmaPagina: [
         {
-          unbreakable: true,
           text: this.jefeDependencia + '\n' + this.nombreDependencia.toUpperCase(),
           style: 'body1',
           bold: true,
@@ -229,7 +230,6 @@ export class CrearCertificacionComponent implements OnInit {
       ],
       firmaImagen: [
         {
-          unbreakable: true,
           image: this.firma,
           alignment: 'left',
           width: 165,
@@ -278,7 +278,7 @@ export class CrearCertificacionComponent implements OnInit {
           { text: 'VALOR DEL CONTRATO:', style: 'tabla1' },
           {
             text: this.numerosAletrasService.convertir(parseInt(this.valorContrato, 10)).toLowerCase() +
-              '(' + this.numeromiles(this.valorContrato) + '). ',
+              '($' + this.numeromiles(this.valorContrato) + '). ',
             style: 'tabla2',
           },
         ],
@@ -287,23 +287,24 @@ export class CrearCertificacionComponent implements OnInit {
 
     if (this.duracion_contrato === '1') {
       let textoDuracion = '';
-      if (parseInt(this.duracionContrato, 10) > 12) {
-        textoDuracion = this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
-          '' + this.duracionContrato + ' DIAS';
+      const meses = Math.trunc(this.duracionContrato / 30);
+      const dias = this.duracionContrato % 30;
 
-      } else if (parseInt(this.duracionContrato, 10) < 12) {
-        textoDuracion = this.numerosAletrasService.convertir(parseInt(this.duracionContrato, 10)).slice(0, -7) +
-          '(' + this.duracionContrato + ') MESES';
+      if (meses > 0) {
+        textoDuracion = this.numerosAletrasService.convertir(meses).slice(0, -7) + '(' + meses + ') mes(es)';
+      }
+      if (dias > 0) {
+        if (meses > 0) {
+          textoDuracion += ' y ';
+        }
+        textoDuracion += this.numerosAletrasService.convertir(dias).slice(0, -7) + '(' + dias + ') día(s)';
       }
       this.datosTabla.push(
         [
           { text: 'PLAZO DEL CONTRATO:', style: 'tabla1' },
           {
-            text:
-              textoDuracion +
-              ', contados a partir del acta de inicio, previo cumplimiento ' +
-              'de los requisitos de perfeccionamiento y ejecución, sin superar ' +
-              'el tiempo de la vigencia fiscal.',
+            text: textoDuracion + ', contados a partir del acta de inicio, ' +
+              'previo cumplimiento de los requisitos de perfeccionamiento y ejecución, sin superar el tiempo de la vigencia fiscal.',
             style: 'tabla2',
           },
         ],
@@ -360,9 +361,8 @@ export class CrearCertificacionComponent implements OnInit {
       [
         { text: 'OBSERVACIONES:', style: 'tabla1' },
         {
-          text: 'El contrato de que trata la presente certificación no genera ' +
-            'relación laboral entre el contratista y la Universidad ' +
-            'Distrital Francisco José de Caldas.',
+          text: 'El contrato de que trata la presente certificación no genera relación laboral entre ' +
+            'el contratista y la Universidad Distrital Francisco José de Caldas.',
           style: 'tabla2',
         },
       ],
@@ -370,14 +370,18 @@ export class CrearCertificacionComponent implements OnInit {
 
     this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
-    pdf.header(
-      new Table([
-        [
-          docDefinition.escudoImagen,
-          docDefinition.valorCabe,
+    pdf.header({
+      layout: 'noBorders',
+      margin: [80, 0, 0, 0],
+      table: {
+        body: [
+          [
+            docDefinition.escudoImagen,
+            docDefinition.valorCabe,
+          ],
         ],
-      ]).layout('noBorders').absolutePosition(80, 6).end,
-    );
+      },
+    });
 
     pdf.add(
       new Txt('EL (LA) JEFE DE LA ' + this.nombreDependencia.toUpperCase() + ' DE LA UNIVERSIDAD DISTRITAL ' +
@@ -399,34 +403,25 @@ export class CrearCertificacionComponent implements OnInit {
 
     pdf.add('\n\n');
 
-    pdf.add(
-      new Txt(
-        'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion,
-        /* this.horaCreacion.slice(0, 10) +
-        ' - ' +
-        this.horaCreacion.slice(11, 19), */
-      )
-        .alignment('left')
-        .fontSize(9).end,
-    );
-    pdf.add(
-      new Table([
+    const filasFirma = {
+      stack:
         [
+          { text: 'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion, style: 'subtitle' },
+          { text: '\n' },
           docDefinition.firmaImagen,
-        ],
-        [
           docDefinition.firmaPagina,
+          { text: '\n' },
+          {
+            text: 'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
+              'probatoria según lo establecido en la ley 527 de 1999.',
+            style: 'body1',
+          },
+          { text: '\n\n' },
         ],
-      ]).alignment('left').layout('noBorders').dontBreakRows(true).end,
-    );
-    pdf.add('\n');
-    pdf.add(
-      new Txt(
-        'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
-        'probatoria según lo establecido en la ley 527 de 1999.',
-      ).alignment('justify').fontSize(10).bold().end,
-    );
-    pdf.add('\n');
+      unbreakable: true,
+    };
+
+    pdf.add(filasFirma);
     pdf.add(
       new Txt(
         'Elaboró: ' + this.user + ' - Contratista' +
@@ -470,7 +465,6 @@ export class CrearCertificacionComponent implements OnInit {
         IdDocumento: 16,
         file: blob,
         nombre: '',
-        // documento: response[0].res.Enlace,
       };
       arreglo2.push(file2);
       arreglo2.forEach((file) => {
@@ -486,8 +480,6 @@ export class CrearCertificacionComponent implements OnInit {
       });
 
       this.gestorDocumental.uploadFiles(arreglo2)
-        /* this.nuxeoService
-          .updateDocument$(arreglo2, this.documentoService) */
         .subscribe((response: any[]) => {
           if (response[0].Status === '200') {
             pdf
@@ -509,12 +501,28 @@ export class CrearCertificacionComponent implements OnInit {
           });
     });
 
+  }
 
-    /* },
-    (error) => {
-      this.openWindow(error);
-    },
-  );*/
+  private contarDias() {
+    const fechaInicio = moment(this.fechaInicio.slice(0, 10) + 'T12:00:00Z');
+    const fechaFin = moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z');
+    const monthDiff = fechaFin.clone().add(1, 'days').diff(fechaInicio, 'months');
+    const fechaFinSub = fechaFin.clone().subtract(monthDiff, 'month');
+    let diasMesUltimo = fechaFinSub.date();
+    let diasMesInicial = fechaInicio.date();
+    if (diasMesUltimo === fechaFinSub.daysInMonth()) {
+      diasMesUltimo = 30;
+    }
+
+    if (diasMesInicial === fechaInicio.daysInMonth()) {
+      diasMesInicial = 30;
+    }
+
+    let dias = diasMesUltimo - diasMesInicial + 1;
+    if (dias < 0) {
+      dias += 30;
+    }
+    this.duracionContrato = monthDiff * 30 + dias;
   }
 
   private procesarNovedades(tipoContrato: string) {
@@ -532,7 +540,7 @@ export class CrearCertificacionComponent implements OnInit {
     const filasProrroga = [];
     const style = 'tabla1';
 
-    const textModificacion = 'MODIFICACIÓN CONTRACTUAL No.'
+    const textModificacion = 'MODIFICACIÓN CONTRACTUAL No.';
 
     for (let i = 0; i < this.novedad.length; i++) {
       switch (this.novedad[i]) {
@@ -557,27 +565,20 @@ export class CrearCertificacionComponent implements OnInit {
           break;
         case 'Cesion':
           const cedente = this.novedadCesion[contadorCesion].cedente;
-          const cesionario = this.novedadCesion[contadorCesion].cesionario;
-          const fechaCesion = new Date(this.novedadCesion[contadorCesion].fechacesion);
-
           if (this.dataContrato[0].IdProveedor === cedente) {
+            const fechaCesion = new Date(this.novedadCesion[contadorCesion].fechacesion);
             fechaCesion.setTime(fechaCesion.getTime() - 24 * 60 * 60 * 1000);
-            this.fechaFin = fechaCesion.toISOString();
             filasNovedades.push(
               [
                 { text: 'CESIÓN:', style },
                 {
                   text: `N° ${contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
-                    this.dataContrato[0].ContratoSuscrito +
-                    '-' +
-                    this.dataContrato[0].Vigencia +
-                    '. Fecha de la cesión: ' + this.formato(this.novedadCesion[contadorCesion].fechacesion.slice(0, 10)),
+                    `${this.dataContrato[0].ContratoSuscrito} - ${this.dataContrato[0].Vigencia}. ` +
+                    'Fecha de la cesión: ' + this.formato(this.novedadCesion[contadorCesion].fechacesion.slice(0, 10)),
                   style: 'tabla2',
                 },
               ],
             );
-          } else if (this.dataContrato[0].IdProveedor === cesionario) {
-            this.fechaInicio = fechaCesion.toISOString();
           }
           contadorCesion++;
           break;
@@ -623,7 +624,7 @@ export class CrearCertificacionComponent implements OnInit {
               { text: `${textModificacion} ${contadorModificacion}:`, style },
               {
                 text:
-                  'Se adicionó el valor de ' + this.numeromiles(this.novedadAdicion[contadorAdicion].valoradicion) +
+                  'Se adicionó el valor de $' + this.numeromiles(this.novedadAdicion[contadorAdicion].valoradicion) +
                   '.\n\n' + ' Fecha de la adición: ' +
                   this.formato(this.novedadAdicion[contadorAdicion].fechaadicion.slice(0, 10)),
                 style: 'tabla2',
@@ -647,19 +648,19 @@ export class CrearCertificacionComponent implements OnInit {
           break;
         case 'Adicion/Prorroga':
           contadorModificacion++;
-          this.fechaFin = this.novedadAdiPro[contadorAdiPro].fechafinefectiva;
-          fechaProrroga = new Date(this.novedadAdiPro[contadorAdiPro].fechaadicion)
+          const fechaFin = new Date(this.novedadAdiPro[contadorAdiPro].fechafinefectiva).toISOString();
+          fechaProrroga = new Date(this.novedadAdiPro[contadorAdiPro].fechaadicion);
 
           const tiempo = this.novedadAdiPro[contadorAdiPro].tiempoprorroga;
           const valoradicion = this.novedadAdiPro[contadorAdiPro].valoradicion;
-          const valorTotal = valoradicion + this.valorContrato;
+          const valorTotal = parseInt(valoradicion, 10) + parseInt(this.valorContrato, 10);
 
           const text = 'Se adicionó valor de ' + this.numerosAletrasService.convertir(parseInt(valoradicion, 10)).toLowerCase() +
-            'pesos MCTE. ($' + this.numeromiles(valoradicion) + '). Prórroga de ' + tiempo + ') día(s).\n\n\n' +
+            'pesos MCTE. ($' + this.numeromiles(valoradicion) + '). Prórroga de (' + tiempo + ') día(s).\n\n\n' +
             'PRIMERO MODIFICAR EL VALOR el cual quedará así: El Valor del presente contrato es de ' +
-            this.numerosAletrasService.convertir(parseInt(valorTotal, 10)).toLowerCase() + 'pesos MCTE. ($' +
+            this.numerosAletrasService.convertir(valorTotal).toLowerCase() + 'pesos MCTE. ($' +
             this.numeromiles(valorTotal) + ') — SEGUNDO MODIFICAR EL PLAZO DE EJECUCIÓN: el cual quedará así: PLAZO DE EJECUCIÓN: ' +
-            'el plazo del contrato será hasta el ' + this.formato(this.fechaFin.slice(0, 10)) + ', contados a partir del acta de inicio, ' +
+            'el plazo del contrato será hasta el ' + this.formato(fechaFin.slice(0, 10)) + ', contados a partir del acta de inicio, ' +
             'previo cumplimiento de los requisitos de perfeccionamiento y ejecución, sin superar el tiempo de la vigencia fiscal.';
 
           filasProrroga.push(
@@ -707,7 +708,6 @@ export class CrearCertificacionComponent implements OnInit {
 
   consultarDatosContrato() {
     this.consultarContratista();
-    this.consultarNovedades();
 
     const payloadContrato = 'datosContrato?NumContrato=' + this.dataContrato[0].ContratoSuscrito +
       '&VigenciaContrato=' + this.dataContrato[0].Vigencia;
@@ -718,21 +718,28 @@ export class CrearCertificacionComponent implements OnInit {
         if (res_contrato && res_contrato.Data && res_contrato.Data.length) {
           this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
           this.valorContrato = res_contrato.Data[0].contrato_general.ValorContrato;
-          this.duracionContrato = res_contrato.Data[0].contrato_general.PlazoEjecucion;
           this.tipoContrato = res_contrato.Data[0].contrato_general.TipoContrato.TipoContrato;
           this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
           this.estadoContrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
 
-          const payloadActaInicio = 'acta_inicio?query=NumeroContrato:' + res_contrato.Data[0].contrato_general.Id;
-          this.AdministrativaAmazon
-            .get(payloadActaInicio)
-            .subscribe(
-              (actaInicio) => {
-                this.fechaInicio = actaInicio[0].FechaInicio;
-                this.fechaFin = actaInicio[0].FechaFin;
-              },
-              (err) => { },
-            );
+          const plazo = res_contrato.Data[0].contrato_general.PlazoEjecucion;
+          this.valorPorDia = res_contrato.Data[0].contrato_general.ValorContrato / (plazo > 12 ? plazo : plazo * 30);
+
+          if (res_contrato.Data[0].contrato_general.Contratista === this.dataContrato[0].IdProveedor) {
+            const payloadActaInicio = 'acta_inicio?query=NumeroContrato:' + res_contrato.Data[0].contrato_general.Id;
+            this.AdministrativaAmazon
+              .get(payloadActaInicio)
+              .subscribe(
+                (actaInicio) => {
+                  this.fechaInicio = actaInicio[0].FechaInicio;
+                  this.fechaFin = new Date(actaInicio[0].FechaFin).toISOString();
+                  this.consultarNovedades();
+                },
+                (err) => { },
+              );
+          } else {
+            this.consultarNovedades();
+          }
         }
 
       }),
@@ -769,8 +776,18 @@ export class CrearCertificacionComponent implements OnInit {
                 this.novedadSuspension.push(data[i]);
                 break;
               case 2:
-                this.datosNovedades.push('Cesion');
-                this.novedadCesion.push(data[i]);
+                const fechaCesion = new Date(data[i].fechacesion);
+                if (this.dataContrato[0].IdProveedor === data[i].cedente) { // Cedente termina y puede incluir novedad
+                  fechaCesion.setTime(fechaCesion.getTime() - 24 * 60 * 60 * 1000);
+                  this.fechaFin = fechaCesion.toISOString();
+                  this.datosNovedades.push('Cesion');
+                  this.novedadCesion.push(data[i]);
+                } else if (this.dataContrato[0].IdProveedor === data[i].cesionario) { // Cesionario inicia acá y no puede incluir novedad
+                  this.fechaInicio = fechaCesion.toISOString();
+                  if (this.fechaFin === '') {
+                    this.fechaFin = new Date(data[i].fechafinefectiva).toISOString();
+                  }
+                }
                 break;
               case 3:
                 this.datosNovedades.push('Reinicio');
@@ -793,8 +810,15 @@ export class CrearCertificacionComponent implements OnInit {
                 this.novedadProrroga.push(data[i]);
                 break;
               case 8:
-                this.datosNovedades.push('Adicion/Prorroga');
-                this.novedadAdiPro.push(data[i]);
+                const fechaInicioAdicion = moment(data[i].fechaadicion.slice(0, 10) + 'T12:00:00Z').subtract(1, 'days');
+                const fechaFinContrato = this.fechaFin ? moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z') : '';
+                if (fechaFinContrato === '' || fechaFinContrato.format() === fechaInicioAdicion.format()) {
+                  if (this.fechaFin !== '') {
+                    this.datosNovedades.push('Adicion/Prorroga');
+                    this.novedadAdiPro.push(data[i]);
+                  }
+                  this.fechaFin = new Date(data[i].fechafinefectiva).toISOString();
+                }
                 break;
               case 9:
                 this.datosNovedades.push('Inicio');
