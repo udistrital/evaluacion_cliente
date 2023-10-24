@@ -10,7 +10,6 @@ import {
 } from '@nebular/theme';
 
 import { StateService } from '../../../@core/utils';
-import { CatalogoService } from '../../../@core/data/catalogo.service';
 
 // TODO: move layouts into the framework
 @Component({
