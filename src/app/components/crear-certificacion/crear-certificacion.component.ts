@@ -731,9 +731,16 @@ export class CrearCertificacionComponent implements OnInit {
               .get(payloadActaInicio)
               .subscribe(
                 (actaInicio) => {
-                  this.fechaInicio = actaInicio[0].FechaInicio;
-                  this.fechaFin = new Date(actaInicio[0].FechaFin).toISOString();
-                  this.consultarNovedades();
+                  if (actaInicio && actaInicio.length) {
+                    this.fechaInicio = new Date(actaInicio[0].FechaInicio).toISOString();
+                    this.fechaFin = new Date(actaInicio[0].FechaFin).toISOString();
+                    this.consultarNovedades();
+                  } else {
+                    this.openWindow('No se encontró la información del acta de inicio para el contrato ' +
+                      `${this.dataContrato[0].ContratoSuscrito} de ${this.dataContrato[0].Vigencia}. ` +
+                      'Contacte Soporte.');
+                    this.regresarFiltro();
+                  }
                 },
                 (err) => { },
               );
@@ -772,8 +779,11 @@ export class CrearCertificacionComponent implements OnInit {
           for (let i = 0; i < data.length; i++) {
             switch (data[i].tiponovedad) {
               case 1:
-                this.datosNovedades.push('Suspension');
-                this.novedadSuspension.push(data[i]);
+                const fechaInicioSuspension = moment(data[i].fechasuspension.slice(0, 10) + 'T12:00:00Z');
+                if (this.fechaFin !== '' && fechaInicioSuspension < moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z')) {
+                  this.datosNovedades.push('Suspension');
+                  this.novedadSuspension.push(data[i]);
+                }
                 break;
               case 2:
                 const fechaCesion = new Date(data[i].fechacesion);
@@ -798,8 +808,12 @@ export class CrearCertificacionComponent implements OnInit {
                 this.novedadLiquidacion.push(data[i]);
                 break;
               case 5:
-                this.datosNovedades.push('Terminacion');
-                this.novedadTerminacion.push(data[i]);
+                const fechaTerminacion = moment(data[i].fechaterminacionanticipada.slice(0, 10) + 'T12:00:00Z');
+                if (this.fechaFin !== '' && fechaTerminacion < moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z')) {
+                  this.fechaFin = new Date(data[i].fechaterminacionanticipada).toISOString();
+                  this.datosNovedades.push('Terminacion');
+                  this.novedadTerminacion.push(data[i]);
+                }
                 break;
               case 6:
                 this.datosNovedades.push('Adicion');
