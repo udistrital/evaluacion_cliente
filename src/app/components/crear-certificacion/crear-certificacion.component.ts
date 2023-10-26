@@ -197,21 +197,6 @@ export class CrearCertificacionComponent implements OnInit {
           style: 'body',
         },
       ],
-      valorCabe: [
-        {
-          text: [
-            {
-              text: `
-                UNIVERSIDAD DISTRITAL
-                FRANCISCO JOSÉ DE CALDAS
-                Vicerrectoría Administrativa y Financiera
-                Oficina de Contratación`,
-              style: 'body1',
-              bold: true,
-            },
-          ],
-        },
-      ],
       firmaPagina: [
         {
           text: this.jefeDependencia + '\n' + this.nombreDependencia.toUpperCase(),
@@ -220,17 +205,9 @@ export class CrearCertificacionComponent implements OnInit {
           alignment: 'left',
         },
       ],
-      escudoImagen: [
-        {
-          unbreakable: true,
-          image: IMAGENES.escudo,
-          alignment: 'right',
-          width: 45,
-        },
-      ],
       firmaImagen: [
         {
-          image: this.firma,
+          image: IMAGENES.firma,
           alignment: 'left',
           width: 165,
         },
@@ -376,8 +353,29 @@ export class CrearCertificacionComponent implements OnInit {
       table: {
         body: [
           [
-            docDefinition.escudoImagen,
-            docDefinition.valorCabe,
+            [
+              {
+                unbreakable: true,
+                image: IMAGENES.escudo,
+                alignment: 'right',
+                width: 45,
+              },
+            ],
+            [
+              {
+                text: [
+                  {
+                    text: `
+                      UNIVERSIDAD DISTRITAL
+                      FRANCISCO JOSÉ DE CALDAS
+                      Vicerrectoría Administrativa y Financiera
+                      Oficina de Contratación`,
+                    style: 'body1',
+                    bold: true,
+                  },
+                ],
+              },
+            ],
           ],
         ],
       },
