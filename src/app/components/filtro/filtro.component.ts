@@ -74,6 +74,7 @@ export class FiltroComponent implements OnInit {
   }
 
   RealizarPeticion(qSupervisor: string = '', qTipo: string = '') {
+    qSupervisor = '';
     if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + qSupervisor + qTipo)

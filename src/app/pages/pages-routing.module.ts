@@ -17,6 +17,7 @@ const routes: Routes = [{
     {
       path: 'evaluar_proveedor',
       loadChildren: './evaluar-proveedor/evaluar-proveedor.module#EvaluarProveedorModule',
+      canActivate: [AuthGuard],
     },
     {
       path: 'evaluacion',
@@ -26,6 +27,7 @@ const routes: Routes = [{
     {
       path: 'consulta_evaluacion/:TipoDocumento/:IdentificacionProveedor',
       loadChildren: './consulta-evaluacion/consulta-evaluacion.module#ConsultaEvaluacionModule',
+      canActivate: [AuthGuard],
     },
     {
       path: 'administracion_plantillas',

@@ -3,7 +3,7 @@
     <div class="card-body">
       <h1>Evaluación Proveedor</h1>
       <br>
-      <ngx-plantilla-evaluacion [realizar]="this.realizar" (jsonEvaluacion)="realizarEvaluacion($event)">
+      <ngx-plantilla-evaluacion *ngIf="realizar" [realizar]="true" (jsonEvaluacion)="realizarEvaluacion($event)" [evaluacionPrevia]="evaluacionRealizada?.ResultadoEvaluacion">
       </ngx-plantilla-evaluacion>
       <button (click)="regresarFiltro()" nbButton status="warning" class="btn-flotante">
         <i class="fas fa-arrow-alt-circle-left"></i>

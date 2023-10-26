@@ -59,6 +59,8 @@ export class CrearCertificacionComponent implements OnInit {
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
+
+  firmantes: any = undefined;
   // ----------------------------------------------------------------------------------
   datosTabla: any[] = [];
 
@@ -83,6 +85,7 @@ export class CrearCertificacionComponent implements OnInit {
 
   ngOnInit() {
     this.consultarDatosContrato();
+    this.consultarFirmantes();
     this.getDependenciaEmisora();
     this.getUsuario();
   }
@@ -402,15 +405,15 @@ export class CrearCertificacionComponent implements OnInit {
       stack:
         [
           { text: 'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion, style: 'subtitle' },
-          { text: '\n' },
+          /* { text: '\n' },
           docDefinition.firmaImagen,
           docDefinition.firmaPagina,
           { text: '\n' },
           {
             text: 'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
-              'probatoria según lo establecido en la ley 527 de 1999.',
+              'probatoria según lo establecido en la ley 527 de 1999.\n',
             style: 'body1',
-          },
+          }, */
           { text: '\n' },
         ],
       unbreakable: true,
@@ -461,18 +464,25 @@ export class CrearCertificacionComponent implements OnInit {
         IdDocumento: 16,
         file: blob,
         nombre: '',
+        firmantes: [],
+        representantes: [],
+        // documento: response[0].res.Enlace,
       };
       arreglo2.push(file2);
       arreglo2.forEach((file) => {
         (file.Id = file.nombre),
           (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
         file.key = file.Id;
+        file.firmantes.push(this.firmantes);
       });
 
-      this.gestorDocumental.uploadFiles(arreglo2)
+      this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
         .subscribe((response: any[]) => {
           if (response[0].Status === '200') {
-            this.downloadBlob(blob);
+            this.gestorDocumental.getByUUID(response[0].res.Enlace)
+              .subscribe((file) => {
+                this.download(file, '', 1000, 1000);
+              });
             this.regresarInicio();
           } else {
             this.openWindow('Fallo en carga a Gestor Documental');
@@ -699,7 +709,48 @@ export class CrearCertificacionComponent implements OnInit {
     });
     this.regresarFiltro();
   }
+  download(url, title, w, h) {
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    window.open(
+      url,
+      title,
+      'toolbar=no,' +
+      'location=no, directories=no, status=no, menubar=no,' +
+      'scrollbars=no, resizable=no, copyhistory=no, ' +
+      'width=' +
+      w +
+      ', height=' +
+      h +
+      ', top=' +
+      top +
+      ', left=' +
+      left,
+    );
+  }
 
+  consultarFirmantes() {
+    const IdCargoJuridica = 78;
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:' + IdCargoJuridica + '&sortby=FechaInicio&order=desc&limit=1')
+      .subscribe((response) => {
+        if (Object.keys(response[0]).length > 0) {
+          this.firmantes = {
+            nombre: response[0].Nombre,
+            tipoId: 'CC',
+            identificacion: String(response[0].Documento),
+            cargo: response[0].Cargo,
+          };
+        } else {
+          this.firmantes = undefined;
+          this.openWindow('Sin información de Oficina Asesora Jurídica.');
+          this.regresarFiltro();
+        }
+      }, (error) => {
+        this.firmantes = undefined;
+        this.openWindow('Error al traer información de Oficina Asesora Jurídica.');
+        this.regresarFiltro();
+      });
+  }
   consultarDatosContrato() {
     this.consultarContratista();
 

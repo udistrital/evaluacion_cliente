@@ -44,16 +44,13 @@ export class EvaluacioncrudService {
     return this.requestManager.delete(endpoint, element.Id);
   }
 
-  getEvaluacion(endpoint) {
-    this.evaluacionRealizada.next([]);
-    if (endpoint !== 'nuevaEvaluacion') {
-      this.requestManager.setPath('EVALUACIONCRUD_SERVICE');
-      this.requestManager.get(endpoint)
-        .subscribe((response: any) => {
-          this.evaluacionRealizada.next(response);
-        });
-    } else {
-      this.evaluacionRealizada.next([{}]);
-    }
+  getEvaluacionByContratoVigencia(contrato, vigencia) {
+    const payload = 'evaluacion?query=ContratoSuscrito:' + contrato + ',Vigencia:' + vigencia;
+    return this.get(payload);
+  }
+
+  getResultadoByContratoVigencia(contrato, vigencia) {
+    const payload = 'resultado_evaluacion?query=Activo:true,IdEvaluacion__ContratoSuscrito:' + contrato + ',IdEvaluacion__Vigencia:' + vigencia;
+    return this.get(payload);
   }
 }
