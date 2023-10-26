@@ -240,15 +240,13 @@ export class CrearCertificacionComponent implements OnInit {
       ],
       firmaImagen: [
         {
-          image: IMAGENES.firma,
+          image: this.firma,
           alignment: 'left',
           width: 165,
         },
       ],
     };
     // -------------------------------------------------------------------------------------
-
-    const arreglo2 = [];
 
     // Datos de la tabla de información del contrato
     this.datosTabla.push(
@@ -413,7 +411,7 @@ export class CrearCertificacionComponent implements OnInit {
               'probatoria según lo establecido en la ley 527 de 1999.',
             style: 'body1',
           },
-          { text: '\n\n' },
+          { text: '\n' },
         ],
       unbreakable: true,
     };
@@ -457,6 +455,7 @@ export class CrearCertificacionComponent implements OnInit {
       ],
     });
 
+    const arreglo2 = [];
     pdf.create().getBlob((blob) => {
       const file2 = {
         IdDocumento: 16,
@@ -466,28 +465,14 @@ export class CrearCertificacionComponent implements OnInit {
       arreglo2.push(file2);
       arreglo2.forEach((file) => {
         (file.Id = file.nombre),
-          (file.nombre =
-            'certificacion_' +
-            file.Id +
-            this.dataContrato[0].ContratoSuscrito +
-            '__' +
-            this.cedula +
-            '_contractual');
+          (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
         file.key = file.Id;
       });
 
       this.gestorDocumental.uploadFiles(arreglo2)
         .subscribe((response: any[]) => {
           if (response[0].Status === '200') {
-            pdf
-              .create()
-              .download(
-                'Certificacion_' +
-                this.dataContrato[0].ContratoSuscrito +
-                '__' +
-                this.cedula +
-                '_contractual',
-              );
+            this.downloadBlob(blob);
             this.regresarInicio();
           } else {
             this.openWindow('Fallo en carga a Gestor Documental');
@@ -498,6 +483,18 @@ export class CrearCertificacionComponent implements OnInit {
           });
     });
 
+  }
+
+  private downloadBlob(blob: any): void {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.setAttribute('style', 'display: none');
+    a.href = url;
+    a.download = 'Certificacion_' + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual';
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   }
 
   private contarDias() {
