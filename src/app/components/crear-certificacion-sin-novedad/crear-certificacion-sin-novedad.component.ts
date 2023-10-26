@@ -785,7 +785,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           stack: [
             { text: 'Línea de atención gratuita', decoration: 'underline' },
             { text: '01  800  091  44  10', bold: true },
-            { text: 'www.udistrital.edu.coo' },
+            { text: 'www.udistrital.edu.co' },
             { text: 'procesoscontratacion@udistrital.edu.co' },
             { text: 'tramitescontratacion@udistrital.edu.co' },
           ],
