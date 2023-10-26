@@ -60,7 +60,7 @@ export class NotificacionesService {
             this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role).filter((data: any) => (data.indexOf('/') === -1));
             this.messagesSubject
                 .pipe(
-                    map((msn) => {
+                    map((msn: any) => {
                         if (msn.Estado === 'conected') {
                             this.send_ping();
                         } else {
