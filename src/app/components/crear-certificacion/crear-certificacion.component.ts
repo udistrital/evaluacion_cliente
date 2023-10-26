@@ -134,6 +134,39 @@ export class CrearCertificacionComponent implements OnInit {
 
     const pdf = new PdfMakeWrapper();
     pdf.pageMargins([80, 100, 60, 60]);
+    pdf.header({
+      layout: 'noBorders',
+      margin: [80, 0, 0, 0],
+      table: {
+        body: [
+          [
+            [
+              {
+                image: IMAGENES.escudo,
+                alignment: 'right',
+                width: 45,
+              },
+            ],
+            [
+              {
+                text: [
+                  {
+                    text: `
+                      UNIVERSIDAD DISTRITAL
+                      FRANCISCO JOSÉ DE CALDAS
+                      Vicerrectoría Administrativa y Financiera
+                      Oficina de Contratación`,
+                    style: 'body1',
+                    bold: true,
+                  },
+                ],
+              },
+            ],
+          ],
+        ],
+      },
+    });
+
     pdf.styles({
       Title: {
         bold: true,
@@ -207,15 +240,13 @@ export class CrearCertificacionComponent implements OnInit {
       ],
       firmaImagen: [
         {
-          image: IMAGENES.firma,
+          image: this.firma,
           alignment: 'left',
           width: 165,
         },
       ],
     };
     // -------------------------------------------------------------------------------------
-
-    const arreglo2 = [];
 
     // Datos de la tabla de información del contrato
     this.datosTabla.push(
@@ -347,40 +378,6 @@ export class CrearCertificacionComponent implements OnInit {
 
     this.horaCreacion = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
-    pdf.header({
-      layout: 'noBorders',
-      margin: [80, 0, 0, 0],
-      table: {
-        body: [
-          [
-            [
-              {
-                unbreakable: true,
-                image: IMAGENES.escudo,
-                alignment: 'right',
-                width: 45,
-              },
-            ],
-            [
-              {
-                text: [
-                  {
-                    text: `
-                      UNIVERSIDAD DISTRITAL
-                      FRANCISCO JOSÉ DE CALDAS
-                      Vicerrectoría Administrativa y Financiera
-                      Oficina de Contratación`,
-                    style: 'body1',
-                    bold: true,
-                  },
-                ],
-              },
-            ],
-          ],
-        ],
-      },
-    });
-
     pdf.add(
       new Txt('EL (LA) JEFE DE LA ' + this.nombreDependencia.toUpperCase() + ' DE LA UNIVERSIDAD DISTRITAL ' +
         'FRANCISCO JOSÉ DE CALDAS, IDENTIFICADA CON EL NIT 899.999.230-7').style(
@@ -414,7 +411,7 @@ export class CrearCertificacionComponent implements OnInit {
               'probatoria según lo establecido en la ley 527 de 1999.',
             style: 'body1',
           },
-          { text: '\n\n' },
+          { text: '\n' },
         ],
       unbreakable: true,
     };
@@ -446,7 +443,7 @@ export class CrearCertificacionComponent implements OnInit {
           stack: [
             { text: 'Línea de atención gratuita', decoration: 'underline' },
             { text: '01  800  091  44  10', bold: true },
-            { text: 'www.udistrital.edu.coo' },
+            { text: 'www.udistrital.edu.co' },
             { text: 'procesoscontratacion@udistrital.edu.co' },
             { text: 'tramitescontratacion@udistrital.edu.co' },
           ],
@@ -458,6 +455,7 @@ export class CrearCertificacionComponent implements OnInit {
       ],
     });
 
+    const arreglo2 = [];
     pdf.create().getBlob((blob) => {
       const file2 = {
         IdDocumento: 16,
@@ -467,28 +465,14 @@ export class CrearCertificacionComponent implements OnInit {
       arreglo2.push(file2);
       arreglo2.forEach((file) => {
         (file.Id = file.nombre),
-          (file.nombre =
-            'certificacion_' +
-            file.Id +
-            this.dataContrato[0].ContratoSuscrito +
-            '__' +
-            this.cedula +
-            '_contractual');
+          (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
         file.key = file.Id;
       });
 
       this.gestorDocumental.uploadFiles(arreglo2)
         .subscribe((response: any[]) => {
           if (response[0].Status === '200') {
-            pdf
-              .create()
-              .download(
-                'Certificacion_' +
-                this.dataContrato[0].ContratoSuscrito +
-                '__' +
-                this.cedula +
-                '_contractual',
-              );
+            this.downloadBlob(blob);
             this.regresarInicio();
           } else {
             this.openWindow('Fallo en carga a Gestor Documental');
@@ -499,6 +483,18 @@ export class CrearCertificacionComponent implements OnInit {
           });
     });
 
+  }
+
+  private downloadBlob(blob: any): void {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.setAttribute('style', 'display: none');
+    a.href = url;
+    a.download = 'Certificacion_' + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual';
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   }
 
   private contarDias() {
