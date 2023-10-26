@@ -25,7 +25,7 @@ export class FooterComponent {
       list: [{
         title: 'Horario',
         class: 'fas fa-clock',
-        value: ['Lunes a viernes', '8am a 5pm'],
+        value: ['Lunes a viernes', '8 a. m. a 5 p. m.'],
       }, {
         title: 'Nombre',
         class: 'fas fa-globe-americas',
@@ -33,11 +33,11 @@ export class FooterComponent {
       }, {
         title: 'Phone',
         class: 'fas fa-phone',
-        value: ['323 93 00', 'Ext. 1112'],
+        value: ['323 93 00', 'Ext(s). Secretaría: 1109, Soporte 1111 - 1112'],
       }, {
         title: 'Direccion',
         class: 'fas fa-map-marker-alt',
-        value: ['Cra 8 # 40-78', 'Piso 1'],
+        value: ['Calle 13 31 75'],
       }, {
         title: 'mail',
         class: 'fas fa-at',
