@@ -142,6 +142,7 @@ import {
   CrearCertificacionComponent,
   CrearCertificacionSinNovedadComponent,
   VerCertificacionComponent,
+  FormularioCertificacionesDveComponent,
 } from './components';
 import {
   CapitalizePipe,
@@ -240,6 +241,7 @@ const COMPONENTS = [
   CrearCertificacionComponent,
   CrearCertificacionSinNovedadComponent,
   VerCertificacionComponent,
+  FormularioCertificacionesDveComponent,
 ];
 
 const ENTRY_COMPONENTS = [
