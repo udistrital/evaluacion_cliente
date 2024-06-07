@@ -14,8 +14,6 @@ export class CertificacionComponent implements OnInit {
   @Input() nombreTitulo: String;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
 
-  vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
-
   identificacion_proveedor: any;
   numero_contrato: any;
   vigencia: any;
