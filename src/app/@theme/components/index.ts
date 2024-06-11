@@ -21,3 +21,4 @@ export * from '../../components/crear-certificacion/crear-certificacion.componen
 export * from '../../components/crear-certificacion-sin-novedad/crear-certificacion-sin-novedad.component';
 export * from '../../components/ver-certificacion/ver-certificacion.component';
 export * from '../../components/formulario-certificaciones-dve/formulario-certificaciones-dve.component';
+export * from '../../components/formulario-certificaciones-dve-talento-humano/formulario-certificaciones-dve-talento-humano.component';
