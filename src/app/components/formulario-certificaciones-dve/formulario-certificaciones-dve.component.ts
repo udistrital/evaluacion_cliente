@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { CrearCertificacionesDveService } from './../../services/certificaionesDve/crear-certificaciones-dve.service';
+import { CertificacionDveService } from './../../services/certificaionesDve/certificacionesDve.service';
 
 @Component({
   selector: "ngx-formulario-certificaciones-dve",
@@ -14,7 +16,9 @@ export class FormularioCertificacionesDveComponent implements OnInit {
   @Input() documentoDocente:string;
 
 
-  constructor(private fg: FormBuilder) {}
+  constructor(private fg: FormBuilder,private crearCertificado: CrearCertificacionesDveService,private certificacionesService: CertificacionDveService) {
+    crearCertificado = new CrearCertificacionesDveService();
+  }
 
   ngOnInit() {
 
@@ -22,7 +26,7 @@ export class FormularioCertificacionesDveComponent implements OnInit {
     "anioInicio":"",
     "anioFin":"",
     "tipoVinculacion":"",
-    "incluirSalario":"",
+    "incluirSalario":false,
 
     });
 
@@ -54,10 +58,22 @@ export class FormularioCertificacionesDveComponent implements OnInit {
       }
 
   submitFormularioDve(){
-    if(this.formularioCertificacionesDve.valid){
-      console.log(this.formularioCertificacionesDve.value);
-    }else{
-      console.log("verificar formulario");
+    console.log(this.formularioCertificacionesDve.value);
+    try{
+      this.crearCertificado.createPfd(this.getDataCertificacionesService(),this.formularioCertificacionesDve.value.incluirSalario);
+    }catch(errror){
+      console.warn(errror);
+
     }
+      console.log(this.formularioCertificacionesDve.value);
+    
   }
+
+  getDataCertificacionesService(){
+    return this.certificacionesService.getDataCertificactionDveTest();
+  
+  }
+
+
+
 }
