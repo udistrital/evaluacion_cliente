@@ -2,11 +2,12 @@ import { Injectable, OnInit } from "@angular/core";
 import { PdfMakeWrapper, Table, Txt, Img } from "pdfmake-wrapper";
 import { pdfFontTime } from "../../../assets/skins/lightgray/fonts/vfs_fonts_times.js";
 import { IMAGENES } from "../../components/images.js";
-import { text } from "@angular/core/src/render3/instructions.js";
+import { element, text } from "@angular/core/src/render3/instructions.js";
 import { image } from "html2canvas/dist/types/css/types/image.js";
 import { InformacionCertificacionDve } from "../../@core/data/models/certificacionesDve/informacionCertificacionDve.js";
 import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/informacionDVE";
 import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve/intensidadHorariaDVE.js";
+import swal from "sweetalert2";
 
 @Injectable({
   providedIn: "root",
@@ -14,51 +15,38 @@ import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve
 export class CrearCertificacionesDveService {
   private pdf: PdfMakeWrapper;
 
-  constructor() {
-    
-  }
+  constructor() {}
 
-  /**
-  *Tipo de contrato?
-  *Hora Catedra por Honorarios
-  Medio Tiempo Ocasional a Termino Fijo
-  Hora Catedra a término fijo
-  */
+ /**
+ * Tipo de contrato:
+ * 1. Hora Cátedra por Honorarios
+ * 2. Medio Tiempo Ocasional a Término Fijo
+ * 3. Hora Cátedra a Término Fijo
+ */
 
-  /***
-   * servicios
-   * -presto sus servcios
-   *-presta sus servicios
-   *-laboro 
-  *-Labora
-  
-  */
-
-  createPfd(informacionCertificacionDve: InformacionCertificacionDve, icluirSalario: boolean) {
+/**
+ * Descripciones de servicios:
+ * - Presto sus servicios
+ * - Presta sus servicios
+ * - Laboro
+ * - Labora
+ */
+  createPfd(
+    informacionCertificacionDve: InformacionCertificacionDve,
+    icluirSalario: boolean
+  ) {
     this.pdf = new PdfMakeWrapper();
     this.pdf = this.getStyles();
     this.pdf.pageMargins([80, 100, 60, 60]);
-     const ultimoPago =informacionCertificacionDve.intensidadHorariaDVE.length-1;
-     const fecha = new Date();
+    const ultimoPago =
+      informacionCertificacionDve.intensidadHorariaDVE.length - 1;
+    const fecha = new Date();
 
     const docDefinition = {
-      /* Logo: [
-        {
-          unbreakable: true,
-          image: IMAGENES.logoUCertificacionesDve,
-          alignment: "left",
-          width: 170,
-          margin: [0, -65, 0, 10],
-        },
-      ],*/
-      content: [
-        this.getBody(
-          informacionCertificacionDve.informacionDve,
-          "Laboro",
-          "Hora Catedra por Honorarios"
-        ),
+      content: [this.getBody(informacionCertificacionDve.informacionDve)],
+      contentTable: [
+        this.getTable(informacionCertificacionDve.intensidadHorariaDVE),
       ],
-      contentTable: [this.getTable(informacionCertificacionDve.intensidadHorariaDVE)],
     };
 
     this.pdf.footer((currentPage, pageCount) =>
@@ -80,14 +68,29 @@ export class CrearCertificacionesDveService {
       this.pdf.add("\n");
       this.pdf.add(docDefinition.contentTable);
       this.pdf.add("\n");
-      icluirSalario==true? this.pdf.add(new Txt(`Salario mensual : ${informacionCertificacionDve.intensidadHorariaDVE[ultimoPago].salarioDocente}`).style("textBold").end):"";
-      this.pdf.add(new Txt(`Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${fecha.getMonth()}  del año ${fecha.getFullYear()}  a solicitud del interesado. `).style("text").end);
+      icluirSalario == true
+        ? this.pdf.add(
+            new Txt(
+              `Salario mensual : ${informacionCertificacionDve.intensidadHorariaDVE[ultimoPago].salarioDocente}`
+            ).style("textBold").end
+          )
+        : "";
+      this.pdf.add(
+        new Txt(
+          `Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${fecha.getMonth()}  del año ${fecha.getFullYear()}  a solicitud del interesado. `
+        ).style("text").end
+      );
+      this.pdf.add("\n");
+      this.pdf.add(this.getTableResponsable());
+      this.pdf.add("\n");
       this.pdf.add(new Txt(this.getTitles()[2]).style("Title").end);
       this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
-      this.pdf.userPassword(informacionCertificacionDve.informacionDve.numero_documento);
-      this.pdf.create().download("contrato.user.nombreUsuario" + ".pdf");
-     
-      
+
+      this.pdf
+        .create()
+        .download(
+          informacionCertificacionDve.informacionDve.nombre_docente + ".pdf"
+        );
     } catch (error) {
       console.error(error);
     }
@@ -180,7 +183,6 @@ export class CrearCertificacionesDveService {
   }
 
   getStyles(): PdfMakeWrapper {
-    
     this.pdf.styles({
       Title: {
         bold: true,
@@ -208,14 +210,13 @@ export class CrearCertificacionesDveService {
     });
     return this.pdf;
   }
-  getBody(informacionDVE: InformacionDVE, string, tipoModalidad: string) {
+  getBody(informacionDVE: InformacionDVE) {
     const content = [
       {
         text: [
           { text: "Que el (la) Señor(a) ", style: "text" },
           { text: `${informacionDVE.nombre_docente} `, style: "textBold" },
-          { text: " identificado(a) con cédula de ", style: "text" },
-          { text: `Lugar de exp`, style: "textBold", bold: true },
+          { text: " identificado(a) con cédula de ciudadania ", style: "text" },
           { text: " número ", style: "text" },
           {
             text: `${informacionDVE.numero_documento}` + ", ",
@@ -224,7 +225,7 @@ export class CrearCertificacionesDveService {
           {
             text: ` ${
               informacionDVE.activo == "true" ? "Labora" : "Laboro "
-            }en  esta Institución en la modalidad de Docente de Vinculación Especial ${tipoModalidad}, para los periodos académicos que a continuación se detallan, en el nivel académico  `,
+            }en  esta Institución en la modalidad de Docente de Vinculación Especial {tipoModalidad}, para los periodos académicos que a continuación se detallan, en el nivel académico  `,
             style: "text",
           },
           { text: `${informacionDVE.nivel_academico}`, style: "textBold" },
@@ -257,43 +258,73 @@ export class CrearCertificacionesDveService {
         ],
       },
     };
-
-    intensidad.forEach((item) => {
-      this.getContentTable(item).forEach((item2) => {
-        table.table.body.push(item2);
-      });
+    this.getContentTable(intensidad).forEach((element) => {
+      table.table.body.push(element);
     });
+    return table;
   }
 
-  getContentTable(intensidad: IntensidadHorariaDVE): any[][] {
-    return [
-      [
-        { text: `${intensidad.anio}`, style: "tableCell" },
-        { text: `${intensidad.periodo}`, style: "tableCell" },
-        { text: "", style: "tableCell" },
-        { text: "", style: "tableCell" },
-        {
-          text:
-            "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001" +
-            "\n" +
-            "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001",
-          style: "tableCell",
-        },
-        { text: "", style: "tableCell" },
-      ],
-      [
-        {
-          text: `${intensidad.anio}+"-"+${intensidad.periodo}`,
-          style: "tableCell",
-        },
-        { text: "Totales", style: "tableCell" },
-        { text: "Hora Catedra", style: "tableCell" },
-        { text: "", style: "tableCell" },
-        { text: "18", style: "tableCell" },
-        { text: "0", style: "tableCell" },
-      ],
-    ];
+  getTableResponsable() {
+    const table = {
+      table: {
+        style: "",
+        widths: ["25%", "25%", "25%", "25%"],
+        body: [
+          [
+            { text: "", style: "tableHeader" },
+            { text: "NOMBRE", style: "tableHeader" },
+            { text: "CARGO", style: "tableHeader" },
+            { text: "FIRMA", style: "tableHeader" },
+          ],
+          [
+            { text: "Proyectó", style: "tableCell" },
+            { text: "", style: "tableCell" },
+            { text: "", style: "tableCell" },
+            { text: "", style: "tableCell" },
+          ],
+        ],
+      },
+    };
+    return table;
   }
+
+  getContentTable(intensidad: IntensidadHorariaDVE[]): any[][] {
+    let listaTem = [];
+
+    for (let i = 0; i < intensidad.length; i++) {
+      if ((1 + i) % 2 != 0) {
+        listaTem.push([
+          { text: `${intensidad[i].anio}`, style: "tableCell" },
+          { text: `${intensidad[i].periodo}`, style: "tableCell" },
+          { text: "", style: "tableCell" },
+          { text: "", style: "tableCell" },
+          {
+            text:
+              "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001" +
+              "\n" +
+              "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001",
+            style: "tableCell",
+          },
+          { text: "", style: "tableCell" },
+        ]);
+      } else {
+        listaTem.push([
+          {
+            text: `${intensidad[i].anio}-${intensidad[i].periodo}`,
+            style: "tableCell",
+          },
+          { text: "Totales", style: "tableCell" },
+          { text: "Hora Catedra", style: "tableCell" },
+          { text: "", style: "tableCell" },
+          { text: `${intensidad[i].horasSemana}`, style: "tableCell" },
+          { text: `${intensidad[i].horasSemestrales}`, style: "tableCell" },
+        ]);
+      }
+    }
+
+    return listaTem;
+  }
+
   getContentTableest(): any[][] {
     return [
       [
@@ -336,7 +367,9 @@ export class CrearCertificacionesDveService {
   getTitles() {
     return [
       "LA JEFE DE LA OFICINA DE TALENTO HUMANO DE LA UNIVERSIDAD DISTRITAL FRANCISCO JOSÉ DE CALDAS NIT 899.999.230-7 ",
-      "CERTIFICA","ANDREA CAROLINA HOSPITAL GORDILLO","Jefe de la Oficina de Talento Humano"
+      "CERTIFICA",
+      "ANDREA CAROLINA HOSPITAL GORDILLO",
+      "Jefe de la Oficina de Talento Humano",
     ];
   }
 }

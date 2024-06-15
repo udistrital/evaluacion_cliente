@@ -28,7 +28,6 @@ export class CertificacionesDveComponent implements OnInit {
       const payload = JSON.parse(atob(parts[1]));
       this.docente.documentoDocente=payload.documento;
       this.docente.nombreDocente=payload.sub.toUpperCase();
-      console.log(this.docente)
     }
   }
 }
