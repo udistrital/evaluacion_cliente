@@ -17,20 +17,20 @@ export class CrearCertificacionesDveService {
 
   constructor() {}
 
- /**
- * Tipo de contrato:
- * 1. Hora Cátedra por Honorarios
- * 2. Medio Tiempo Ocasional a Término Fijo
- * 3. Hora Cátedra a Término Fijo
- */
+  /**
+   * Tipo de contrato:
+   * 1. Hora Cátedra por Honorarios
+   * 2. Medio Tiempo Ocasional a Término Fijo
+   * 3. Hora Cátedra a Término Fijo
+   */
 
-/**
- * Descripciones de servicios:
- * - Presto sus servicios
- * - Presta sus servicios
- * - Laboro
- * - Labora
- */
+  /**
+   * Descripciones de servicios:
+   * - Presto sus servicios
+   * - Presta sus servicios
+   * - Laboro
+   * - Labora
+   */
   createPfd(
     informacionCertificacionDve: InformacionCertificacionDve,
     icluirSalario: boolean
@@ -80,11 +80,14 @@ export class CrearCertificacionesDveService {
           `Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${fecha.getMonth()}  del año ${fecha.getFullYear()}  a solicitud del interesado. `
         ).style("text").end
       );
-      this.pdf.add("\n");
-      this.pdf.add(this.getTableResponsable());
-      this.pdf.add("\n");
+
+      this.pdf.add("\n" + "\n" + "\n" + "\n");
       this.pdf.add(new Txt(this.getTitles()[2]).style("Title").end);
       this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
+      this.pdf.add("\n");
+
+      this.pdf.add(this.getTableResponsable());
+      this.pdf.add("\n" + "\n");
 
       this.pdf
         .create()
