@@ -7,6 +7,7 @@ import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon
 import { NovedadesService } from '../../@core/data/novedades.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
 import * as moment from 'moment';
@@ -73,6 +74,7 @@ export class CrearCertificacionComponent implements OnInit {
   seleccionarOtros: boolean = false;
 
   constructor(
+    private firmaElectronica: FirmaElectronicaService,
     private gestorDocumental: GestorDocumentalService,
     private evaluacionMidService: EvaluacionmidService,
     private numerosAletrasService: NumerosAletrasService,
@@ -476,7 +478,7 @@ export class CrearCertificacionComponent implements OnInit {
         file.firmantes.push(this.firmantes);
       });
 
-      this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
+      this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
         .subscribe((response: any[]) => {
           if (response[0].Status === '200') {
             this.gestorDocumental.getByUUID(response[0].res.Enlace)
