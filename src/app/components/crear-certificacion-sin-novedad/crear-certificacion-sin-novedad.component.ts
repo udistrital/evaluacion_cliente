@@ -9,6 +9,7 @@ import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.service';
 import { ImplicitAutenticationService } from '../../@core/utils';
 import { UserService } from '../../@core/data/user.service';
 import { IMAGENES } from '../images';
@@ -91,6 +92,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   representantes: any = undefined;
 
   constructor(
+    private firmaElectronica: FirmaElectronicaService,
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
@@ -821,7 +823,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         file.representantes.push(this.representantes);
       });
 
-      this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
+      this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
         /*               this.nuxeoService
                         .updateDocument$(arreglo2, this.documentoService) */
         .subscribe((response: any[]) => {
