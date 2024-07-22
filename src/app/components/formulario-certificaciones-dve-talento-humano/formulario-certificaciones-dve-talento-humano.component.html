@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row text-center justify-content-center">
+    <div class="col-10 col-xs-12 col-md-12 col-sm-12">
+      <div class="card">
+        <div class="card-title"><h1>{{titulo}}</h1></div>
+        <div class="card-body">
+          <form [formGroup]="formularioCertificacionesDveTalentoHumano" (ngSubmit)="submitFormularioCertificacionesDveTalentoHumano()">
+            <div class="row justify-content-center">
+              <div class="col-md-6 col-sm-12 col-xxl-4 d-flex align-items-end ">
+                <p class="nota">
+                  Identificación del docente
+                </p>
+              </div>
+              <div class="col-md-6 col-sm-12 col-xxl-4 d-flex align-items-start">
+                <mat-form-field class="m-0 w-60">
+                  <mat-label >Identificación del docente</mat-label>
+                  <input matInput formControlName="documentoDocente" placeholder="Ingresar el número de identificación del docente">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row justify-content-center mt-3">
+              <div class="col-md-6 col-sm-12 col-xxl-4 d-flex align-items-center justify-content-end">
+                <div class="d-flex align-items-center">
+                  <div class="text-center">
+                    <span class="d-block">INCLUIR INFORMACION DE</span>
+                    <span class="d-block">SALARIO</span>
+                  </div>
+                  <mat-checkbox class="ml-4 mr-5" formControlName="incluirSalario"></mat-checkbox>
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 col-xxl-3 d-flex align-items-center justify-content-start custom-margin-left">
+                <button nbButton class="ml-5" type="submit">CREAR CERTIFICADO</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
