@@ -45,7 +45,7 @@ export class FirmaElectronicaService {
                 representantes: file.representantes ? file.representantes : [],
             }];
             this.anyService.setPath('FIRMA_ELECTRONICA_MID');
-            this.anyService.post('firma_electronica/firma_electronica', sendFileDataandSigners)
+            this.anyService.post('firma_electronica', sendFileDataandSigners)
                 .subscribe((dataResponse) => {
                     documentos.push(dataResponse);
                     if (documentos.length === files.length) {
