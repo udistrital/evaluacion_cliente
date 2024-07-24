@@ -87,8 +87,8 @@ export class ImplicitAutenticationService {
                 }
             };
         } else {
-            const id_token = window.localStorage.getItem('id_token').split('.');
-            const payload = JSON.parse(atob(id_token[1]));
+            const token_id = window.localStorage.getItem('id_token').split('.');
+            const payload = JSON.parse(atob(token_id[1]));
             this.updateAuth(payload);
         }
         const expires = this.setExpiresAt();
@@ -251,8 +251,8 @@ export class ImplicitAutenticationService {
                     });
                     if (this.timeAlert < timerDelay) {
                         of(null).pipe(delay(timerDelay - this.timeAlert)).subscribe((data) => {
-                            const Swal = require('sweetalert2');
-                            Swal.fire({
+                            const swal_alert = require('sweetalert2');
+                            swal_alert.fire({
                                 position: 'top-end',
                                 icon: 'info',
                                 title: `Su sesión se cerrará en ${this.timeAlert / 60000} minutos`,

@@ -8,7 +8,7 @@ describe('FormularioCertificacionesDveTalentoHumanoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormularioCertificacionesDveTalentoHumanoComponent ]
+      declarations: [ FormularioCertificacionesDveTalentoHumanoComponent ],
     })
     .compileComponents();
   }));
