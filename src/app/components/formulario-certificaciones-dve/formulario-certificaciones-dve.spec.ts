@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormularioCertificacionesDveComponent } from "./formulario-certificaciones-dve.component";
+import { FormularioCertificacionesDveComponent } from './formulario-certificaciones-dve.component';
 
-describe("FormularioCertificacionesDveComponent", () => {
+describe('FormularioCertificacionesDveComponent', () => {
   let component: FormularioCertificacionesDveComponent;
   let fixture: ComponentFixture<FormularioCertificacionesDveComponent>;
 
@@ -18,7 +18,7 @@ describe("FormularioCertificacionesDveComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

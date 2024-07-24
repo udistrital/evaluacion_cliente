@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'ngx-formulario-certificaciones-dve-talento-humano',
   templateUrl: './formulario-certificaciones-dve-talento-humano.component.html',
-  styleUrls: ['./formulario-certificaciones-dve-talento-humano.component.scss']
+  styleUrls: ['./formulario-certificaciones-dve-talento-humano.component.scss'],
 })
 export class FormularioCertificacionesDveTalentoHumanoComponent implements OnInit {
 
@@ -15,20 +15,17 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
 
   ngOnInit() {
 
-    this.formularioCertificacionesDveTalentoHumano= this.fg.group({
-      
-      "documentoDocente": "",
-      "incluirSalario":"",
-  
+    this.formularioCertificacionesDveTalentoHumano = this.fg.group({
+      'documentoDocente': '',
+      'incluirSalario': '',
       });
   }
 
-  
-  submitFormularioCertificacionesDveTalentoHumano(){
-    if(this.formularioCertificacionesDveTalentoHumano.valid){
+  submitFormularioCertificacionesDveTalentoHumano() {
+    if (this.formularioCertificacionesDveTalentoHumano.valid) {
       console.log(this.formularioCertificacionesDveTalentoHumano.value);
-    }else{
-      console.log("verificar formulario");
+    }else {
+      console.log('verificar formulario');
     }
   }
 
