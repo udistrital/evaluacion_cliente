@@ -8,9 +8,11 @@ import { NovedadesService } from '../../@core/data/novedades.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.service';
+import { DocumentoService } from '../../@core/data/documento.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
 import * as moment from 'moment';
+import { Console } from 'console';
 
 @Component({
   selector: 'ngx-crear-certificacion',
@@ -74,6 +76,7 @@ export class CrearCertificacionComponent implements OnInit {
   seleccionarOtros: boolean = false;
 
   constructor(
+    private documentosCrud: DocumentoService,
     private firmaElectronica: FirmaElectronicaService,
     private gestorDocumental: GestorDocumentalService,
     private evaluacionMidService: EvaluacionmidService,
@@ -461,40 +464,52 @@ export class CrearCertificacionComponent implements OnInit {
     });
 
     const arreglo2 = [];
-    pdf.create().getBlob((blob) => {
-      const file2 = {
-        IdDocumento: 16,
-        file: blob,
-        nombre: '',
-        firmantes: [],
-        representantes: [],
-        // documento: response[0].res.Enlace,
-      };
-      arreglo2.push(file2);
-      arreglo2.forEach((file) => {
-        (file.Id = file.nombre),
-          (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
-        file.key = file.Id;
-        file.firmantes.push(this.firmantes);
-      });
-
-      this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
-        .subscribe((response: any[]) => {
-          if (response[0].Status === '200') {
-            this.gestorDocumental.getByUUID(response[0].res.Enlace)
-              .subscribe((file) => {
-                this.download(file, '', 1000, 1000);
+    this.documentosCrud.get('tipo_documento?query=codigo_abreviacion:CCPS&limit=1')
+      .subscribe(
+        response => {
+          if (Array.isArray(response) && response.length > 0) {
+            const id = response[0].Id;
+            pdf.create().getBlob((blob) => {
+              const file2 = {
+                IdDocumento: id,
+                file: blob,
+                nombre: '',
+                firmantes: [],
+                representantes: [],
+                // documento: response[0].res.Enlace,
+              };
+              arreglo2.push(file2);
+              arreglo2.forEach((file) => {
+                (file.Id = file.nombre),
+                  (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
+                file.key = file.Id;
+                file.firmantes.push(this.firmantes);
               });
-            this.regresarInicio();
+        
+              this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
+                .subscribe((response: any[]) => {
+                  if (response[0].Status === '200') {
+                    this.gestorDocumental.getByUUID(response[0].res.Enlace)
+                      .subscribe((file) => {
+                        this.download(file, '', 1000, 1000);
+                      });
+                    this.regresarInicio();
+                  } else {
+                    this.openWindow('Fallo en carga a Gestor Documental');
+                  }
+                },
+                  (error) => {
+                    this.openWindow(error.status + ': ' + error.message);
+                  });
+            });
           } else {
-            this.openWindow('Fallo en carga a Gestor Documental');
+            console.error("Respuesta vacía");
           }
         },
-          (error) => {
-            this.openWindow(error.status + ': ' + error.message);
-          });
-    });
-
+        error => {
+          console.error("Error: ", error);
+        }
+      );
   }
 
   private downloadBlob(blob: any): void {
@@ -730,10 +745,17 @@ export class CrearCertificacionComponent implements OnInit {
       left,
     );
   }
-
+  getCurrentDate(): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Añade un cero a la izquierda si es necesario
+    const day = ('0' + date.getDate()).slice(-2); // Añade un cero a la izquierda si es necesario
+    return `${year}-${month}-${day}`;
+  }
   consultarFirmantes() {
-    const IdCargoJuridica = 78;
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:' + IdCargoJuridica + '&sortby=FechaInicio&order=desc&limit=1')
+    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
+    let currDate = this.getCurrentDate();
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' + currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
