@@ -3,7 +3,7 @@ import { Documento } from './../../@core/data/models/documento';
 import { platform } from 'os';
 
 @Component({
-  selector: 'certificaciones-dve',
+  selector: 'ngx-certificaciones-dve',
   templateUrl: './certificaciones-dve.component.html',
   styleUrls: ['./certificaciones-dve.component.scss'],
 })

@@ -487,11 +487,11 @@ export class CrearCertificacionComponent implements OnInit {
                 file.key = file.Id;
                 file.firmantes.push(this.firmantes);
               });
-        
+
               this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
-                .subscribe((response: any[]) => {
-                  if (response[0].Status === '200') {
-                    this.gestorDocumental.getByUUID(response[0].res.Enlace)
+                .subscribe((res: any[]) => {
+                  if (res[0].Status === '200') {
+                    this.gestorDocumental.getByUUID(res[0].res.Enlace)
                       .subscribe((file) => {
                         this.download(file, '', 1000, 1000);
                       });
@@ -505,12 +505,12 @@ export class CrearCertificacionComponent implements OnInit {
                   });
             });
           } else {
-            console.error("Respuesta vacía");
+            console.error('Respuesta vacía');
           }
         },
         error => {
-          console.error("Error: ", error);
-        }
+          console.error('Error: ', error);
+        },
       );
   }
 
@@ -756,8 +756,9 @@ export class CrearCertificacionComponent implements OnInit {
   }
   consultarFirmantes() {
     const cargo = this.translate.instant('GLOBAL.jefe_oficina');
-    let currDate = this.getCurrentDate();
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' + currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
+    const currDate = this.getCurrentDate();
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
+      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
