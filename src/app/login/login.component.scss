@@ -8,7 +8,7 @@
 .logotipo {
     width: 30%;
 }
-.header-login{
+.header-login {
     max-width: 300px;
     width: 30%;
 }
@@ -44,7 +44,7 @@
     position: absolute;
     top: 0;
     z-index: 50;
-    background: #FFFFFE;
+    background: #fffffe;
 }
 
 .login-header {
@@ -55,7 +55,7 @@
 
 .credit {
     width: 200px;
-    font-size:12px ;
+    font-size:12px;
 }
 
 .loading-panel {
@@ -82,7 +82,7 @@
     .logotipo {
         width: 60%;
     }
-    .header-login{
+    .header-login {
         width: 40%;
     }
     .login-header {
@@ -92,7 +92,7 @@
 
     .footer-login {
         justify-content: center;
-        text-align: center
+        text-align: center;
     }
 
 }
@@ -101,7 +101,7 @@
     .logotipo {
         width: 70%;
     }
-    .header-login{
+    .header-login {
         width: 60%;
     }
     .login-header {
@@ -111,4 +111,5 @@
     .footer-login {
         justify-content: center;
     }
+
 }
