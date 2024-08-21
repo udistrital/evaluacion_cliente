@@ -13,6 +13,7 @@ import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.ser
 import { ImplicitAutenticationService } from '../../@core/utils';
 import { UserService } from '../../@core/data/user.service';
 import { IMAGENES } from '../images';
+import { TranslateService } from '@ngx-translate/core';
 
 // Set the fonts to use
 
@@ -101,6 +102,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private numerosAletrasService: NumerosAletrasService,
     private userAuth: ImplicitAutenticationService,
     private userService: UserService,
+    private translate: TranslateService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -899,7 +901,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
+    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
     let currDate = this.getCurrentDate();
     this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' + currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
@@ -912,12 +914,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow('Sin información de Sección de Compras.');
+          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow('Error al traer información de Sección de Compras.');
+        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
         this.regresarFiltro();
       });
   }

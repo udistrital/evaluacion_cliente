@@ -13,6 +13,7 @@ import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
 import * as moment from 'moment';
 import { Console } from 'console';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-crear-certificacion',
@@ -84,6 +85,7 @@ export class CrearCertificacionComponent implements OnInit {
     private AdministrativaAmazon: AdministrativaamazonService,
     private novedadesService: NovedadesService,
     private menuService: MenuService,
+    private translate: TranslateService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -753,7 +755,7 @@ export class CrearCertificacionComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
+    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
     let currDate = this.getCurrentDate();
     this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' + currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
@@ -766,12 +768,12 @@ export class CrearCertificacionComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow('Sin información de Oficina Asesora Jurídica.');
+          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow('Error al traer información de Oficina Asesora Jurídica.');
+        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
         this.regresarFiltro();
       });
   }
