@@ -55,9 +55,9 @@ export class FormularioCertificacionesDveComponent implements OnInit {
 
   submitFormularioDve() {
     if (this.formularioCertificacionesDve.valid) {
-      console.log(this.formularioCertificacionesDve.value);
+      // console.log(this.formularioCertificacionesDve.value);
     }else {
-      console.log('verificar formulario');
+      // console.log('verificar formulario');
     }
   }
 }

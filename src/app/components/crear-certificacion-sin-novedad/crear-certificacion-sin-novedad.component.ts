@@ -13,6 +13,7 @@ import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.ser
 import { ImplicitAutenticationService } from '../../@core/utils';
 import { UserService } from '../../@core/data/user.service';
 import { IMAGENES } from '../images';
+import { TranslateService } from '@ngx-translate/core';
 
 // Set the fonts to use
 
@@ -101,6 +102,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private numerosAletrasService: NumerosAletrasService,
     private userAuth: ImplicitAutenticationService,
     private userService: UserService,
+    private translate: TranslateService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -826,13 +828,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                 file.firmantes.push(this.firmantes);
                 file.representantes.push(this.representantes);
               });
-        
+
               this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
                 /*               this.nuxeoService
                                 .updateDocument$(arreglo2, this.documentoService) */
-                .subscribe((response: any[]) => {
-                  if (response[0].Status === '200') {
-                    this.gestorDocumental.getByUUID(response[0].res.Enlace)
+                .subscribe((res: any[]) => {
+                  if (res[0].Status === '200') {
+                    this.gestorDocumental.getByUUID(res[0].res.Enlace)
                       .subscribe((file) => {
                         this.download(file, '', 1000, 1000);
                       });
@@ -846,15 +848,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
                   });
             });
           } else {
-            console.error("Respuesta vacía");
+            console.error('Respuesta vacía');
           }
         },
         error => {
-          console.error("Error: ", error);
-        }
+          console.error('Error: ', error);
+        },
       );
-    
-
     /* },
     (error) => { },
   ); */
@@ -899,9 +899,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
-    let currDate = this.getCurrentDate();
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' + currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
+    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
+    const currDate = this.getCurrentDate();
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
+      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
@@ -912,12 +913,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow('Sin información de Sección de Compras.');
+          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow('Error al traer información de Sección de Compras.');
+        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
         this.regresarFiltro();
       });
   }

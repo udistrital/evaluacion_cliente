@@ -13,6 +13,7 @@ import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
 import * as moment from 'moment';
 import { Console } from 'console';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-crear-certificacion',
@@ -84,6 +85,7 @@ export class CrearCertificacionComponent implements OnInit {
     private AdministrativaAmazon: AdministrativaamazonService,
     private novedadesService: NovedadesService,
     private menuService: MenuService,
+    private translate: TranslateService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
@@ -485,11 +487,11 @@ export class CrearCertificacionComponent implements OnInit {
                 file.key = file.Id;
                 file.firmantes.push(this.firmantes);
               });
-        
+
               this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
-                .subscribe((response: any[]) => {
-                  if (response[0].Status === '200') {
-                    this.gestorDocumental.getByUUID(response[0].res.Enlace)
+                .subscribe((res: any[]) => {
+                  if (res[0].Status === '200') {
+                    this.gestorDocumental.getByUUID(res[0].res.Enlace)
                       .subscribe((file) => {
                         this.download(file, '', 1000, 1000);
                       });
@@ -503,12 +505,12 @@ export class CrearCertificacionComponent implements OnInit {
                   });
             });
           } else {
-            console.error("Respuesta vacía");
+            console.error('Respuesta vacía');
           }
         },
         error => {
-          console.error("Error: ", error);
-        }
+          console.error('Error: ', error);
+        },
       );
   }
 
@@ -753,9 +755,10 @@ export class CrearCertificacionComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
-    let currDate = this.getCurrentDate();
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' + currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
+    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
+    const currDate = this.getCurrentDate();
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
+      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
@@ -766,12 +769,12 @@ export class CrearCertificacionComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow('Sin información de Oficina Asesora Jurídica.');
+          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow('Error al traer información de Oficina Asesora Jurídica.');
+        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
         this.regresarFiltro();
       });
   }
