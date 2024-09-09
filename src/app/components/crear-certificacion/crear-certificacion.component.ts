@@ -755,7 +755,7 @@ export class CrearCertificacionComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
+    const cargo = this.translate.instant(`GLOBAL.jefe_oficina`);
     const currDate = this.getCurrentDate();
     this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
       currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
@@ -769,12 +769,12 @@ export class CrearCertificacionComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
+          this.openWindow(this.translate.instant(`GLOBAL.sin_info_oficina`));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
+        this.openWindow(this.translate.instant(`GLOBAL.error_info_oficina`));
         this.regresarFiltro();
       });
   }
