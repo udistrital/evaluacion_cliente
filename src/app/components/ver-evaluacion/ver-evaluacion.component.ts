@@ -1,13 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
-import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NbWindowService } from '@nebular/theme';
-import html2canvas from 'html2canvas';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { IMAGENES } from '../images';
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import { DocumentoService } from '../../@core/data/documento.service';
+import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
 
 @Component({
   selector: 'ngx-ver-evaluacion',
@@ -28,12 +24,12 @@ export class VerEvaluacionComponent implements OnInit {
   docDefinition: any;
   jsonPDF: any;
   observacionesPdf: string;
-  labelAux: any;
   constructor(
     private evaluacionCrudService: EvaluacioncrudService,
     private evaluacionMidService: EvaluacionmidService,
     private windowService: NbWindowService,
-    private administrativaAmazonService: AdministrativaamazonService,
+    private documentoService: DocumentoService,
+    private gestorDocumental: GestorDocumentalService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -43,101 +39,37 @@ export class VerEvaluacionComponent implements OnInit {
     this.proveedor = {};
     this.dependencia = '';
     this.fechaEvaluacion = new Date();
-    this.labelAux = ['\n\n'];
     this.jsonPDF = [];
   }
 
   ngOnInit() {
-    // console.log(this.dataContrato)
-    this.realizar = false;
     this.consultarDatosContrato();
-    // Se verifica si se ha realizado una evaluación
-    this.evaluacionCrudService.get('evaluacion?query=ContratoSuscrito:' + this.dataContrato[0].ContratoSuscrito +
-      ',Vigencia:' + this.dataContrato[0].Vigencia).subscribe((res_evaluacion) => {
-        if (Object.keys(res_evaluacion.Data[0]).length !== 0) {
-          this.evaluacionCrudService.getEvaluacion('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true');
-          this.evaluacionCrudService.get('resultado_evaluacion?query=IdEvaluacion:' + res_evaluacion.Data[0].Id + ',Activo:true')
-            .subscribe((res_resultado_eva) => {
-              if (res_resultado_eva !== null) {
-                this.evaluacionRealizada = JSON.parse(res_resultado_eva.Data[0].ResultadoEvaluacion);
-                this.fechaEvaluacion = new Date(res_resultado_eva.Data[0].FechaCreacion.substr(0, 16));
-                this.crearJsonPDF();
+    this.consultaEvaluacion();
+  }
+
+  private consultaEvaluacion() {
+    this.evaluacionCrudService.getResultadoByContratoVigencia(this.dataContrato[0].ContratoSuscrito, this.dataContrato[0].Vigencia)
+      .subscribe((res_resultado_eva: any) => {
+        if (res_resultado_eva && res_resultado_eva.Data && res_resultado_eva.Data.length && Object.keys(res_resultado_eva.Data[0]).length) {
+          this.realizar = false;
+          this.evaluacionRealizada = res_resultado_eva.Data[0];
+          this.fechaEvaluacion = new Date(res_resultado_eva.Data[0].FechaCreacion.substr(0, 16));
+        } else {
+          this.evaluacionCrudService.getEvaluacionByContratoVigencia(this.dataContrato[0].ContratoSuscrito, this.dataContrato[0].Vigencia)
+            .subscribe((res_evaluacion: any) => {
+              this.regresarFiltro();
+              if (!res_evaluacion || !res_evaluacion.Data || !res_evaluacion.Data.length || !res_evaluacion.Data[0].Id) {
+                this.openWindow('El contrato no ha sido evaluado.');
+              } else {
+                this.openWindow('No se pudo cargar el resultado de la evaluación. Contacte soporte.');
               }
             }, (error_service) => {
               this.openWindow(error_service.message);
             });
-        } else {
-          this.regresarFiltro();
-          this.openWindow('El contrato no ha sido evaluado.');
         }
       }, (error_service) => {
         this.openWindow(error_service.message);
       });
-  }
-
-  getCalificacion() {
-    for (let i = 0; i < this.evaluacionRealizada.Clasificaciones.length; i++) {
-      if (this.evaluacionRealizada.ValorFinal >= this.evaluacionRealizada.Clasificaciones[i].LimiteInferior
-        && this.evaluacionRealizada.ValorFinal <= this.evaluacionRealizada.Clasificaciones[i].LimiteSuperior) {
-        return this.evaluacionRealizada.Clasificaciones[i].Nombre;
-      }
-    }
-  }
-
-  crearJsonPDF() {
-    let array: any;
-    let bodyTableSeccion: any = [];
-    let valorSeccion: any;
-    // Se crea el objeto que trae toda la calificación
-    for (let i = 1; i < this.evaluacionRealizada.Secciones.length - 1; i++) {
-      bodyTableSeccion = [];
-      valorSeccion = 0;
-      bodyTableSeccion.push([' ', ' ', ' ', { text: 'Valor Asignado', style: 'subtitulo' }]);
-      for (let k = 0; k < this.evaluacionRealizada.Secciones[i].Seccion_hija_id.length; k++) {
-        if (this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k]['Condicion'].length > 0) {
-          if (this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k - 1]['Item'][2].Valor.Nombre ===
-            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k]['Condicion'][0]['Nombre']) {
-            bodyTableSeccion.push([this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[0].Valor,
-            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[1].Valor,
-            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Nombre,
-            {
-              text: this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor,
-              alignment: 'center',
-            },
-            ]);
-            valorSeccion += this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor;
-          }
-        } else {
-          bodyTableSeccion.push([
-            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[0].Valor,
-            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[1].Valor,
-            this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Nombre,
-            {
-              text: this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor,
-              alignment: 'center',
-            },
-          ]);
-          valorSeccion += this.evaluacionRealizada.Secciones[i].Seccion_hija_id[k].Item[2].Valor.Valor;
-        }
-      }
-      bodyTableSeccion.push(['', '',
-        { text: 'Puntaje total', style: 'subtitulo' },
-        { text: valorSeccion, alignment: 'center' },
-      ]);
-      array = [[
-        { text: this.evaluacionRealizada.Secciones[i].Nombre, style: 'header' },
-        {
-          style: 'tableSeciones',
-          table: {
-            widths: [85, '*', 60, 60],
-            body: bodyTableSeccion,
-          },
-          layout: 'noBorders',
-        },
-      ]];
-      this.jsonPDF.push(array);
-    }
-    this.observacionesPdf = this.evaluacionRealizada.observaciones;
   }
 
   // Se consulta los datos del contrato general.
@@ -165,8 +97,39 @@ export class VerEvaluacionComponent implements OnInit {
   }
 
   imprimirEvalucion() {
-    pdfMake.createPdf(this.makePdf2()).download('evaluacion_del_contrato' + this.dataContrato[0].ContratoSuscrito +
-      '-' + this.dataContrato[0].Vigencia + '.pdf');
+    /* pdfMake.createPdf(this.makePdf2()).download('evaluacion_del_contrato' + this.dataContrato[0].ContratoSuscrito +
+      '-' + this.dataContrato[0].Vigencia + '.pdf'); */
+    const nombreDoc = 'evaluacion_contrato_' + this.dataContrato[0].ContratoSuscrito +
+      '_vig_' + this.dataContrato[0].Vigencia + '_proveedor_' + this.dataContrato[0].IdProveedor;
+    this.documentoService.get('documento/?query=Nombre:' + nombreDoc + ',Activo:true&limit=1&fields=Enlace&sortby=FechaCreacion&order=desc')
+      .subscribe((response: any[]) => {
+        if (Object.keys(response[0]).length > 0) {
+          this.gestorDocumental.getByUUID(response[0].Enlace)
+            .subscribe((respGD) => {
+              this.download(respGD, '', 1000, 1000);
+            });
+        }
+      });
+  }
+
+  download(url, title, w, h) {
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    window.open(
+      url,
+      title,
+      'toolbar=no,' +
+      'location=no, directories=no, status=no, menubar=no,' +
+      'scrollbars=no, resizable=no, copyhistory=no, ' +
+      'width=' +
+      w +
+      ', height=' +
+      h +
+      ', top=' +
+      top +
+      ', left=' +
+      left,
+    );
   }
 
   openWindow(mensaje) {
@@ -180,235 +143,4 @@ export class VerEvaluacionComponent implements OnInit {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
   }
 
-  obtenerObservaciones() {
-    let obsStruct = {};
-    if (this.evaluacionRealizada.observaciones !== undefined) {
-      this.observacionesPdf = this.evaluacionRealizada.observaciones;
-      obsStruct = [
-        {
-          text: 'Observaciones', bold: true, style: 'header',
-        },
-        {
-          text: '\n' + this.evaluacionRealizada.observaciones, style: 'tableSeciones',
-        },
-      ];
-    }
-    return obsStruct;
-  }
-
-  tablaEvaluadores() {
-    let evaStruct = [];
-    const medidas = [350, 150, 27];
-    const tabla = [];
-    if (this.evaluacionRealizada.evaluadores !== undefined && this.evaluacionRealizada.evaluadores.length !== 0) {
-      tabla.push(
-        [
-          { text: 'NOMBRE DEL EVALUADOR', alignment: 'center', bold: true },
-          { text: 'FIRMA', alignment: 'center', bold: true },
-        ],
-      );
-      for (const eva in this.evaluacionRealizada.evaluadores) {
-        medidas.push(90);
-        tabla.push(
-          [
-            { text: '\n' + this.evaluacionRealizada.evaluadores[eva] + '\n\n' },
-            { text: '' },
-          ],
-        );
-      }
-      evaStruct = [
-        {
-          text: '\nEvaluadores\n', bold: true, style: 'header',
-        },
-        {
-          style: 'table',
-          table: {
-            widths: medidas,
-            body: tabla,
-          },
-        },
-      ];
-      return evaStruct;
-    }
-  }
-
-  makePdf2() {
-    return {
-      ageSize: 'LETTER',
-      pageMargins: [40, 130, 40, 60],
-      header: {
-        margin: [40, 50],
-        columns: [
-          {
-            table: {
-              widths: [50, '*', 130, 70],
-              body: [
-                [
-                  { image: 'logo_ud', fit: [43, 80], rowSpan: 3, alignment: 'center', fontSize: 9 },
-                  { text: 'EVALUACIÓN Y REEVALUACIÓN DE PROVEEDORES', bold: true, alignment: 'center', fontSize: 9 },
-                  { text: 'Código: GC-PR-006-FR-028', fontSize: 9 },
-                  { image: 'logo_sigud', fit: [65, 120], margin: [3, 0], rowSpan: 3, alignment: 'center', fontSize: 9 },
-                ],
-                [' ',
-                  { text: 'Macroproceso: Gestión de Recursos', alignment: 'center', fontSize: 9 },
-                  { text: 'Versión: 03', margin: [0, 2], fontSize: 9 },
-                  ' ',
-                ],
-                [' ',
-                  { text: 'Proceso: Gestión Contractual', alignment: 'center', fontSize: 9 },
-                  { text: 'Fecha de Aprobación: 04/06/2019', fontSize: 9 },
-                  ' ',
-                ],
-              ],
-            },
-          },
-
-        ],
-      },
-      content: [
-        {
-          style: 'table',
-          table: {
-            widths: [136, '*', 113, 80],
-            body: [
-              [{ text: 'PUNTAJE DE LA EVALUACIÓN', bold: true },
-              this.evaluacionRealizada.ValorFinal,
-              { text: 'CALIFICACIÓN PROVEEDOR', bold: true },
-              this.getCalificacion(),
-              ],
-              [
-                { text: 'DEPENDENCIA QUE EVALUA', bold: true },
-                this.dependencia,
-                { text: 'FECHA', bold: true },
-                this.formatDate(this.fechaEvaluacion),
-              ],
-            ],
-          },
-        },
-        {
-          style: 'table',
-          table: {
-            widths: [136, '*', 27, 90, 27, 70],
-            body: [
-              [
-                { text: 'EMPRESA o PROVEEDOR', bold: true },
-                { text: this.proveedor.NomProveedor, style: 'tableHeader', colSpan: 5 }, '', '', '', '',
-              ],
-              [
-                { text: 'OBJETO DEL CONTRATO', bold: true },
-                { text: this.contratoCompleto.ObjetoContrato, style: 'tableHeader', colSpan: 5 },
-                '', '', '', '',
-              ],
-              [{ text: 'ITEM EVALUADO (*)', bold: true },
-              { text: this.evaluacionRealizada.label, style: 'tableHeader', colSpan: 5 },
-                '', '', '', '',
-              ],
-              [{ text: 'NOMBRE DEL SUPERVISOR ENCARGADO', bold: true },
-              {
-                border: [false, true, false, true],
-                text: this.supervisor.Nombre,
-              },
-              {
-                border: [false, true, false, true],
-                text: 'Cargo:', bold: true,
-
-              },
-              {
-                border: [false, true, false, true],
-                fontSize: 8,
-                text: this.supervisor.Cargo,
-              },
-              {
-                border: [false, true, false, true],
-                text: 'Firma', bold: true,
-              },
-              {
-                border: [false, true, true, true],
-                text: '', bold: true,
-              },
-              ],
-            ],
-          },
-        },
-        '\n\n',
-        this.jsonPDF,
-        this.obtenerObservaciones(),
-        this.tablaEvaluadores(),
-        '\n',
-        {
-          style: 'tableFooter',
-          table: {
-            widths: [51, 92, '*', 47],
-            body: [
-              [
-                { rowSpan: 2, text: '\n\n\nCONVENCIÓN' },
-                { text: '\nSÍMBOLO - SIGNIFICADO\n\n' },
-                {
-                  rowSpan: 2,
-                  text: 'PROVEEDOR TIPO A: EXCELENTE. Puntaje mayor o igual a 80 hasta 100 puntos. Se puede contratar nuevamente.\n' +
-                    'PROVEEDOR TIPO B: BUENO. Puntaje entre 46 hasta 79 puntos. Se invita nuevamente a procesos pero debe mejorar ' +
-                    'las observaciones presentadas por la Universidad. La Universidad (Supervisor) presentará las observaciones ' +
-                    'mediante oficio adjunto al presente formato.\n' +
-                    'PROVEEDOR TIPO C: MALO. Puntaje inferior o igual a 45 puntos. La Universidad no debe contratar con este proveedor.',
-                },
-                [
-                  {
-                    alignment: 'center',
-                    text: 'Puntaje Final',
-                  },
-                  {
-                    alignment: 'center',
-                    text: this.evaluacionRealizada.ValorFinal,
-                    fontSize: 12,
-                    brold: true,
-                  },
-                ],
-              ],
-              [
-                '',
-                '(*) - Este campo se diligencia exclusivamente en caso de Supervisión Compartida',
-                '',
-                {
-                  alignment: 'center',
-                  text: '\n\n' + this.getCalificacion(),
-                },
-              ],
-            ],
-          },
-        },
-      ],
-      styles: {
-        table: {
-          margin: [0, 5, 0, 5],
-          fontSize: 9,
-        },
-        tableFooter: {
-          margin: [0, 5, 0, 5],
-          fontSize: 8,
-        },
-        tableSeciones: {
-          margin: [0, 5, 0, 10],
-          fontSize: 10,
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 8,
-          color: 'black',
-        },
-        header: {
-          bold: true,
-          fontSize: 14,
-          color: 'black',
-        },
-        subtitulo: {
-          fontSize: 8,
-          color: 'grey',
-        },
-      },
-      images: {
-        logo_ud: IMAGENES.escudo,
-        logo_sigud: IMAGENES.sigud,
-      },
-    };
-  }
 }

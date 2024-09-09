@@ -18,7 +18,6 @@ export class VerCertificacionComponent implements OnInit {
   objeto: string;
   cedula: string;
   numeroContrato: string;
-  tipoCertificacion: string;
   subscription: Subscription;
   nombre: string;
   datosCertficiaciones: any[] = [];
@@ -73,7 +72,8 @@ export class VerCertificacionComponent implements OnInit {
       .get('documento/?limit=-1&query=Activo:true,' + nombres)
       .subscribe((data: any) => {
         if (!data || !data.length || !Object.keys(data[0]).length) {
-          this.openWindow('El contrato número ' + this.numeroContrato + ' No contiene Certificaciones');
+          const err = 'El contrato número ' + this.numeroContrato + ' No contiene Certificaciones';
+          this.pupManager.showAlertWithButton('info', 'Alerta', err, 'GLOBAL.aceptar');
           this.regresarFiltro();
         } else {
           this.datosCertficiaciones = data;
@@ -149,7 +149,8 @@ export class VerCertificacionComponent implements OnInit {
         if (Object.keys(data[0]).length !== 0) {
           this.datosCertficiaciones = data;
         } else {
-          this.openWindow('El id' + this.numeroContrato + ' No contiene Certificaciones asociadas');
+          const err = 'El contrato número ' + this.numeroContrato + ' contiene Certificaciones';
+          this.pupManager.showAlertWithButton('info', 'Alerta', err, 'GLOBAL.aceptar');
         }
       });
   }
@@ -176,12 +177,4 @@ export class VerCertificacionComponent implements OnInit {
       };
   }
 
-  openWindow(mensaje) {
-    const Swal = require('sweetalert2');
-    Swal.fire({
-      icon: 'error',
-      title: 'ERROR',
-      text: mensaje,
-    });
-  }
 }

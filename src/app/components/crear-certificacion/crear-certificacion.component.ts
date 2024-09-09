@@ -7,9 +7,13 @@ import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon
 import { NovedadesService } from '../../@core/data/novedades.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.service';
+import { DocumentoService } from '../../@core/data/documento.service';
 import { MenuService } from '../../@core/data/menu.service';
 import { IMAGENES } from '../images';
 import * as moment from 'moment';
+import { Console } from 'console';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-crear-certificacion',
@@ -59,6 +63,8 @@ export class CrearCertificacionComponent implements OnInit {
   numeroNovedadesArr: string[] = [];
   numeroNovedadesArrOtro: string[] = [];
   novedadesCesion: string[] = [];
+
+  firmantes: any = undefined;
   // ----------------------------------------------------------------------------------
   datosTabla: any[] = [];
 
@@ -71,18 +77,22 @@ export class CrearCertificacionComponent implements OnInit {
   seleccionarOtros: boolean = false;
 
   constructor(
+    private documentosCrud: DocumentoService,
+    private firmaElectronica: FirmaElectronicaService,
     private gestorDocumental: GestorDocumentalService,
     private evaluacionMidService: EvaluacionmidService,
     private numerosAletrasService: NumerosAletrasService,
     private AdministrativaAmazon: AdministrativaamazonService,
     private novedadesService: NovedadesService,
     private menuService: MenuService,
+    private translate: TranslateService,
   ) {
     this.volverFiltro = new EventEmitter();
   }
 
   ngOnInit() {
     this.consultarDatosContrato();
+    this.consultarFirmantes();
     this.getDependenciaEmisora();
     this.getUsuario();
   }
@@ -402,15 +412,15 @@ export class CrearCertificacionComponent implements OnInit {
       stack:
         [
           { text: 'Fecha de expedición de la certificación a solicitud del interesado: ' + this.horaCreacion, style: 'subtitle' },
-          { text: '\n' },
+          /* { text: '\n' },
           docDefinition.firmaImagen,
           docDefinition.firmaPagina,
           { text: '\n' },
           {
             text: 'El presente es un documento público expedido con firma mecánica que garantiza su plena validez jurídica y ' +
-              'probatoria según lo establecido en la ley 527 de 1999.',
+              'probatoria según lo establecido en la ley 527 de 1999.\n',
             style: 'body1',
-          },
+          }, */
           { text: '\n' },
         ],
       unbreakable: true,
@@ -456,33 +466,52 @@ export class CrearCertificacionComponent implements OnInit {
     });
 
     const arreglo2 = [];
-    pdf.create().getBlob((blob) => {
-      const file2 = {
-        IdDocumento: 16,
-        file: blob,
-        nombre: '',
-      };
-      arreglo2.push(file2);
-      arreglo2.forEach((file) => {
-        (file.Id = file.nombre),
-          (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
-        file.key = file.Id;
-      });
+    this.documentosCrud.get('tipo_documento?query=codigo_abreviacion:CCPS&limit=1')
+      .subscribe(
+        response => {
+          if (Array.isArray(response) && response.length > 0) {
+            const id = response[0].Id;
+            pdf.create().getBlob((blob) => {
+              const file2 = {
+                IdDocumento: id,
+                file: blob,
+                nombre: '',
+                firmantes: [],
+                representantes: [],
+                // documento: response[0].res.Enlace,
+              };
+              arreglo2.push(file2);
+              arreglo2.forEach((file) => {
+                (file.Id = file.nombre),
+                  (file.nombre = 'certificacion_' + file.Id + this.dataContrato[0].ContratoSuscrito + '__' + this.cedula + '_contractual');
+                file.key = file.Id;
+                file.firmantes.push(this.firmantes);
+              });
 
-      this.gestorDocumental.uploadFiles(arreglo2)
-        .subscribe((response: any[]) => {
-          if (response[0].Status === '200') {
-            this.downloadBlob(blob);
-            this.regresarInicio();
+              this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
+                .subscribe((res: any[]) => {
+                  if (res[0].Status === '200') {
+                    this.gestorDocumental.getByUUID(res[0].res.Enlace)
+                      .subscribe((file) => {
+                        this.download(file, '', 1000, 1000);
+                      });
+                    this.regresarInicio();
+                  } else {
+                    this.openWindow('Fallo en carga a Gestor Documental');
+                  }
+                },
+                  (error) => {
+                    this.openWindow(error.status + ': ' + error.message);
+                  });
+            });
           } else {
-            this.openWindow('Fallo en carga a Gestor Documental');
+            console.error('Respuesta vacía');
           }
         },
-          (error) => {
-            this.openWindow(error.status + ': ' + error.message);
-          });
-    });
-
+        error => {
+          console.error('Error: ', error);
+        },
+      );
   }
 
   private downloadBlob(blob: any): void {
@@ -699,7 +728,56 @@ export class CrearCertificacionComponent implements OnInit {
     });
     this.regresarFiltro();
   }
-
+  download(url, title, w, h) {
+    const left = screen.width / 2 - w / 2;
+    const top = screen.height / 2 - h / 2;
+    window.open(
+      url,
+      title,
+      'toolbar=no,' +
+      'location=no, directories=no, status=no, menubar=no,' +
+      'scrollbars=no, resizable=no, copyhistory=no, ' +
+      'width=' +
+      w +
+      ', height=' +
+      h +
+      ', top=' +
+      top +
+      ', left=' +
+      left,
+    );
+  }
+  getCurrentDate(): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Añade un cero a la izquierda si es necesario
+    const day = ('0' + date.getDate()).slice(-2); // Añade un cero a la izquierda si es necesario
+    return `${year}-${month}-${day}`;
+  }
+  consultarFirmantes() {
+    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
+    const currDate = this.getCurrentDate();
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
+      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
+      .subscribe((response) => {
+        if (Object.keys(response[0]).length > 0) {
+          this.firmantes = {
+            nombre: response[0].Nombre,
+            tipoId: 'CC',
+            identificacion: String(response[0].Documento),
+            cargo: response[0].Cargo,
+          };
+        } else {
+          this.firmantes = undefined;
+          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
+          this.regresarFiltro();
+        }
+      }, (error) => {
+        this.firmantes = undefined;
+        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
+        this.regresarFiltro();
+      });
+  }
   consultarDatosContrato() {
     this.consultarContratista();
 

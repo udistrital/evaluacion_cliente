@@ -6,8 +6,8 @@
                 (dataToDo)="relizarEvaluacion($event)"></ngx-tabla-busqueda>
         </div>
         <ngx-ver-evaluacion [dataContrato]="this.datosContratoAVer" (volverFiltro)="habilitarFiltro($event)"
-            *ngIf="this.componenteVer==true"></ngx-ver-evaluacion>
+            *ngIf="componenteVer"></ngx-ver-evaluacion>
         <ngx-realizar-evaluacion [dataContrato]="this.datosContratoAEvaluar" (volverFiltro)="habilitarFiltro($event)"
-            *ngIf="this.componenteRealizar==true"></ngx-realizar-evaluacion>
+            *ngIf="componenteRealizar"></ngx-realizar-evaluacion>
     </div>
 </div>
