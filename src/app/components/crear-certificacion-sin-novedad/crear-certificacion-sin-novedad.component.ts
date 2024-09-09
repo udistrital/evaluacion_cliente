@@ -899,7 +899,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN'
+    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
     const currDate = this.getCurrentDate();
     this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
       currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
