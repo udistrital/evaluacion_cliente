@@ -800,7 +800,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         },
       ],
     });
-    this.documentoService.get('tipo_documento?query=codigo_abreviacion:CCPS&limit=1')
+    this.documentoService.get('tipo_documento?query=codigo_abreviacion:SOPFA&limit=1')
       .subscribe(
         response => {
           if (Array.isArray(response) && response.length > 0) {
@@ -899,7 +899,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = this.translate.instant('GLOBAL.jefe_oficina');
+    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
     const currDate = this.getCurrentDate();
     this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
       currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
@@ -913,12 +913,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow(this.translate.instant('GLOBAL.sin_info_oficina'));
+          this.openWindow(this.translate.instant(`GLOBAL.sin_info_oficina`));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow(this.translate.instant('GLOBAL.error_info_oficina'));
+        this.openWindow(this.translate.instant(`GLOBAL.error_info_oficina`));
         this.regresarFiltro();
       });
   }
