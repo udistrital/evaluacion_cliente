@@ -1,60 +1,60 @@
-import { RouterModule, Routes } from "@angular/router";
-import { NgModule } from "@angular/core";
-import { DashboardComponent } from "./dashboard/dashboard.component";
-import { PagesComponent } from "./pages.component";
-import { NotFoundComponent } from "./miscellaneous/not-found/not-found.component";
-import { AuthGuard } from "../@core/_guards/auth.guard";
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { PagesComponent } from './pages.component';
+import { NotFoundComponent } from './miscellaneous/not-found/not-found.component';
+import { AuthGuard } from '../@core/_guards/auth.guard';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: PagesComponent,
     children: [
       {
-        path: "dashboard",
+        path: 'dashboard',
         component: DashboardComponent,
       },
       {
-        path: "evaluar_proveedor",
+        path: 'evaluar_proveedor',
         loadChildren:
-          "./evaluar-proveedor/evaluar-proveedor.module#EvaluarProveedorModule",
+          './evaluar-proveedor/evaluar-proveedor.module#EvaluarProveedorModule',
         canActivate: [AuthGuard],
       },
       {
-        path: "evaluacion",
-        loadChildren: "./evaluacion/evaluacion.module#EvaluacionModule",
+        path: 'evaluacion',
+        loadChildren: './evaluacion/evaluacion.module#EvaluacionModule',
         canActivate: [AuthGuard],
       },
       {
-        path: "consulta_evaluacion/:TipoDocumento/:IdentificacionProveedor",
+        path: 'consulta_evaluacion/:TipoDocumento/:IdentificacionProveedor',
         loadChildren:
-          "./consulta-evaluacion/consulta-evaluacion.module#ConsultaEvaluacionModule",
+          './consulta-evaluacion/consulta-evaluacion.module#ConsultaEvaluacionModule',
         canActivate: [AuthGuard],
       },
       {
-        path: "administracion_plantillas",
+        path: 'administracion_plantillas',
         loadChildren:
-          "./administracion-plantillas/administracion-plantillas.module#AdministracionPlantillasModule",
+          './administracion-plantillas/administracion-plantillas.module#AdministracionPlantillasModule',
         canActivate: [AuthGuard],
       },
       {
-        path: "certificaciones",
+        path: 'certificaciones',
         loadChildren:
-          "./certificaciones/certificaciones.module#CertificacionesModule",
+          './certificaciones/certificaciones.module#CertificacionesModule',
         canActivate: [AuthGuard],
       },
       {
-        path: "certificacionesdve",
+        path: 'certificacionesdve',
         loadChildren:
-          "./certificaciones-dve/certificaciones-dve.module#CertificacionesDveModule",
+          './certificaciones-dve/certificaciones-dve.module#CertificacionesDveModule',
       },
       {
-        path: "",
-        redirectTo: "dashboard",
-        pathMatch: "full",
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
       },
       {
-        path: "**",
+        path: '**',
         component: NotFoundComponent,
       },
     ],

@@ -1,14 +1,14 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { CertificacionesDveComponent } from "./certificaciones-dve.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { CertificacionesDveComponent } from './certificaciones-dve.component';
 
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: CertificacionesDveComponent,
   },
-  
+
 ];
 
 @NgModule({

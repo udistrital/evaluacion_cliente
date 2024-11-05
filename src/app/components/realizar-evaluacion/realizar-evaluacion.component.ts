@@ -5,6 +5,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { EvaluacionmidService } from '../../@core/data/evaluacionmid.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.service';
 import { DocumentoService } from '../../@core/data/documento.service';
 import { UserService } from '../../@core/data/user.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -36,6 +37,7 @@ export class RealizarEvaluacionComponent implements OnInit {
     private evaluacionCrudService: EvaluacioncrudService,
     private windowService: NbWindowService,
     private evaluacionMidService: EvaluacionmidService,
+    private firmaElectronica: FirmaElectronicaService,
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private userService: UserService,
@@ -163,7 +165,7 @@ export class RealizarEvaluacionComponent implements OnInit {
               this.prepareUploadPDF(res_res_eva.Data.ResultadoEvaluacion, res_res_eva.Data.FechaCreacion, firmantes, representantes)
                 .then((file) => {
                   this.deletePreviusDocs(file[0].nombre);
-                  this.gestorDocumental.uploadFilesElectronicSign(file)
+                  this.firmaElectronica.uploadFilesElectronicSign(file)
                     .subscribe((response) => {
                       this.openWindow('Se ha actualizado satisfactoriamente la evaluación del contrato ' + this.dataContrato[0].ContratoSuscrito +
                         ' de ' + this.dataContrato[0].Vigencia);

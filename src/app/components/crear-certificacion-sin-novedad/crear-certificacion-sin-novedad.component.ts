@@ -9,9 +9,11 @@ import { EvaluacioncrudService } from '../../@core/data/evaluacioncrud.service';
 import { AdministrativaamazonService } from '../../@core/data/admistrativaamazon.service';
 import { NumerosAletrasService } from '../../@core/data/numeros-aletras.service';
 import { GestorDocumentalService } from '../../@core/utils/gestor-documental.service';
+import { FirmaElectronicaService } from '../../@core/utils/firma_electronica.service';
 import { ImplicitAutenticationService } from '../../@core/utils';
 import { UserService } from '../../@core/data/user.service';
 import { IMAGENES } from '../images';
+import { TranslateService } from '@ngx-translate/core';
 
 // Set the fonts to use
 
@@ -91,6 +93,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   representantes: any = undefined;
 
   constructor(
+    private firmaElectronica: FirmaElectronicaService,
     private gestorDocumental: GestorDocumentalService,
     private documentoService: DocumentoService,
     private evaluacionMidService: EvaluacionmidService,
@@ -99,6 +102,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     private numerosAletrasService: NumerosAletrasService,
     private userAuth: ImplicitAutenticationService,
     private userService: UserService,
+    private translate: TranslateService,
   ) {
     this.volverFiltro = new EventEmitter();
     this.evaluacionRealizada = {};
@@ -785,7 +789,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           stack: [
             { text: 'Línea de atención gratuita', decoration: 'underline' },
             { text: '01  800  091  44  10', bold: true },
-            { text: 'www.udistrital.edu.coo' },
+            { text: 'www.udistrital.edu.co' },
             { text: 'procesoscontratacion@udistrital.edu.co' },
             { text: 'tramitescontratacion@udistrital.edu.co' },
           ],
@@ -796,50 +800,61 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         },
       ],
     });
-
-    pdf.create().getBlob((blob) => {
-      const file2 = {
-        IdDocumento: 16,
-        file: blob,
-        nombre: '',
-        firmantes: [],
-        representantes: [],
-        // documento: response['Enlace'],
-      };
-      arreglo2.push(file2);
-      arreglo2.forEach((file) => {
-        (file.Id = file.nombre),
-          (file.nombre =
-            'certificacion_' +
-            file.Id +
-            this.numeroContrato +
-            '__' +
-            this.cedula +
-            '_cumplimiento');
-        file.key = file.Id;
-        file.firmantes.push(this.firmantes);
-        file.representantes.push(this.representantes);
-      });
-
-      this.gestorDocumental.uploadFilesElectronicSign(arreglo2)
-        /*               this.nuxeoService
-                        .updateDocument$(arreglo2, this.documentoService) */
-        .subscribe((response: any[]) => {
-          if (response[0].Status === '200') {
-            this.gestorDocumental.getByUUID(response[0].res.Enlace)
-              .subscribe((file) => {
-                this.download(file, '', 1000, 1000);
+    this.documentoService.get('tipo_documento?query=codigo_abreviacion:SOPFA&limit=1')
+      .subscribe(
+        response => {
+          if (Array.isArray(response) && response.length > 0) {
+            const id = response[0].Id;
+            pdf.create().getBlob((blob) => {
+              const file2 = {
+                IdDocumento: id,
+                file: blob,
+                nombre: '',
+                firmantes: [],
+                representantes: [],
+                // documento: response['Enlace'],
+              };
+              arreglo2.push(file2);
+              arreglo2.forEach((file) => {
+                (file.Id = file.nombre),
+                  (file.nombre =
+                    'certificacion_' +
+                    file.Id +
+                    this.numeroContrato +
+                    '__' +
+                    this.cedula +
+                    '_cumplimiento');
+                file.key = file.Id;
+                file.firmantes.push(this.firmantes);
+                file.representantes.push(this.representantes);
               });
-            this.regresarInicio();
+
+              this.firmaElectronica.uploadFilesElectronicSign(arreglo2)
+                /*               this.nuxeoService
+                                .updateDocument$(arreglo2, this.documentoService) */
+                .subscribe((res: any[]) => {
+                  if (res[0].Status === '200') {
+                    this.gestorDocumental.getByUUID(res[0].res.Enlace)
+                      .subscribe((file) => {
+                        this.download(file, '', 1000, 1000);
+                      });
+                    this.regresarInicio();
+                  } else {
+                    this.openWindow('Fallo en carga a Gestor Documental');
+                  }
+                },
+                  (error) => {
+                    this.openWindow(error.status + ': ' + error.message);
+                  });
+            });
           } else {
-            this.openWindow('Fallo en carga a Gestor Documental');
+            console.error('Respuesta vacía');
           }
         },
-          (error) => {
-            this.openWindow(error.status + ': ' + error.message);
-          });
-    });
-
+        error => {
+          console.error('Error: ', error);
+        },
+      );
     /* },
     (error) => { },
   ); */
@@ -876,9 +891,18 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       left,
     );
   }
+  getCurrentDate(): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Añade un cero a la izquierda si es necesario
+    const day = ('0' + date.getDate()).slice(-2); // Añade un cero a la izquierda si es necesario
+    return `${year}-${month}-${day}`;
+  }
   consultarFirmantes() {
-    const IdCargoCompras = 66;
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Id:' + IdCargoCompras + '&sortby=FechaInicio&order=desc&limit=1')
+    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
+    const currDate = this.getCurrentDate();
+    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
+      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
       .subscribe((response) => {
         if (Object.keys(response[0]).length > 0) {
           this.firmantes = {
@@ -889,12 +913,12 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           };
         } else {
           this.firmantes = undefined;
-          this.openWindow('Sin información de Sección de Compras.');
+          this.openWindow(this.translate.instant(`GLOBAL.sin_info_oficina`));
           this.regresarFiltro();
         }
       }, (error) => {
         this.firmantes = undefined;
-        this.openWindow('Error al traer información de Sección de Compras.');
+        this.openWindow(this.translate.instant(`GLOBAL.error_info_oficina`));
         this.regresarFiltro();
       });
   }

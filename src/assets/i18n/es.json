@@ -417,6 +417,9 @@
     "acta_produccion": "Acta de Producción",
     "tercero_administracion": "Tercero en Administración",
     "error": "Error",
-    "mensaje_seleccionar_entrada": "Seleccione el tipo de entrada que desea realizar"
+    "mensaje_seleccionar_entrada": "Seleccione el tipo de entrada que desea realizar",
+    "sin_info_oficina": "Sin información de Oficina de Contratación.",
+    "error_info_oficina": "Error al traer información de Oficina de Contratación.",
+    "jefe_oficina:": "JEFE OFICINA DE CONTRATACIÓN"
   }
 }

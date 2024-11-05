@@ -7,13 +7,13 @@
       <img src="{{appname?basePathAssets + 'logotipos_aplicativos_svg/' + appname + '.svg':''}}" class="logotipo"
           alt="{{'logotipo aplicación ' + appname}}" srcset="">
       <button *ngIf="!isloading" class="button" (click)="login()">Iniciar Sesión </button>
-      <ng-uui-load *ngIf="isloading"></ng-uui-load>
+      <ngx-uui-load *ngIf="isloading"></ngx-uui-load>
   </div>
   <div class="footer-login">
       <div class="credit">
           <p>Desarrollado por </p>
-          <p>Oficina Asesora de Sistemas OAS</p>
+          <p>Oficina Asesora de Tecnologías e Información</p>
       </div>
   </div>
 
-</div> 
+</div>

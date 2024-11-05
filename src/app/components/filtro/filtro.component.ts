@@ -18,8 +18,7 @@ export class FiltroComponent implements OnInit {
   @Input() filtroTipo: boolean = false;
   @ViewChild('contentTemplate', { read: false }) contentTemplate: TemplateRef<any>;
 
-  vigencias = ['2016', '2017', '2018', '2019', '2020', '2021'];
-
+  vigencias: string[] = [];
   identificacion_proveedor: any;
   numero_contrato: any;
   vigencia: any;
@@ -33,6 +32,7 @@ export class FiltroComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.listarVigencias();
   }
 
   filtro() {
@@ -171,6 +171,14 @@ export class FiltroComponent implements OnInit {
     this.numero_contrato = null;
     this.vigencia = undefined;
     this.dataResponse.emit([]);
+  }
+
+
+  private listarVigencias() {
+    const currentYear: number = new Date().getFullYear();
+    for (let year = currentYear; year >= 2017; year--) {
+      this.vigencias.push(year.toString());
+    }
   }
 
 }
