@@ -11,6 +11,7 @@ import swal from "sweetalert2";
 import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.service.js";
 import { error } from "console";
 import { AgoraService } from "../agora.service.js";
+import { DocumentosCrudService } from "./documentos-crud.service.js";
 
 @Injectable({
   providedIn: "root",
@@ -18,7 +19,7 @@ import { AgoraService } from "../agora.service.js";
 export class CrearCertificacionesDveService {
   private pdf: PdfMakeWrapper;
 
-  constructor(private firmaElectronicaService: FirmaElectronicaService,private agoraService:AgoraService) {}
+  constructor(private firmaElectronicaService: FirmaElectronicaService,private agoraService:AgoraService,private documentosCrudService:DocumentosCrudService) {}
 
   /**
    * Tipo de contrato:
@@ -389,10 +390,10 @@ export class CrearCertificacionesDveService {
   async firmarDocumento(file: any, nombreArchivo: string): Promise<string> {
 
     let data =   await this.obtenerDatosSuperVisor();
-    console.log(data)
+    let idDocumnento = await this.consultarTipoDeDocumento()
     let docsAFirmar = [
       {
-        IdDocumento: 12,
+        IdDocumento:12,
         nombre: nombreArchivo + ".pdf",
         metadatos: {},
         descripcion: "",
@@ -432,6 +433,7 @@ export class CrearCertificacionesDveService {
   }
 
 async  obtenerDatosSuperVisor():Promise<any>{
+  this.consultarTipoDeDocumento()
     try{
  
       return new Promise((resolve, reject)=>{
@@ -447,6 +449,27 @@ async  obtenerDatosSuperVisor():Promise<any>{
           }
         })
       })
+    }catch(error){
+
+    }
+  
+  }
+  async consultarTipoDeDocumento():Promise<number>{
+    try{
+  return new Promise((resolve,reject)=>{
+    this.documentosCrudService.get("tipo_documento/?query=CodigoAbreviacion:CERT-DVE&limit=0").subscribe({
+      next:(response)=>{
+        if(response && response.length>0){
+              resolve(response[0].Id)
+        }else{
+          resolve(12)
+        }
+      },
+      error:(error)=>{
+        console.log(error)
+      }
+    })
+  })
     }catch(error){
 
     }
