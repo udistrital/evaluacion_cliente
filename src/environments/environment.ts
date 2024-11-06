@@ -25,6 +25,8 @@ export const environment = {
   NOVEDADES_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8502/v1/',
   ADMINISTRATIVA_JBPM_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_jbpm/v1/',
   AGORA_SERVICE: "http://api.intranetoas.udistrital.edu.co:8104/v1/",
+  DOCUMENTOS_CRUD: "https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/",
+
 
   TOKEN: {
     AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
