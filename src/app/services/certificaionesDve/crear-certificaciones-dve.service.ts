@@ -393,10 +393,10 @@ export class CrearCertificacionesDveService {
         file: file,
         firmantes: [
           {
-            nombre: "solicituDeFirma.NombreResponsable,",
-            cargo: "Supervisor",
-            tipoId: "CC",
-            identificacion: "88194457",
+            nombre: 'solicituDeFirma.NombreResponsable',
+            cargo: 'Supervisor',
+            tipoId: 'CC',
+            identificacion: '88194457',
           },
         ],
         representantes: [],
@@ -412,7 +412,7 @@ export class CrearCertificacionesDveService {
               if ( response &&response.length > 0) {
                 resolve(response[0].file);
               } else {
-                reject("No se recibió una respuesta válida.");
+                reject('No se recibió una respuesta válida.');
               }
             },
             error: (error) => {
