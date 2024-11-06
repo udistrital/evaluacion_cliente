@@ -8,6 +8,8 @@ import { InformacionCertificacionDve } from "../../@core/data/models/certificaci
 import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/informacionDVE";
 import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve/intensidadHorariaDVE.js";
 import swal from "sweetalert2";
+import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.service.js";
+import { error } from "console";
 
 @Injectable({
   providedIn: "root",
@@ -15,7 +17,7 @@ import swal from "sweetalert2";
 export class CrearCertificacionesDveService {
   private pdf: PdfMakeWrapper;
 
-  constructor() {}
+  constructor(private firmaElectronicaService: FirmaElectronicaService) {}
 
   /**
    * Tipo de contrato:
@@ -31,7 +33,7 @@ export class CrearCertificacionesDveService {
    * - Laboro
    * - Labora
    */
-  createPfd(
+  async createPfd(
     informacionCertificacionDve: InformacionCertificacionDve,
     icluirSalario: boolean
   ) {
@@ -86,14 +88,19 @@ export class CrearCertificacionesDveService {
       this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
       this.pdf.add("\n");
 
-      this.pdf.add(this.getTableResponsable());
-      this.pdf.add("\n" + "\n");
+      //this.pdf.add(this.getTableResponsable());
 
-      this.pdf
-        .create()
-        .download(
-          informacionCertificacionDve.informacionDve.nombre_docente + ".pdf"
+      this.pdf.add("\n" + "\n");
+      this.pdf.create().getBlob(async (blob) => {
+        let pdfBase64 = await this.firmarDocumento(
+          blob,
+          informacionCertificacionDve.informacionDve.nombre_docente
         );
+        const descarga = document.createElement("a");
+        descarga.href = "data:application/pdf;base64," + pdfBase64;
+        descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
+        descarga.click();
+      });
     } catch (error) {
       console.error(error);
     }
@@ -374,5 +381,47 @@ export class CrearCertificacionesDveService {
       "ANDREA CAROLINA HOSPITAL GORDILLO",
       "Jefe de la Oficina de Talento Humano",
     ];
+  }
+
+  async firmarDocumento(file: any, nombreArchivo: string): Promise<string> {
+    let docsAFirmar = [
+      {
+        IdDocumento: 12,
+        nombre: nombreArchivo + ".pdf",
+        metadatos: {},
+        descripcion: "",
+        file: file,
+        firmantes: [
+          {
+            nombre: "solicituDeFirma.NombreResponsable,",
+            cargo: "Supervisor",
+            tipoId: "CC",
+            identificacion: "88194457",
+          },
+        ],
+        representantes: [],
+      },
+    ];
+
+    try {
+      return new Promise((resolve, reject) => {
+        this.firmaElectronicaService
+          .uploadFilesElectronicSign(docsAFirmar)
+          .subscribe({
+            next: (response: any) => {
+              if ( response &&response.length > 0) {
+                resolve(response[0].file);
+              } else {
+                reject("No se recibió una respuesta válida.");
+              }
+            },
+            error: (error) => {
+              reject(error);
+            },
+          });
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
