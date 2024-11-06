@@ -10,6 +10,7 @@ import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve
 import swal from "sweetalert2";
 import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.service.js";
 import { error } from "console";
+import { AgoraService } from "../agora.service.js";
 
 @Injectable({
   providedIn: "root",
@@ -17,7 +18,7 @@ import { error } from "console";
 export class CrearCertificacionesDveService {
   private pdf: PdfMakeWrapper;
 
-  constructor(private firmaElectronicaService: FirmaElectronicaService) {}
+  constructor(private firmaElectronicaService: FirmaElectronicaService,private agoraService:AgoraService) {}
 
   /**
    * Tipo de contrato:
@@ -101,6 +102,8 @@ export class CrearCertificacionesDveService {
         descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
         descarga.click();
       });
+  
+   
     } catch (error) {
       console.error(error);
     }
@@ -384,6 +387,9 @@ export class CrearCertificacionesDveService {
   }
 
   async firmarDocumento(file: any, nombreArchivo: string): Promise<string> {
+
+    let data =   await this.obtenerDatosSuperVisor();
+    console.log(data)
     let docsAFirmar = [
       {
         IdDocumento: 12,
@@ -422,6 +428,24 @@ export class CrearCertificacionesDveService {
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+async  obtenerDatosSuperVisor():Promise<any>{
+    try{
+ 
+      return new Promise((resolve, reject)=>{
+        this.agoraService.get('supervisor_contrato?query=DependenciaSupervisor:DEP633&sortby=FechaInicio&order=desc').subscribe({
+          next:(response:any)=>{
+            if(response && response.length>0){
+              console.log(response)
+            }
+            resolve(response)
+          }
+        })
+      })
+    }catch(error){
+
     }
   }
 }
