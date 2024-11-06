@@ -85,8 +85,8 @@ export class CrearCertificacionesDveService {
       );
 
       this.pdf.add("\n" + "\n" + "\n" + "\n");
-      this.pdf.add(new Txt(this.getTitles()[2]).style("Title").end);
-      this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
+     // this.pdf.add(new Txt(this.getTitles()[2]).style("Title").end);
+     // this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
       this.pdf.add("\n");
 
       //this.pdf.add(this.getTableResponsable());
@@ -399,10 +399,10 @@ export class CrearCertificacionesDveService {
         file: file,
         firmantes: [
           {
-            nombre: 'solicituDeFirma.NombreResponsable',
-            cargo: 'Supervisor',
+            nombre: data.Nombre,
+            cargo: data.Cargo,
             tipoId: 'CC',
-            identificacion: '88194457',
+            identificacion: String(data.Documento),
           },
         ],
         representantes: [],
@@ -438,9 +438,12 @@ async  obtenerDatosSuperVisor():Promise<any>{
         this.agoraService.get('supervisor_contrato?query=DependenciaSupervisor:DEP633&sortby=FechaInicio&order=desc').subscribe({
           next:(response:any)=>{
             if(response && response.length>0){
-              console.log(response)
+
+              resolve(response[0])
+            }else{
+              reject("No se obtuvieron los datos requeridos")
             }
-            resolve(response)
+            
           }
         })
       })
