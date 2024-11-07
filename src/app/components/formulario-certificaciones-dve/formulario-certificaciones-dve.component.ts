@@ -6,9 +6,9 @@ import { error, info } from "console";
 import { InformacionCertificacionDve } from "../../@core/data/models/certificacionesDve/informacionCertificacionDve";
 
 @Component({
-  selector: 'ngx-formulario-certificaciones-dve',
-  templateUrl: './formulario-certificaciones-dve.html',
-  styleUrls: ['./formulario-certificaciones-dve.scss'],
+  selector: "ngx-formulario-certificaciones-dve",
+  templateUrl: "./formulario-certificaciones-dve.html",
+  styleUrls: ["./formulario-certificaciones-dve.scss"],
 })
 export class FormularioCertificacionesDveComponent implements OnInit {
   @Input() titulo: string;
@@ -21,7 +21,6 @@ export class FormularioCertificacionesDveComponent implements OnInit {
     private crearCertificado: CrearCertificacionesDveService,
     private certificacionesService: CertificacionDveService
   ) {
-    crearCertificado = new CrearCertificacionesDveService();
   }
 
   ngOnInit() {
@@ -98,4 +97,7 @@ export class FormularioCertificacionesDveComponent implements OnInit {
       vinculaciones: form.value.tipoVinculacion,
     };
   }
+
+
+
 }

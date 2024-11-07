@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Documento } from './../../@core/data/models/documento';
 import { platform } from 'os';
+import { error } from 'console';
+import { UserService } from '../../@core/data/user.service';
 
 @Component({
   selector: 'ngx-certificaciones-dve',
@@ -8,10 +10,11 @@ import { platform } from 'os';
   styleUrls: ['./certificaciones-dve.component.scss'],
 })
 export class CertificacionesDveComponent implements OnInit {
-  constructor() {}
+  constructor(private userService:UserService) {}
 
   ngOnInit() {
   this.getToken();
+  this.obtenerNombreDocente()
   }
 
    docente= {
@@ -28,5 +31,23 @@ export class CertificacionesDveComponent implements OnInit {
       this.docente.documentoDocente = payload.documento;
       this.docente.nombreDocente = payload.sub.toUpperCase();
     }
+  }
+
+  obtenerNombreDocente(): Promise<void>{
+    try{
+       return new Promise((resolve,reject)=>{
+        this.userService.getPersonaNaturalAmazon().subscribe(
+          {next:(response:any)=>{
+           if(response  && response.length>0){
+            const data = response[0];
+           this.docente.nombreDocente = data.PrimerNombre + " " +data.PrimerApellido + " " +data.SegundoApellido 
+           }
+          }}
+        )
+       })
+    }catch(error){
+        console.error("Error al consultar el nombre del docente")
+    }
+
   }
 }

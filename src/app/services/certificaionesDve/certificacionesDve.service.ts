@@ -18,7 +18,9 @@ export class CertificacionDveService {
   private httpHeaders = new HttpHeaders({
     "Content-Type": "application/json",
   });
-
+  private getAccessToken(): string | null {
+    return localStorage.getItem("access_token");
+  }
   getDataCertificactionDve(peticion: any): Observable<any> {
     const body = { numero_documento: "88194457" };
     return this.http
@@ -34,17 +36,10 @@ export class CertificacionDveService {
               response.Data.informacion_dve.numero_documento,
               response.Data.informacion_dve.nivel_academico,
               response.Data.informacion_dve.facultad,
-              response.Data.informacion_dve.proyecto_curricular,
-
-
-       
-
-
-
+              response.Data.informacion_dve.proyecto_curricular
             );
             let intensidadList = response.Data.intensidad_horaria.map(
               (item: any) => {
-                
                 return new IntensidadHorariaDVE(
                   item.ano,
                   item.periodo,
@@ -53,10 +48,10 @@ export class CertificacionDveService {
                   item.numero_semanas,
                   item.horas_semestrales,
                   item.salario_docente
-                )
+                );
               }
             );
-            return new  InformacionCertificacionDve(infoDev , intensidadList);
+            return new InformacionCertificacionDve(infoDev, intensidadList);
           }
         })
       );
