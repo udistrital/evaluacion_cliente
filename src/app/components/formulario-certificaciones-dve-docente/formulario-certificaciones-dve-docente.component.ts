@@ -1,16 +1,15 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CrearCertificacionesDveService } from "./../../services/certificaionesDve/crear-certificaciones-dve.service";
-import { CertificacionDveService } from "./../../services/certificaionesDve/certificacionesDve.service";
-import { error, info } from "console";
-import { InformacionCertificacionDve } from "../../@core/data/models/certificacionesDve/informacionCertificacionDve";
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { CrearCertificacionesDveService } from '../../services/certificaionesDve/crear-certificaciones-dve.service';
+import { CertificacionDveService } from '../../services/certificaionesDve/certificacionesDve.service';
 
 @Component({
-  selector: "ngx-formulario-certificaciones-dve",
-  templateUrl: "./formulario-certificaciones-dve.html",
-  styleUrls: ["./formulario-certificaciones-dve.scss"],
+  selector: 'ngx-formulario-certificaciones-dve-docente',
+  templateUrl: './formulario-certificaciones-dve-docente.component.html',
+  styleUrls: ['./formulario-certificaciones-dve-docente.component.scss']
 })
-export class FormularioCertificacionesDveComponent implements OnInit {
+export class FormularioCertificacionesDveDocenteComponent implements OnInit {
+
   @Input() titulo: string;
   formularioCertificacionesDve: FormGroup;
   @Input() nombreDocente: string;
@@ -60,6 +59,7 @@ export class FormularioCertificacionesDveComponent implements OnInit {
     try {
       let peticion = this.getPeticion(this.formularioCertificacionesDve);
 
+      console.log(peticion)
       const Swal = require("sweetalert2");
       Swal.fire({
         title: "Descargando",
@@ -69,14 +69,19 @@ export class FormularioCertificacionesDveComponent implements OnInit {
         timer: 1500,
       });
 
-      this.certificacionesService
-        .getDataCertificactionDve(peticion)
-        .subscribe((response) => {
-          this.crearCertificado.createPfd(
-            response,
-            this.formularioCertificacionesDve.value.incluirSalario
-          );
-        });
+      // this.certificacionesService
+      //   .getDataCertificactionDve(peticion)
+      //   .subscribe((response) => {
+      //     this.crearCertificado.createPfd(
+      //       response,
+      //       this.formularioCertificacionesDve.value.incluirSalario
+      //     );
+      //   });
+      this.crearCertificado.createPfd(
+        this.certificacionesService
+    .getDataCertificactionDveTest(),
+        this.formularioCertificacionesDve.value.incluirSalario
+      );
     } catch (error) {}
 
   }

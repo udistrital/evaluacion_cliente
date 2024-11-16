@@ -72,6 +72,7 @@ import { LoadComponent } from './load/load.component';
 
 
 
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

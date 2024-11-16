@@ -9,12 +9,16 @@ import { UserService } from '../../@core/data/user.service';
   templateUrl: './certificaciones-dve.component.html',
   styleUrls: ['./certificaciones-dve.component.scss'],
 })
+
+
 export class CertificacionesDveComponent implements OnInit {
+  menuTalentoHumano:boolean=false;
+  menuDocente:boolean=false;
   constructor(private userService:UserService) {}
 
   ngOnInit() {
   this.getToken();
-  this.obtenerNombreDocente()
+  this.habilitarMenu()
   }
 
    docente= {
@@ -50,4 +54,18 @@ export class CertificacionesDveComponent implements OnInit {
     }
 
   }
+  
+  obtenerRoles():string[]{
+   return this.userService.getPayload().role
+  }
+
+  habilitarMenu(){
+    
+    const esTalentoHumano = this.obtenerRoles().includes("TALENTO_HUMANO") ;
+    const esDocente  = this.obtenerRoles().includes("DOCENTE")
+    this.menuTalentoHumano =  esTalentoHumano ;
+    this.menuDocente= esDocente && !esTalentoHumano;
+     
+  }
+  
 }

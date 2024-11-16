@@ -23,7 +23,7 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
 
   submitFormularioCertificacionesDveTalentoHumano() {
     if (this.formularioCertificacionesDveTalentoHumano.valid) {
-      // console.log(this.formularioCertificacionesDveTalentoHumano.value);
+    console.log(this.formularioCertificacionesDveTalentoHumano.value);
     }else {
       // console.log('verificar formulario');
     }
