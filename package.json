@@ -77,6 +77,7 @@
     "nebular-icons": "^1.1.0",
     "ng-pick-datetime": "^7.0.0",
     "ng2-smart-table": "^1.4.0",
+    "ngx-admin": "file:",
     "ngx-currency": "^2.0.0",
     "ngx-echarts": "^4.1.1",
     "node-sass": "^4.14.1",

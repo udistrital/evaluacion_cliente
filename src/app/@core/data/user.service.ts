@@ -65,5 +65,13 @@ export class UserService {
             identificacion: rep.Id,
         };
     }
+    public getPayload(): any {
+        var payload: any = {};
+        const idToken = window.localStorage.getItem('id_token').split('.');
+        if (idToken != undefined) {
+          payload = JSON.parse(atob(idToken[1]));
+        }
+        return payload;
+      }
 
 }

@@ -22,7 +22,6 @@ export class CertificacionDveService {
     return localStorage.getItem("access_token");
   }
   getDataCertificactionDve(peticion: any): Observable<any> {
-    const body = { numero_documento: "88194457" };
     return this.http
       .post<any>(this.urlCertificacionesDve, peticion, {
         headers: this.httpHeaders,
