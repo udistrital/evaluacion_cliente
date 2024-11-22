@@ -4,6 +4,7 @@ import { CrearCertificacionesDveService } from '../../services/certificaionesDve
 import { CertificacionDveService } from '../../services/certificaionesDve/certificacionesDve.service';
 import { error } from 'console';
 import { async } from '@angular/core/testing';
+import { PopUpManager } from '../../managers/popUpManager';
 
 @Component({
   selector: 'ngx-formulario-certificaciones-dve-docente',
@@ -20,7 +21,8 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
   constructor(
     private fg: FormBuilder,
     private crearCertificado: CrearCertificacionesDveService,
-    private certificacionesService: CertificacionDveService
+    private certificacionesService: CertificacionDveService,
+    private popUpManager:PopUpManager
   ) {
   }
 
@@ -67,17 +69,25 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
         text: "Por favor espera..",
         icon: "success",
         showConfirmButton: false,
-        timer: 1500,
       });
+
       this.certificacionesService
         .getDataCertificactionDve(peticion)
-        .subscribe((response) => {
-          console.log("response desde el sercvio2 ",response)
+        .subscribe({next:(response) => {
+          if(response!=undefined){
+            console.log("response desde el sercvio2 ",response)
           this.crearCertificado.createPfd(
             response,
-            this.formularioCertificacionesDve.value.incluirSalario
+            this.formularioCertificacionesDve.value.incluir_salario
           );
-        });
+          }else{
+            this.popUpManager.showErrorAlert("Erro al consular")
+          }
+          
+        },error:(error:any)=>{
+          this.popUpManager.showErrorAlert("Error al consultar la información");
+
+        }});
     //   this.crearCertificado.createPfd(
     //     this.certificacionesService
     // .getDataCertificactionDveTest(),
@@ -98,6 +108,7 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
 
   private getPeticion(form: FormGroup) {
     return {
+      //numero_documento: this.documentoDocente,
       numero_documento: "79362769",
       periodo_inicial: form.value.periodo_inicial,
       periodo_final: form.value.periodo_final,

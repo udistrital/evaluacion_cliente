@@ -80,6 +80,7 @@ export class PopUpManager {
                 Swal.showLoading();
               },allowOutsideClick: false,
               width: '400px',
+              showConfirmButton: false,
         });
     }
 

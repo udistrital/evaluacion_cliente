@@ -9,6 +9,7 @@ export class InformacionCertificacionDve{
     constructor( informacionDve: InformacionDVE , intensidadHorariaDVE : IntensidadHorariaDVE[]){
         this.informacionDve = informacionDve;
         this.intensidadHorariaDVE = intensidadHorariaDVE;
+
     }
 
 

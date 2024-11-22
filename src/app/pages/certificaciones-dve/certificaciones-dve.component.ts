@@ -41,7 +41,8 @@ export class CertificacionesDveComponent implements OnInit {
  
   
   obtenerRoles():string[]{
-  return this.userService.getPayload().role
+   // return["DOCENTE"]
+return this.userService.getPayload().role
  
   }
 
@@ -55,6 +56,12 @@ export class CertificacionesDveComponent implements OnInit {
   }
 
 
+  eliminarLetras(identificacion:string){
+    const soloLetrasYSimbolosRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s!@#$%^&*(),.?":{}|<>_-]+$/;
 
+    if(soloLetrasYSimbolosRegex.test(String(identificacion))){
+    
+    }
+  }
   
 }

@@ -40,6 +40,7 @@ export class CrearCertificacionesDveService {
     informacionCertificacionDve: InformacionCertificacionDve,
     icluirSalario: boolean
   ) {
+    console.log("ifno",informacionCertificacionDve, "incluir",icluirSalario)
     this.popUpManager.showLoadingAlert("Descargando", "Por favor espera un momento");
     this.popUpManager.closeAlert()
     this.pdf = new PdfMakeWrapper();
@@ -77,7 +78,7 @@ export class CrearCertificacionesDveService {
       icluirSalario == true
         ? this.pdf.add(
             new Txt(
-              `Salario mensual : ${informacionCertificacionDve.intensidadHorariaDVE[ultimoPago].salarioDocente}`
+              `Salario mensual : ${informacionCertificacionDve.informacionDve.ultimo_pago_dve}`
             ).style("textBold").end
           )
         : "";
@@ -100,7 +101,7 @@ export class CrearCertificacionesDveService {
           blob,
           informacionCertificacionDve.informacionDve.nombre_docente
         );
-        this.popUpManager.closeAlert()
+     
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
         descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
@@ -109,7 +110,7 @@ export class CrearCertificacionesDveService {
       });
 
       
-  
+      this.popUpManager.closeAlert()
   
    
     } catch (error) {
@@ -424,7 +425,6 @@ export class CrearCertificacionesDveService {
           .subscribe({
             next: (response: any) => {
               if ( response &&response.length > 0) {
-                console.log(response[0].fil)
                 resolve(response[0].file);
               } else {
                 reject('No se recibió una respuesta válida.');

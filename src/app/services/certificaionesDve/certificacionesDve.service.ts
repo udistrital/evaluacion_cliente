@@ -47,7 +47,8 @@ export class CertificacionDveService {
               response.Data.informacion_dve.numero_documento,
               response.Data.informacion_dve.nivel_academico,
               response.Data.informacion_dve.facultad,
-              response.Data.informacion_dve.proyecto_curricular
+              response.Data.informacion_dve.proyecto_curricular,
+              response.Data.informacion_dve.ultimo_pago_dve
             );
             let intensidadList = response.Data.intensidad_horaria.map(
               (item: any) => {
@@ -75,7 +76,8 @@ export class CertificacionDveService {
       "88194457",
       "PREGRADO",
       "ingenieria",
-      "proyecto1"
+      "proyecto1",
+      "s"
     );
     let randomNum = Math.floor(Math.random() * 30) + 1;
     let intensidad: IntensidadHorariaDVE[] = [];
