@@ -3,6 +3,7 @@ import { Documento } from './../../@core/data/models/documento';
 import { platform } from 'os';
 import { error } from 'console';
 import { UserService } from '../../@core/data/user.service';
+import { CertificacionDveService } from '../../services/certificaionesDve/certificacionesDve.service';
 
 @Component({
   selector: 'ngx-certificaciones-dve',
@@ -14,10 +15,10 @@ import { UserService } from '../../@core/data/user.service';
 export class CertificacionesDveComponent implements OnInit {
   menuTalentoHumano:boolean=false;
   menuDocente:boolean=false;
-  constructor(private userService:UserService) {}
+  constructor(private userService:UserService,private certificacionesDveService:CertificacionDveService) {}
 
-  ngOnInit() {
-  this.getToken();
+  async ngOnInit() {
+   await this.getToken();
   this.habilitarMenu()
   }
 
@@ -27,36 +28,21 @@ export class CertificacionesDveComponent implements OnInit {
   };
   titulo: string = 'Titulo';
 
-  private getToken = () => {
+    async  getToken ()  {
     if (window.localStorage.getItem('id_token') !== null) {
       const token = window.localStorage.getItem('id_token');
       const parts = token.split('.');
       const payload = JSON.parse(atob(parts[1]));
       this.docente.documentoDocente = payload.documento;
-      this.docente.nombreDocente = payload.sub.toUpperCase();
+     this.docente.nombreDocente =  await this.certificacionesDveService.obtenerNombreDocente();
     }
   }
 
-  obtenerNombreDocente(): Promise<void>{
-    try{
-       return new Promise((resolve,reject)=>{
-        this.userService.getPersonaNaturalAmazon().subscribe(
-          {next:(response:any)=>{
-           if(response  && response.length>0){
-            const data = response[0];
-           this.docente.nombreDocente = data.PrimerNombre + " " +data.PrimerApellido + " " +data.SegundoApellido 
-           }
-          }}
-        )
-       })
-    }catch(error){
-        console.error("Error al consultar el nombre del docente")
-    }
-
-  }
+ 
   
   obtenerRoles():string[]{
-   return this.userService.getPayload().role
+  return this.userService.getPayload().role
+ 
   }
 
   habilitarMenu(){
@@ -67,5 +53,8 @@ export class CertificacionesDveComponent implements OnInit {
     this.menuDocente= esDocente && !esTalentoHumano;
      
   }
+
+
+
   
 }

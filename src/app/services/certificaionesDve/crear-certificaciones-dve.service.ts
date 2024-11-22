@@ -12,6 +12,7 @@ import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.ser
 import { error } from "console";
 import { AgoraService } from "../agora.service.js";
 import { DocumentosCrudService } from "./documentos-crud.service.js";
+import { PopUpManager } from './../../managers/popUpManager';
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +20,7 @@ import { DocumentosCrudService } from "./documentos-crud.service.js";
 export class CrearCertificacionesDveService {
   private pdf: PdfMakeWrapper;
 
-  constructor(private firmaElectronicaService: FirmaElectronicaService,private agoraService:AgoraService,private documentosCrudService:DocumentosCrudService) {}
+  constructor(private firmaElectronicaService: FirmaElectronicaService,private agoraService:AgoraService,private documentosCrudService:DocumentosCrudService,private popUpManager:PopUpManager) {}
 
   /**
    * Tipo de contrato:
@@ -39,6 +40,8 @@ export class CrearCertificacionesDveService {
     informacionCertificacionDve: InformacionCertificacionDve,
     icluirSalario: boolean
   ) {
+    this.popUpManager.showLoadingAlert("Descargando", "Por favor espera un momento");
+    this.popUpManager.closeAlert()
     this.pdf = new PdfMakeWrapper();
     this.pdf = this.getStyles();
     this.pdf.pageMargins([80, 100, 60, 60]);
@@ -52,7 +55,6 @@ export class CrearCertificacionesDveService {
         this.getTable(informacionCertificacionDve.intensidadHorariaDVE),
       ],
     };
-
     this.pdf.footer((currentPage, pageCount) =>
       this.getFooter(currentPage, pageCount)
     );
@@ -98,11 +100,16 @@ export class CrearCertificacionesDveService {
           blob,
           informacionCertificacionDve.informacionDve.nombre_docente
         );
+        this.popUpManager.closeAlert()
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
         descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
         descarga.click();
+        
       });
+
+      
+  
   
    
     } catch (error) {
@@ -417,6 +424,7 @@ export class CrearCertificacionesDveService {
           .subscribe({
             next: (response: any) => {
               if ( response &&response.length > 0) {
+                console.log(response[0].fil)
                 resolve(response[0].file);
               } else {
                 reject('No se recibió una respuesta válida.');

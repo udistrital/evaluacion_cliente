@@ -18,7 +18,7 @@
                 <span class="texto-negro p-2 text-negrilla">Ingresa el año y periodo</span>
                 <mat-form-field class="m-0">
                   <mat-label>Selecciona año y periodo</mat-label>
-                  <mat-select formControlName="anioInicio">
+                  <mat-select formControlName="periodo_inicial">
                     <mat-option *ngFor="let anioPeriodo of getAniosYPeriodos()" [value]="anioPeriodo">
                       {{anioPeriodo}}
                     </mat-option>
@@ -29,7 +29,7 @@
                 <span class="texto-negro p-2 text-negrilla">Hasta</span>
                 <mat-form-field class="m-0">
                   <mat-label>Selecciona año y periodo</mat-label>
-                  <mat-select formControlName="anioFin">
+                  <mat-select formControlName="periodo_final">
                     <mat-option *ngFor="let anioPeriodo of getAniosYPeriodos()" [value]="anioPeriodo">
                       {{anioPeriodo}}
                     </mat-option>
@@ -41,13 +41,13 @@
               <div class="col-md-4 col-sm-12 col-xxl-4 col-xl-5 d-flex align-items-center justify-content-center">
                 <div>
                   <span class="p-2">INCLUIR INFORMACION DE SALARIO</span>
-                  <mat-checkbox formControlName="incluirSalario"></mat-checkbox>
+                  <mat-checkbox formControlName="incluir_salario"></mat-checkbox>
                 </div>
               </div>
               <!-- <div class="col-md-4 col-sm-12 col-xxl-3 col-xl-3">
                 <mat-form-field>
                   <mat-label>Tipo de vinculacion</mat-label>
-                  <mat-select formControlName="tipoVinculacion">
+                  <mat-select formControlName="vinculaciones">
                     <mat-option *ngFor="let tipo of getVinculacion()" [value]="tipo">
                       {{tipo}}
                     </mat-option>

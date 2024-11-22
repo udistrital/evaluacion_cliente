@@ -7,6 +7,8 @@ import { InformacionCertificacionDve } from "./../../@core/data/models/certifica
 import { catchError, map, retry, tap } from "rxjs/operators";
 import { Response } from "@angular/http";
 import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/informacionDVE";
+import { RequestManager } from "../../managers/requestManager";
+import { UserService } from "../../@core/data/user.service";
 
 @Injectable({
   providedIn: "root",
@@ -14,13 +16,23 @@ import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/inf
 export class CertificacionDveService {
   private urlCertificacionesDve = `${environment.EVALUACIONMID_SERVICE}informacion_certificacion_dve`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private requestManeger:RequestManager,private userService:UserService) {
+    this.requestManeger.setPath('EVALUACIONMID_SERVICE');
+  }
   private httpHeaders = new HttpHeaders({
     "Content-Type": "application/json",
   });
   private getAccessToken(): string | null {
     return localStorage.getItem("access_token");
   }
+
+
+   post(endpoint:string,body:any){
+    this.requestManeger.setPath('EVALUACIONMID_SERVICE');
+    return this.requestManeger.post(endpoint,body);
+   }
+
+
   getDataCertificactionDve(peticion: any): Observable<any> {
     return this.http
       .post<any>(this.urlCertificacionesDve, peticion, {
@@ -40,13 +52,13 @@ export class CertificacionDveService {
             let intensidadList = response.Data.intensidad_horaria.map(
               (item: any) => {
                 return new IntensidadHorariaDVE(
-                  item.ano,
-                  item.periodo,
-                  item.nombre_asignatura,
-                  item.horas_semanales,
-                  item.numero_semanas,
-                  item.horas_semestrales,
-                  item.salario_docente
+                  item.Año,
+                  item.Periodo,
+                  item.Asignaturas,
+                  item.HorasSemanales,
+                  item.NumeroSemanas,
+                  item.HorasSemestre,
+                  response.Data.informacion_dve.ultimo_pago_dve
                 );
               }
             );
@@ -81,5 +93,26 @@ export class CertificacionDveService {
       intensidad.push(intensidadH);
     }
     return new InformacionCertificacionDve(informacionDVE, intensidad);
+  }
+
+
+
+  async obtenerNombreDocente(): Promise<string>{
+    try{
+       return new Promise((resolve,reject)=>{
+        this.userService.getPersonaNaturalAmazon().subscribe(
+          {next:(response:any)=>{
+           if(response  && response.length>0){
+            const data = response[0];
+           let nombreCompleto = data.PrimerNombre + " " +data.PrimerApellido + " " +data.SegundoApellido 
+           resolve(nombreCompleto)
+           }
+          }}
+        )
+       })
+    }catch(error){
+        console.error("Error al consultar el nombre del docente")
+    }
+
   }
 }
