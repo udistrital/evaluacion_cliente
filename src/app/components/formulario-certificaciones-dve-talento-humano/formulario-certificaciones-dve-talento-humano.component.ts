@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PopUpManager } from '../../managers/popUpManager';
 
 @Component({
   selector: 'ngx-formulario-certificaciones-dve-talento-humano',
@@ -10,25 +11,35 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
 
   formularioCertificacionesDveTalentoHumano: FormGroup;
   @Input() titulo: string;
-
-  constructor(private fg: FormBuilder) { }
+  formuarioValido = false;
+  constructor(private fg: FormBuilder,private popUpManager:PopUpManager) { }
 
   ngOnInit() {
 
     this.formularioCertificacionesDveTalentoHumano = this.fg.group({
-      'documentoDocente': '',
-      'incluirSalario': '',
+      numero_documento:[ "",[Validators.required]] ,
+      incluir_salario:  [false],
       });
   }
 
   submitFormularioCertificacionesDveTalentoHumano() {
+
     if (this.formularioCertificacionesDveTalentoHumano.valid) {
     console.log(this.formularioCertificacionesDveTalentoHumano.value);
     }else {
-      // console.log('verificar formulario');
+      this.formuarioValido=true
+      this.popUpManager.showErrorAlert("Valide el formulario")
     }
   }
 
+
+  eliminarLetras(identificacion:string){
+    const soloLetrasYSimbolosRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s!@#$%^&*(),.?":{}|<>_-]+$/;
+    if(soloLetrasYSimbolosRegex.test(String(identificacion))){
+      identificacion = identificacion.slice(0,-1)
+      this.formularioCertificacionesDveTalentoHumano.patchValue({numero_documento:identificacion})
+    }
+  }
 
 
 }
