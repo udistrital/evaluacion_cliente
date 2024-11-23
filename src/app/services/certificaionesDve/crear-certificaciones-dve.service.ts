@@ -12,7 +12,7 @@ import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.ser
 import { error } from "console";
 import { AgoraService } from "../agora.service.js";
 import { DocumentosCrudService } from "./documentos-crud.service.js";
-import { PopUpManager } from './../../managers/popUpManager';
+import { PopUpManager } from "./../../managers/popUpManager";
 
 @Injectable({
   providedIn: "root",
@@ -20,7 +20,12 @@ import { PopUpManager } from './../../managers/popUpManager';
 export class CrearCertificacionesDveService {
   private pdf: PdfMakeWrapper;
 
-  constructor(private firmaElectronicaService: FirmaElectronicaService,private agoraService:AgoraService,private documentosCrudService:DocumentosCrudService,private popUpManager:PopUpManager) {}
+  constructor(
+    private firmaElectronicaService: FirmaElectronicaService,
+    private agoraService: AgoraService,
+    private documentosCrudService: DocumentosCrudService,
+    private popUpManager: PopUpManager
+  ) {}
 
   /**
    * Tipo de contrato:
@@ -40,9 +45,12 @@ export class CrearCertificacionesDveService {
     informacionCertificacionDve: InformacionCertificacionDve,
     icluirSalario: boolean
   ) {
-    console.log("ifno",informacionCertificacionDve, "incluir",icluirSalario)
-    this.popUpManager.showLoadingAlert("Descargando", "Por favor espera un momento");
-    this.popUpManager.closeAlert()
+    console.log("ifno", informacionCertificacionDve, "incluir", icluirSalario);
+    this.popUpManager.showLoadingAlert(
+      "Descargando",
+      "Por favor espera un momento"
+    );
+    this.popUpManager.closeAlert();
     this.pdf = new PdfMakeWrapper();
     this.pdf = this.getStyles();
     this.pdf.pageMargins([80, 100, 60, 60]);
@@ -89,8 +97,8 @@ export class CrearCertificacionesDveService {
       );
 
       this.pdf.add("\n" + "\n" + "\n" + "\n");
-     // this.pdf.add(new Txt(this.getTitles()[2]).style("Title").end);
-     // this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
+      // this.pdf.add(new Txt(this.getTitles()[2]).style("Title").end);
+      // this.pdf.add(new Txt(this.getTitles()[3]).style("Title").end);
       this.pdf.add("\n");
 
       //this.pdf.add(this.getTableResponsable());
@@ -101,18 +109,14 @@ export class CrearCertificacionesDveService {
           blob,
           informacionCertificacionDve.informacionDve.nombre_docente
         );
-     
+
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
         descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
         descarga.click();
-        
       });
 
-      
-      this.popUpManager.closeAlert()
-  
-   
+      this.popUpManager.closeAlert();
     } catch (error) {
       console.error(error);
     }
@@ -247,7 +251,12 @@ export class CrearCertificacionesDveService {
           {
             text: ` ${
               informacionDVE.activo == "true" ? "Labora" : "Laboro "
-            }en  esta Institución en la modalidad de Docente de Vinculación Especial {tipoModalidad}, para los periodos académicos que a continuación se detallan, en el nivel académico  `,
+            }en  esta Institución en la modalidad de Docente de Vinculación Especial`,
+            style: "text",
+          },
+          { text: ` ${informacionDVE.categoria}`, style: "textBold" },
+          {
+            text: ` para los periodos académicos que a continuación se detallan, en el nivel académico `,
             style: "text",
           },
           { text: `${informacionDVE.nivel_academico}`, style: "textBold" },
@@ -314,64 +323,34 @@ export class CrearCertificacionesDveService {
     let listaTem = [];
 
     for (let i = 0; i < intensidad.length; i++) {
-      if ((1 + i) % 2 != 0) {
-        listaTem.push([
-          { text: `${intensidad[i].anio}`, style: "tableCell" },
-          { text: `${intensidad[i].periodo}`, style: "tableCell" },
-          { text: "", style: "tableCell" },
-          { text: "", style: "tableCell" },
-          {
-            text:
-              "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001" +
-              "\n" +
-              "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001",
-            style: "tableCell",
-          },
-          { text: "", style: "tableCell" },
-        ]);
-      } else {
-        listaTem.push([
-          {
-            text: `${intensidad[i].anio}-${intensidad[i].periodo}`,
-            style: "tableCell",
-          },
-          { text: "Totales", style: "tableCell" },
-          { text: "Hora Catedra", style: "tableCell" },
-          { text: "", style: "tableCell" },
-          { text: `${intensidad[i].horasSemana}`, style: "tableCell" },
-          { text: `${intensidad[i].horasSemestrales}`, style: "tableCell" },
-        ]);
-      }
-    }
-
-    return listaTem;
-  }
-
-  getContentTableest(): any[][] {
-    return [
-      [
-        { text: "2024", style: "tableCell" },
-        { text: "I", style: "tableCell" },
-        { text: "", style: "tableCell" },
+      listaTem.push([
+        { text: `${intensidad[i].anio}`, style: "tableCell" },
+        { text: `${intensidad[i].periodo}`, style: "tableCell" },
+        { text: `${intensidad[i].nombreAsignatura == null||[] ? "" : intensidad[i].nombreAsignatura}`, style: "tableCell" },
         { text: "", style: "tableCell" },
         {
-          text:
-            "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001" +
-            "\n" +
-            "DEL 8 DE FEBRERO AL 15 DE JUNIO DE 2001",
+          text: ` ${this.formatearFecha(
+            intensidad[i].FechaInicio
+          )} \n ${this.formatearFecha(intensidad[i].FechaFin)} `,
           style: "tableCell",
         },
         { text: "", style: "tableCell" },
-      ],
-      [
-        { text: "2024-1", style: "tableCell" },
+      ]);
+
+      listaTem.push([
+        {
+          text: `${intensidad[i].anio}-${intensidad[i].periodo}`,
+          style: "tableCell",
+        },
         { text: "Totales", style: "tableCell" },
         { text: "Hora Catedra", style: "tableCell" },
-        { text: "", style: "tableCell" },
-        { text: "18", style: "tableCell" },
-        { text: "0", style: "tableCell" },
-      ],
-    ];
+        { text: `${intensidad[i].horasSemana}`, style: "tableCell" },
+        { text: `${intensidad[i].numeroSemanas}`, style: "tableCell" },
+        { text: `${intensidad[i].horasSemestrales}`, style: "tableCell" },
+      ]);
+    }
+
+    return listaTem;
   }
 
   getFuentePdf() {
@@ -396,12 +375,11 @@ export class CrearCertificacionesDveService {
   }
 
   async firmarDocumento(file: any, nombreArchivo: string): Promise<string> {
-
-    let data =   await this.obtenerDatosSuperVisor();
-    let idDocumnento = await this.consultarTipoDeDocumento()
+    let data = await this.obtenerDatosSuperVisor();
+    let idDocumnento = await this.consultarTipoDeDocumento();
     let docsAFirmar = [
       {
-        IdDocumento:12,
+        IdDocumento: 12,
         nombre: nombreArchivo + ".pdf",
         metadatos: {},
         descripcion: "",
@@ -410,7 +388,7 @@ export class CrearCertificacionesDveService {
           {
             nombre: data.Nombre,
             cargo: data.Cargo,
-            tipoId: 'CC',
+            tipoId: "CC",
             identificacion: String(data.Documento),
           },
         ],
@@ -424,13 +402,14 @@ export class CrearCertificacionesDveService {
           .uploadFilesElectronicSign(docsAFirmar)
           .subscribe({
             next: (response: any) => {
-              if ( response &&response.length > 0) {
+              if (response && response.length > 0) {
                 resolve(response[0].file);
               } else {
-                reject('No se recibió una respuesta válida.');
+                reject("No se recibió una respuesta válida.");
               }
             },
             error: (error) => {
+              this.popUpManager.showErrorAlert("Error al firmar el documento. Intenta de nuevo.")
               reject(error);
             },
           });
@@ -440,46 +419,69 @@ export class CrearCertificacionesDveService {
     }
   }
 
-async  obtenerDatosSuperVisor():Promise<any>{
-  this.consultarTipoDeDocumento()
-    try{
- 
-      return new Promise((resolve, reject)=>{
-        this.agoraService.get('supervisor_contrato?query=DependenciaSupervisor:DEP633&sortby=FechaInicio&order=desc').subscribe({
-          next:(response:any)=>{
-            if(response && response.length>0){
-
-              resolve(response[0])
-            }else{
-              reject("No se obtuvieron los datos requeridos")
-            }
-            
-          }
-        })
-      })
-    }catch(error){
-
-    }
-  
+  async obtenerDatosSuperVisor(): Promise<any> {
+    this.consultarTipoDeDocumento();
+    try {
+      return new Promise((resolve, reject) => {
+        this.agoraService
+          .get(
+            "supervisor_contrato?query=DependenciaSupervisor:DEP633&sortby=FechaInicio&order=desc"
+          )
+          .subscribe({
+            next: (response: any) => {
+              if (response && response.length > 0) {
+                resolve(response[0]);
+              } else {
+                reject("No se obtuvieron los datos requeridos");
+              }
+            },
+          });
+      });
+    } catch (error) {}
   }
-  async consultarTipoDeDocumento():Promise<number>{
-    try{
-  return new Promise((resolve,reject)=>{
-    this.documentosCrudService.get("tipo_documento/?query=CodigoAbreviacion:CERT-DVE&limit=0").subscribe({
-      next:(response)=>{
-        if(response && response.length>0){
-              resolve(response[0].Id)
-        }else{
-          resolve(12)
-        }
-      },
-      error:(error)=>{
-        console.log(error)
-      }
-    })
-  })
-    }catch(error){
+  async consultarTipoDeDocumento(): Promise<number> {
+    try {
+      return new Promise((resolve, reject) => {
+        this.documentosCrudService
+          .get("tipo_documento/?query=CodigoAbreviacion:CERT-DVE&limit=0")
+          .subscribe({
+            next: (response) => {
+              if (response && response.length > 0) {
+                resolve(response[0].Id);
+              } else {
+                resolve(12);
+              }
+            },
+            error: (error) => {
+              console.log(error);
+            },
+          });
+      });
+    } catch (error) {}
+  }
 
-    }
+  formatearFecha(fecha: Date): string {
+    const meses: string[] = [
+      "ENERO",
+      "FEBRERO",
+      "MARZO",
+      "ABRIL",
+      "MAYO",
+      "JUNIO",
+      "JULIO",
+      "AGOSTO",
+      "SEPTIEMBRE",
+      "OCTUBRE",
+      "NOVIEMBRE",
+      "DICIEMBRE",
+    ];
+
+    const date = new Date(fecha);
+
+    const dia = date.getDate();
+    const mes = meses[date.getMonth()];
+    const anio = date.getFullYear();
+
+    return `Del ${dia} de ${mes} de ${anio}`;
   }
 }

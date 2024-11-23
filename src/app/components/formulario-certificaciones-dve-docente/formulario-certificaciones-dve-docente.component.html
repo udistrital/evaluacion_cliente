@@ -29,13 +29,16 @@
                 <span class="texto-negro p-2 text-negrilla">Hasta</span>
                 <mat-form-field class="m-0">
                   <mat-label>Selecciona año y periodo</mat-label>
-                  <mat-select formControlName="periodo_final">
-                    <mat-option *ngFor="let anioPeriodo of getAniosYPeriodos()" [value]="anioPeriodo">
+                  <mat-select formControlName="periodo_final" >
+                    <mat-option *ngFor="let anioPeriodo of getAniosYPeriodos()" [value]="anioPeriodo" >
                       {{anioPeriodo}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
+              <small *ngIf="formularioCertificacionesDve.errors?.rangoValido">
+                El periodo inicial no puede ser posterior a la fecha final.
+              </small>
             </div>
             <div class="row justify-content-center">
               <div class="col-md-4 col-sm-12 col-xxl-4 col-xl-5 d-flex align-items-center justify-content-center">

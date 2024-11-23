@@ -6,6 +6,7 @@ export class InformacionDVE {
   facultad: string;
   proyecto_curricular: string;
   ultimo_pago_dve:string;
+  categoria:string
 
   constructor(
     activo: string,
@@ -14,7 +15,8 @@ export class InformacionDVE {
     nivel_academico: string,
     facultad: string,
     proyecto_curricular: string,
-    ultimo_pago_dve:string
+    ultimo_pago_dve:string,
+    categoria:string
   ) {
     this.activo = activo;
     this.nombre_docente = nombre_docente;
@@ -23,5 +25,6 @@ export class InformacionDVE {
     this.facultad = facultad;
     this.proyecto_curricular = proyecto_curricular;
     this.ultimo_pago_dve=ultimo_pago_dve
+    this.categoria=categoria
   }
 }

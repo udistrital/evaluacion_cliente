@@ -48,7 +48,8 @@ export class CertificacionDveService {
               response.Data.informacion_dve.nivel_academico,
               response.Data.informacion_dve.facultad,
               response.Data.informacion_dve.proyecto_curricular,
-              response.Data.informacion_dve.ultimo_pago_dve
+              response.Data.informacion_dve.ultimo_pago_dve,
+              response.Data.informacion_dve.categoria
             );
             let intensidadList = response.Data.intensidad_horaria.map(
               (item: any) => {
@@ -59,7 +60,10 @@ export class CertificacionDveService {
                   item.HorasSemanales,
                   item.NumeroSemanas,
                   item.HorasSemestre,
-                  response.Data.informacion_dve.ultimo_pago_dve
+                  item.FechaInicio,
+                  item.FechaFin,
+                
+
                 );
               }
             );
@@ -77,7 +81,8 @@ export class CertificacionDveService {
       "PREGRADO",
       "ingenieria",
       "proyecto1",
-      "s"
+      "$11231",
+      "categoria"
     );
     let randomNum = Math.floor(Math.random() * 30) + 1;
     let intensidad: IntensidadHorariaDVE[] = [];
@@ -86,11 +91,12 @@ export class CertificacionDveService {
       let intensidadH = new IntensidadHorariaDVE(
         "20" + i,
         i.toString(),
-        "Sistemas",
+        ["sitesmas"],
         i.toString(),
         randomNum.toString(),
         i.toString(),
-        "200000"
+        new Date(),
+        new Date()
       );
       intensidad.push(intensidadH);
     }

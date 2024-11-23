@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { CrearCertificacionesDveService } from '../../services/certificaionesDve/crear-certificaciones-dve.service';
 import { CertificacionDveService } from '../../services/certificaionesDve/certificacionesDve.service';
 import { error } from 'console';
@@ -28,12 +28,14 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
 
   ngOnInit() {
     this.formularioCertificacionesDve = this.fg.group({
-      numero_documento:[{ value: "", require:true}] ,
-      periodo_inicial:[{ value: "", require:true}] ,
-      periodo_final: [{ value: "", require:true}] ,
-      vinculaciones: [{ value: []}],
-      incluir_salario: false,
-    });
+      numero_documento: ["", ],
+      periodo_inicial: ["", ],
+      periodo_final: ["", ],
+      vinculaciones: [[],],
+      incluir_salario: [false]
+    },);
+  this.formularioCertificacionesDve.setValidators(this.validarFecha());
+  this.formularioCertificacionesDve.updateValueAndValidity();
   }
 
   getAniosYPeriodos(): string[] {
@@ -61,39 +63,43 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
 
   async submitFormularioDve() {
 
-    try {
-      let peticion = this.getPeticion(this.formularioCertificacionesDve);
-      const Swal = require("sweetalert2");
-      Swal.fire({
-        title: "Generando",
-        text: "Por favor espera..",
-        icon: "success",
-        showConfirmButton: false,
-      });
-
-      this.certificacionesService
-        .getDataCertificactionDve(peticion)
-        .subscribe({next:(response) => {
-          if(response!=undefined){
-            console.log("response desde el sercvio2 ",response)
-          this.crearCertificado.createPfd(
-            response,
-            this.formularioCertificacionesDve.value.incluir_salario
-          );
-          }else{
-            this.popUpManager.showErrorAlert("Erro al consular")
-          }
-          
-        },error:(error:any)=>{
-          this.popUpManager.showErrorAlert("Error al consultar la información");
-
-        }});
-    //   this.crearCertificado.createPfd(
-    //     this.certificacionesService
-    // .getDataCertificactionDveTest(),
-    //     this.formularioCertificacionesDve.value.incluirSalario
-    //   );
-    } catch (error) {}
+    if(this.formularioCertificacionesDve.valid){
+      try {
+        let peticion = this.getPeticion(this.formularioCertificacionesDve);
+        const Swal = require("sweetalert2");
+        Swal.fire({
+          title: "Generando",
+          text: "Por favor espera..",
+          icon: "success",
+          showConfirmButton: false,
+        });
+  
+        this.certificacionesService
+          .getDataCertificactionDve(peticion)
+          .subscribe({next:(response) => {
+            if(response!=undefined){
+              console.log("response desde el sercvio2 ",response)
+            this.crearCertificado.createPfd(
+              response,
+              this.formularioCertificacionesDve.value.incluir_salario
+            );
+            }else{
+              this.popUpManager.showErrorAlert("Erro al consular")
+            }
+            
+          },error:(error:any)=>{
+            this.popUpManager.showErrorAlert("Error al consultar la información");
+  
+          }});
+      //   this.crearCertificado.createPfd(
+      //     this.certificacionesService
+      // .getDataCertificactionDveTest(),
+      //     this.formularioCertificacionesDve.value.incluirSalario
+      //   );
+      } catch (error) {}
+    }else{
+      this.popUpManager.showErrorAlert("Valida el formulario");
+    }
 
   }
 
@@ -117,6 +123,35 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
     };
   }
 
+
+  validarFecha(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const periodoInicial = this.formularioCertificacionesDve.get("periodo_inicial");
+      const periodoFinal = this.formularioCertificacionesDve.get("periodo_final");
+
+      if (periodoInicial && periodoFinal) {
+        const periodoInicialValue = periodoInicial.value.split("-");
+        const periodoFinalValue = periodoFinal.value.split("-");
+
+        const numeroRomanos = {
+          I: 1,
+          II: 2,
+          III: 3
+        };
+
+        if (periodoInicialValue.length > 1 && periodoFinalValue.length > 1) {
+          const periodoInicialValor = parseInt(periodoInicialValue[0]) + numeroRomanos[periodoInicialValue[1]];
+          const periodoFinalValor = parseInt(periodoFinalValue[0]) + numeroRomanos[periodoFinalValue[1]];
+
+          if (periodoInicialValor > periodoFinalValor) {
+            return { rangoValido: true };
+          }
+        }
+      }
+
+      return null;
+    };
+  }
 
 
 

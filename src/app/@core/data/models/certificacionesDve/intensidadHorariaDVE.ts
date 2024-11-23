@@ -2,11 +2,13 @@ export class IntensidadHorariaDVE {
   constructor(
     anio: string,
     periodo: string,
-    nombreAsignatura: string,
+    nombreAsignatura:string[],
     horasSemana: string,
     numeroSemanas: string,
     horasSemestrales: string,
-    salarioDocente: string
+    FechaInicio:Date,
+    FechaFin:Date
+
   ) {
     this.anio = anio;
     this.periodo = periodo;
@@ -14,14 +16,17 @@ export class IntensidadHorariaDVE {
     this.horasSemana = horasSemana;
     this.numeroSemanas = numeroSemanas;
     this.horasSemestrales = horasSemestrales;
-    this.salarioDocente = salarioDocente;
+    this.FechaFin=FechaFin
+    this.FechaInicio=FechaInicio
   }
 
   anio: string;
   periodo: string;
-  nombreAsignatura: string;
+  nombreAsignatura: string[];
   horasSemana: string;
   numeroSemanas: string;
   horasSemestrales: string;
-  salarioDocente: string;
+
+  FechaInicio:Date;
+  FechaFin:Date;
 }
