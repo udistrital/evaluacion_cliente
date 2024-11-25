@@ -42,6 +42,7 @@ export class CertificacionesDveComponent implements OnInit {
   
   obtenerRoles():string[]{
     return["DOCENTE"]
+    console.log(this.userService.getPayload().role)
 //return this.userService.getPayload().role
  
   }

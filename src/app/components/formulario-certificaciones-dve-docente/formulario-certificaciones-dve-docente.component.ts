@@ -140,11 +140,16 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
         };
 
         if (periodoInicialValue.length > 1 && periodoFinalValue.length > 1) {
-          const periodoInicialValor = parseInt(periodoInicialValue[0]) + numeroRomanos[periodoInicialValue[1]];
-          const periodoFinalValor = parseInt(periodoFinalValue[0]) + numeroRomanos[periodoFinalValue[1]];
+          const periodoInicialValor = parseInt(periodoInicialValue[0])
+          const periodoFinalValor = parseInt(periodoFinalValue[0]) 
 
           if (periodoInicialValor > periodoFinalValor) {
             return { rangoValido: true };
+            
+          }else{
+            if( numeroRomanos[periodoInicialValue[1]]>numeroRomanos[periodoFinalValue[1]]){
+              return { rangoValido: true };
+            }
           }
         }
       }

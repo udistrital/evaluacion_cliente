@@ -109,14 +109,15 @@ export class CrearCertificacionesDveService {
           blob,
           informacionCertificacionDve.informacionDve.nombre_docente
         );
-
+        this.popUpManager.showLoadingAlert("Descargando", "Espera por favor");
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
         descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
         descarga.click();
+        this.popUpManager.closeAlert();
       });
 
-      this.popUpManager.closeAlert();
+     
     } catch (error) {
       console.error(error);
     }
@@ -281,7 +282,7 @@ export class CrearCertificacionesDveService {
           [
             { text: "AÑO", style: "tableHeader" },
             { text: "PERIODO", style: "tableHeader" },
-            { text: "DEDICACIÓN ASIGNATURAS", style: "tableHeader" },
+            { text: "NOMBRE DE LA ASIGNATURA", style: "tableHeader" },
             { text: "HORAS SEMANA", style: "tableHeader" },
             { text: "NUMERO SEMANAS", style: "tableHeader" },
             { text: "TOTAL HORAS SEMESTRALES", style: "tableHeader" },
@@ -326,7 +327,7 @@ export class CrearCertificacionesDveService {
       listaTem.push([
         { text: `${intensidad[i].anio}`, style: "tableCell" },
         { text: `${intensidad[i].periodo}`, style: "tableCell" },
-        { text: `${intensidad[i].nombreAsignatura == null||[] ? "" : intensidad[i].nombreAsignatura}`, style: "tableCell" },
+        { text: `${intensidad[i].nombreAsignatura == null? "" : intensidad[i].nombreAsignatura}`, style: "tableCell" },
         { text: "", style: "tableCell" },
         {
           text: ` ${this.formatearFecha(
@@ -339,7 +340,7 @@ export class CrearCertificacionesDveService {
 
       listaTem.push([
         {
-          text: `${intensidad[i].anio}-${intensidad[i].periodo}`,
+          text: `${intensidad[i].anio}-${this.getnumeroRomanos(parseInt(intensidad[i].periodo))}`,
           style: "tableCell",
         },
         { text: "Totales", style: "tableCell" },
@@ -376,6 +377,7 @@ export class CrearCertificacionesDveService {
 
   async firmarDocumento(file: any, nombreArchivo: string): Promise<string> {
     let data = await this.obtenerDatosSuperVisor();
+    this.popUpManager.showLoadingAlert("Firmando", "Espera... por favor");
     let idDocumnento = await this.consultarTipoDeDocumento();
     let docsAFirmar = [
       {
@@ -403,6 +405,7 @@ export class CrearCertificacionesDveService {
           .subscribe({
             next: (response: any) => {
               if (response && response.length > 0) {
+                this.popUpManager.closeAlert()
                 resolve(response[0].file);
               } else {
                 reject("No se recibió una respuesta válida.");
@@ -484,4 +487,23 @@ export class CrearCertificacionesDveService {
 
     return `Del ${dia} de ${mes} de ${anio}`;
   }
+
+
+  getnumeroRomanos (number:number)  {
+   const numeroEnRomano={ 
+    1: "I",
+    2: "II",
+    3: "III",
+    4:"IV"
+  }
+  
+
+  if (number<5){
+    return numeroEnRomano[number]
+  }else{
+    return null
+  }
+ 
+  };
+
 }
