@@ -1,2 +1,3 @@
-<!-- <ngx-formulario-certificaciones-dve [titulo]="titulo" [nombreDocente]="docente.nombreDocente"  [documentoDocente]="docente.documentoDocente"></ngx-formulario-certificaciones-dve> -->
-<ngx-formulario-certificaciones-dve-talento-humano [titulo]="'CERTIFICADO LABORAL DE DOCENTES DE VINCULACIÓN ESPECIAL'"></ngx-formulario-certificaciones-dve-talento-humano>
+ <ngx-formulario-certificaciones-dve-docente   *ngIf="menuDocente"  [titulo]="'CERTIFICADO LABORAL DE DOCENTES DE VINCULACIÓN ESPECIAL'" [nombreDocente]="docente.nombreDocente"  [documentoDocente]="docente.documentoDocente"></ngx-formulario-certificaciones-dve-docente>
+
+ <ngx-formulario-certificaciones-dve-talento-humano *ngIf="menuTalentoHumano" [titulo]="'CERTIFICADO LABORAL DE DOCENTES DE VINCULACIÓN ESPECIAL'"></ngx-formulario-certificaciones-dve-talento-humano> 

@@ -70,4 +70,23 @@ export class PopUpManager {
             confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
         });
     }
+
+
+    public showLoadingAlert(title, text) {
+        (Swal as any).fire({
+            title: this.translate.instant(title),
+            text: text,
+            didOpen: () => {
+                Swal.showLoading();
+              },allowOutsideClick: false,
+              width: '400px',
+              showConfirmButton: false,
+        });
+    }
+
+ 
+
+  closeAlert(): void {
+    Swal.close();
+  }
 }
