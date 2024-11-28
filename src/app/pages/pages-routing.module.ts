@@ -41,12 +41,13 @@ const routes: Routes = [
         path: 'certificaciones',
         loadChildren:
           './certificaciones/certificaciones.module#CertificacionesModule',
-        canActivate: [AuthGuard],
+        //canActivate: [AuthGuard],
       },
       {
-        path: 'certificacionesdve',
+        path: 'certificaciones_dve',
         loadChildren:
           './certificaciones-dve/certificaciones-dve.module#CertificacionesDveModule',
+          canActivate: [AuthGuard],
       },
       {
         path: '',

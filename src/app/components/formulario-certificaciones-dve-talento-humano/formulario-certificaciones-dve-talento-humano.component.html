@@ -11,11 +11,18 @@
                   Identificación del docente
                 </p>
               </div>
-              <div class="col-md-6 col-sm-12 col-xxl-4 d-flex align-items-start">
-                <mat-form-field class="m-0 w-60">
-                  <mat-label >Identificación del docente</mat-label>
-                  <input matInput formControlName="documentoDocente" placeholder="Ingresar el número de identificación del docente">
-                </mat-form-field>
+              <div class="col-md-6 col-sm-12 col-xxl-4d box-input">
+                <div>
+                  <mat-form-field class="m-0 w-60">
+                    <mat-label >Identificación del docente</mat-label>
+                    <input matInput formControlName="numero_documento" placeholder="Ingresar el número de identificación del docente" type="text" (input)="eliminarLetras($event.target.value)">
+                  </mat-form-field>
+                </div>
+                <div>
+                  <small *ngIf="formuarioValido && formularioCertificacionesDveTalentoHumano.get('numero_documento')?.invalid">
+                    El número de documento es requerido.
+                  </small>
+                </div>
               </div>
             </div>
             <div class="row justify-content-center mt-3">
@@ -25,7 +32,7 @@
                     <span class="d-block">INCLUIR INFORMACION DE</span>
                     <span class="d-block">SALARIO</span>
                   </div>
-                  <mat-checkbox class="ml-4 mr-5" formControlName="incluirSalario"></mat-checkbox>
+                  <mat-checkbox class="ml-4 mr-5" formControlName="incluir_salario"></mat-checkbox>
                 </div>
               </div>
               <div class="col-md-6 col-sm-12 col-xxl-3 d-flex align-items-center justify-content-start custom-margin-left">
