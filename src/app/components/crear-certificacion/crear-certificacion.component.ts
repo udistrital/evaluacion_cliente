@@ -574,12 +574,12 @@ export class CrearCertificacionComponent implements OnInit {
               {
                 text:
                   'ACTA DE SUSPENSIÓN DE ' +
-                  this.formato(this.novedadSuspension[contadorSuspen].periodosuspension) +
+                  this.formato(this.novedadSuspension[contadorSuspen].PeriodoSuspension) +
                   ' DIAS' +
                   ' DESDE El ' +
-                  this.formato(this.novedadSuspension[contadorSuspen].fechasuspension.slice(0, 10)) +
+                  this.formato(this.novedadSuspension[contadorSuspen].FechaSuspension.slice(0, 10)) +
                   ' HASTA El ' +
-                  this.formato(this.novedadSuspension[contadorSuspen].fechafinsuspension.slice(0, 10)),
+                  this.formato(this.novedadSuspension[contadorSuspen].FechaFinSuspension.slice(0, 10)),
                 style: 'tabla2',
               },
             ],
@@ -587,9 +587,9 @@ export class CrearCertificacionComponent implements OnInit {
           contadorSuspen++;
           break;
         case 'Cesión':
-          const cedente = this.novedadCesion[contadorCesion].cedente;
+          const cedente = this.novedadCesion[contadorCesion].Cedente;
           if (this.dataContrato[0].IdProveedor === cedente) {
-            const fechaCesion = new Date(this.novedadCesion[contadorCesion].fechacesion);
+            const fechaCesion = new Date(this.novedadCesion[contadorCesion].FechaCesion);
             fechaCesion.setTime(fechaCesion.getTime() - 24 * 60 * 60 * 1000);
             filasNovedades.push(
               [
@@ -597,7 +597,7 @@ export class CrearCertificacionComponent implements OnInit {
                 {
                   text: `N° ${contadorCesion + 1} del contrato de ${tipoContrato} N° ` +
                     `${this.dataContrato[0].ContratoSuscrito} - ${this.dataContrato[0].Vigencia}. ` +
-                    'Fecha de la cesión: ' + this.formato(this.novedadCesion[contadorCesion].fechacesion.slice(0, 10)),
+                    'Fecha de la cesión: ' + this.formato(this.novedadCesion[contadorCesion].FechaCesion.slice(0, 10)),
                   style: 'tabla2',
                 },
               ],
@@ -611,7 +611,7 @@ export class CrearCertificacionComponent implements OnInit {
               { text: 'REINICIO:', style },
               {
                 text: 'Fecha de reinicio del contrato: ' +
-                  this.formato(this.novedadReinicio[contadorReinicio].fechareinicio),
+                  this.formato(this.novedadReinicio[contadorReinicio].FechaReinicio),
                 style: 'tabla2',
               },
             ],
@@ -623,7 +623,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'FECHA DE LIQUIDACIÓN:', style },
               {
-                text: this.formato(this.novedadLiquidacion[0].fechaliquidacion),
+                text: this.formato(this.novedadLiquidacion[0].FechaLiquidacion),
                 style: 'tabla2',
               },
             ],
@@ -634,7 +634,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'TERMINACIÓN:', style },
               {
-                text: this.formato(this.novedadTerminacion[0].fechaterminacionanticipada.slice(0, 10)),
+                text: this.formato(this.novedadTerminacion[0].Fechaterminacionanticipada.slice(0, 10)),
                 style: 'tabla2',
               },
             ],
@@ -647,9 +647,9 @@ export class CrearCertificacionComponent implements OnInit {
               { text: `${textModificacion} ${contadorModificacion}:`, style },
               {
                 text:
-                  'Se adicionó el valor de $' + this.numeromiles(this.novedadAdicion[contadorAdicion].valoradicion) +
+                  'Se adicionó el valor de $' + this.numeromiles(this.novedadAdicion[contadorAdicion].ValorAdicion) +
                   '.\n\n' + ' Fecha de la adición: ' +
-                  this.formato(this.novedadAdicion[contadorAdicion].fechaadicion.slice(0, 10)),
+                  this.formato(this.novedadAdicion[contadorAdicion].FechaAdicion.slice(0, 10)),
                 style: 'tabla2',
               },
             ],
@@ -662,7 +662,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: `${textModificacion} ${contadorModificacion}:`, style },
               {
-                text: 'Prórroga de (' + this.formato(this.novedadProrroga[contadorProrroga].tiempoprorroga) +
+                text: 'Prórroga de (' + this.formato(this.novedadProrroga[contadorProrroga].TiempoProrroga) +
                   ') día(s).', style: 'tabla2',
               },
             ],
@@ -671,11 +671,11 @@ export class CrearCertificacionComponent implements OnInit {
           break;
         case 'Adición/Prórroga':
           contadorModificacion++;
-          const fechaFin = new Date(this.novedadAdiPro[contadorAdiPro].fechafinefectiva).toISOString();
-          fechaProrroga = new Date(this.novedadAdiPro[contadorAdiPro].fechaadicion);
+          const fechaFin = new Date(this.novedadAdiPro[contadorAdiPro].FechaFinEfectiva).toISOString();
+          fechaProrroga = new Date(this.novedadAdiPro[contadorAdiPro].FechaAdicion);
 
-          const tiempo = this.novedadAdiPro[contadorAdiPro].tiempoprorroga;
-          const valoradicion = this.novedadAdiPro[contadorAdiPro].valoradicion;
+          const tiempo = this.novedadAdiPro[contadorAdiPro].TiempoProrroga;
+          const valoradicion = this.novedadAdiPro[contadorAdiPro].ValorAdicion;
           const valorTotal = parseInt(valoradicion, 10) + parseInt(this.valorContrato, 10);
 
           const text = 'Se adicionó valor de ' + this.numerosAletrasService.convertir(parseInt(valoradicion, 10)).toLowerCase() +
@@ -702,7 +702,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'NOVEDAD INICIO: ', style },
               {
-                text: 'Fecha registro: ' + this.formato(this.novedadInicio[contadorInicio].fecharegistro.slice(0, 10)),
+                text: 'Fecha registro: ' + this.formato(this.novedadInicio[contadorInicio].FechaRegistro.slice(0, 10)),
                 style: 'tabla2',
               },
             ],
@@ -849,25 +849,25 @@ export class CrearCertificacionComponent implements OnInit {
           this.allNovedades = data;
           this.datosNovedades.push('Sin novedades');
           for (let i = 0; i < data.length; i++) {
-            switch (data[i].tiponovedad) {
+            switch (data[i].TipoNovedad) {
               case 1:
-                const fechaInicioSuspension = moment(data[i].fechasuspension.slice(0, 10) + 'T12:00:00Z');
+                const fechaInicioSuspension = moment(data[i].FechaSuspension.slice(0, 10) + 'T12:00:00Z');
                 if (this.fechaFin !== '' && fechaInicioSuspension < moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z')) {
                   this.datosNovedades.push('Suspensión');
                   this.novedadSuspension.push(data[i]);
                 }
                 break;
               case 2:
-                const fechaCesion = new Date(data[i].fechacesion);
-                if (this.dataContrato[0].IdProveedor === data[i].cedente) { // Cedente termina y puede incluir novedad
+                const fechaCesion = new Date(data[i].FechaCesion);
+                if (this.dataContrato[0].IdProveedor === data[i].Cedente) { // Cedente termina y puede incluir novedad
                   fechaCesion.setTime(fechaCesion.getTime() - 24 * 60 * 60 * 1000);
                   this.fechaFin = fechaCesion.toISOString();
                   this.datosNovedades.push('Cesión');
                   this.novedadCesion.push(data[i]);
-                } else if (this.dataContrato[0].IdProveedor === data[i].cesionario) { // Cesionario inicia acá y no puede incluir novedad
+                } else if (this.dataContrato[0].IdProveedor === data[i].Cesionario) { // Cesionario inicia acá y no puede incluir novedad
                   this.fechaInicio = fechaCesion.toISOString();
                   if (this.fechaFin === '') {
-                    this.fechaFin = new Date(data[i].fechafinefectiva).toISOString();
+                    this.fechaFin = new Date(data[i].Fechafinefectiva).toISOString();
                   }
                 }
                 break;
@@ -880,9 +880,9 @@ export class CrearCertificacionComponent implements OnInit {
                 this.novedadLiquidacion.push(data[i]);
                 break;
               case 5:
-                const fechaTerminacion = moment(data[i].fechaterminacionanticipada.slice(0, 10) + 'T12:00:00Z');
+                const fechaTerminacion = moment(data[i].Fechaterminacionanticipada.slice(0, 10) + 'T12:00:00Z');
                 if (this.fechaFin !== '' && fechaTerminacion < moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z')) {
-                  this.fechaFin = new Date(data[i].fechaterminacionanticipada).toISOString();
+                  this.fechaFin = new Date(data[i].Fechaterminacionanticipada).toISOString();
                   this.datosNovedades.push('Terminación');
                   this.novedadTerminacion.push(data[i]);
                 }
@@ -896,14 +896,14 @@ export class CrearCertificacionComponent implements OnInit {
                 this.novedadProrroga.push(data[i]);
                 break;
               case 8:
-                const fechaInicioAdicion = moment(data[i].fechaadicion.slice(0, 10) + 'T12:00:00Z').subtract(1, 'days');
+                const fechaInicioAdicion = moment(data[i].FechaAdicion.slice(0, 10) + 'T12:00:00Z').subtract(1, 'days');
                 const fechaFinContrato = this.fechaFin ? moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z') : '';
                 if (fechaFinContrato === '' || fechaFinContrato.format() === fechaInicioAdicion.format()) {
                   if (this.fechaFin !== '') {
                     this.datosNovedades.push('Adición/Prórroga');
                     this.novedadAdiPro.push(data[i]);
                   }
-                  this.fechaFin = new Date(data[i].fechafinefectiva).toISOString();
+                  this.fechaFin = new Date(data[i].Fechafinefectiva).toISOString();
                 }
                 break;
               case 9:
