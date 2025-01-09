@@ -634,7 +634,7 @@ export class CrearCertificacionComponent implements OnInit {
             [
               { text: 'TERMINACIÓN:', style },
               {
-                text: this.formato(this.novedadTerminacion[0].Fechaterminacionanticipada.slice(0, 10)),
+                text: this.formato(this.novedadTerminacion[0].FechaTerminacionAnticipada.slice(0, 10)),
                 style: 'tabla2',
               },
             ],
@@ -867,7 +867,7 @@ export class CrearCertificacionComponent implements OnInit {
                 } else if (this.dataContrato[0].IdProveedor === data[i].Cesionario) { // Cesionario inicia acá y no puede incluir novedad
                   this.fechaInicio = fechaCesion.toISOString();
                   if (this.fechaFin === '') {
-                    this.fechaFin = new Date(data[i].Fechafinefectiva).toISOString();
+                    this.fechaFin = new Date(data[i].FechaFinEfectiva).toISOString();
                   }
                 }
                 break;
@@ -880,9 +880,9 @@ export class CrearCertificacionComponent implements OnInit {
                 this.novedadLiquidacion.push(data[i]);
                 break;
               case 5:
-                const fechaTerminacion = moment(data[i].Fechaterminacionanticipada.slice(0, 10) + 'T12:00:00Z');
+                const fechaTerminacion = moment(data[i].FechaTerminacionAnticipada.slice(0, 10) + 'T12:00:00Z');
                 if (this.fechaFin !== '' && fechaTerminacion < moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z')) {
-                  this.fechaFin = new Date(data[i].Fechaterminacionanticipada).toISOString();
+                  this.fechaFin = new Date(data[i].FechaTerminacionAnticipada).toISOString();
                   this.datosNovedades.push('Terminación');
                   this.novedadTerminacion.push(data[i]);
                 }
@@ -898,12 +898,14 @@ export class CrearCertificacionComponent implements OnInit {
               case 8:
                 const fechaInicioAdicion = moment(data[i].FechaAdicion.slice(0, 10) + 'T12:00:00Z').subtract(1, 'days');
                 const fechaFinContrato = this.fechaFin ? moment(this.fechaFin.slice(0, 10) + 'T12:00:00Z') : '';
-                if (fechaFinContrato === '' || fechaFinContrato.format() === fechaInicioAdicion.format()) {
+                if (fechaFinContrato === '' || fechaFinContrato.format() === fechaInicioAdicion.format() ||
+                  (fechaFinContrato.daysInMonth() === 31 && fechaFinContrato.format() === fechaInicioAdicion.clone().subtract(1, 'days').format())
+                ) {
                   if (this.fechaFin !== '') {
                     this.datosNovedades.push('Adición/Prórroga');
                     this.novedadAdiPro.push(data[i]);
                   }
-                  this.fechaFin = new Date(data[i].Fechafinefectiva).toISOString();
+                  this.fechaFin = new Date(data[i].FechaFinEfectiva).toISOString();
                 }
                 break;
               case 9:
