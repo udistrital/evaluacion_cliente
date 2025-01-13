@@ -53,7 +53,7 @@ export class CrearCertificacionesDveService {
     this.popUpManager.closeAlert();
     this.pdf = new PdfMakeWrapper();
     this.pdf = this.getStyles();
-    this.pdf.pageMargins([80, 100, 60, 60]);
+    this.pdf.pageMargins([40, 100,40, 0]);
     const ultimoPago =
       informacionCertificacionDve.intensidadHorariaDVE.length - 1;
     const fecha = new Date();
@@ -103,12 +103,18 @@ export class CrearCertificacionesDveService {
 
       //this.pdf.add(this.getTableResponsable());
 
+
       this.pdf.add("\n" + "\n");
+      this.pdf.create().getBase64((data) => {
+        console.log("data", data);
+      });
       this.pdf.create().getBlob(async (blob) => {
+
         let pdfBase64 = await this.firmarDocumento(
           blob,
           informacionCertificacionDve.informacionDve.nombre_docente
         );
+
         this.popUpManager.showLoadingAlert("Descargando", "Espera por favor");
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
@@ -234,6 +240,18 @@ export class CrearCertificacionesDveService {
         bold: true,
         alignment: "center",
       },
+      tableCellJustify: {
+        fontSize: 6,
+      alignment: 'justify',
+      lineHeight: 1.2
+      },justify: {
+      alignment: 'justify',
+      lineHeight: 1.2
+      },
+      center: {
+        alignment: 'center', 
+        lineHeight: 1.2,  
+        }
     });
     return this.pdf;
   }
@@ -252,20 +270,9 @@ export class CrearCertificacionesDveService {
           {
             text: ` ${
               informacionDVE.activo == "true" ? "Labora" : "Laboro "
-            }en  esta Institución en la modalidad de Docente de Vinculación Especial`,
+            }en  esta Institución en la modalidad de Docente de Vinculación Especial con la siguiente intensidad horaria:`,
             style: "text",
           },
-          { text: ` ${informacionDVE.categoria}`, style: "textBold" },
-          {
-            text: ` para los periodos académicos que a continuación se detallan, en el nivel académico `,
-            style: "text",
-          },
-          { text: `${informacionDVE.nivel_academico}`, style: "textBold" },
-          { text: "  adscrito a la Facultad de : ", style: "text" },
-          { text: `${informacionDVE.facultad}`, style: "textBold" },
-          { text: "  en el Proyecto curricular: ", style: "text" },
-          { text: `${informacionDVE.proyecto_curricular}`, style: "textBold" },
-          { text: ", con la siguiente intensidad horaria: ", style: "text" },
         ],
       },
     ];
@@ -274,28 +281,88 @@ export class CrearCertificacionesDveService {
   }
 
   getTable(intensidad: IntensidadHorariaDVE[]) {
-    const table = {
-      table: {
-        style: "tableHeader",
-        widths: ["auto", "*", "*", "auto", "auto", "auto"],
-        body: [
-          [
-            { text: "AÑO", style: "tableHeader" },
-            { text: "PERIODO", style: "tableHeader" },
-            { text: "NOMBRE DE LA ASIGNATURA", style: "tableHeader" },
-            { text: "HORAS SEMANA", style: "tableHeader" },
-            { text: "NUMERO SEMANAS", style: "tableHeader" },
-            { text: "TOTAL HORAS SEMESTRALES", style: "tableHeader" },
-          ],
-        ],
-      },
-    };
-    this.getContentTable(intensidad).forEach((element) => {
-      table.table.body.push(element);
+    console.log("intensidad", intensidad);
+  
+
+    let tables: any[] = [];
+  
+    intensidad.forEach((element) => {
+  
+      let table: any = {
+        margin: [0, 5, 0, 0], 
+        pageBreak: 'auto', 
+        table: {
+          dontBreakRows: true,
+          style: "tableHeader",
+          widths: ["12%", "12%", "16%", "14%", "12%", "14%", "10%", "10%"],
+          body: [] 
+        },
+        layout: {
+          vAlign: 'middle' 
+        }
+      };
+  
+      table.table.body.push([
+        { text: "PERIODO", style: "tableHeader" },
+        { text: "FACULTAD", style: "tableHeader" },
+        { text: "RESOLUCION", style: "tableHeader" },
+        { text: "ASIGNATURA", style: "tableHeader" },
+        { text: "CATEGORIA", style: "tableHeader" },
+        { text: "TOTAL, HORAS SEMESTRALES", style: "tableHeader" },
+        { text: "NUMERO SEMANAS", style: "tableHeader" },
+        { text: "HORAS SEMANA", style: "tableHeader" },
+      ]);
+  
+      const content = this.getContentTable(element);
+  
+      content.forEach((row) => {
+        table.table.body.push(row);
+      });
+  
+      tables.push(table);
     });
-    return table;
+  
+    return tables;
+  } getContentTable(intensidad: IntensidadHorariaDVE): any[][] {
+    let listaTem = [];
+
+    
+      listaTem.push([
+        { text: `${intensidad.anio}`, style: "tableCell" },
+        { text: `${intensidad.periodo}`, style: "tableCell" },
+        "",
+        { text: `${intensidad.nombreAsignatura == null? "" : intensidad.nombreAsignatura}`, style: "center" ,  fontSize: 8, wrap: true},
+        { text: "", style: "text" },
+        {
+          text: ` ${this.formatearFecha(
+            intensidad.FechaInicio
+          )} \n ${this.formatearFecha(intensidad.FechaFin)} `,
+          style: "tableCell",
+        },
+        { text: "", style: "tableCell" },
+      
+        "",
+      ]);
+
+      listaTem.push([
+        {
+          text: `DEDICACION`,
+          style: "tableHeader",
+        },
+        { text: "", style: "tableCell" },
+        { text: "PROYECTO", style: "tableHeader" },
+        { text: `${intensidad.proyectoCurricular}`, style: "tableCellJustify" },
+        { text: `NIVEL ACADEMICO`, style: "tableHeader" },
+        { text: ``, style: "tableCell" },
+        { text: `INTERVALO`, style: "tableHeader" },
+        { text: ``, style: "tableCell" },
+      ]);
+    
+
+    return listaTem;
   }
 
+  
   getTableResponsable() {
     const table = {
       table: {
@@ -320,39 +387,7 @@ export class CrearCertificacionesDveService {
     return table;
   }
 
-  getContentTable(intensidad: IntensidadHorariaDVE[]): any[][] {
-    let listaTem = [];
-
-    for (let i = 0; i < intensidad.length; i++) {
-      listaTem.push([
-        { text: `${intensidad[i].anio}`, style: "tableCell" },
-        { text: `${intensidad[i].periodo}`, style: "tableCell" },
-        { text: `${intensidad[i].nombreAsignatura == null? "" : intensidad[i].nombreAsignatura}`, style: "tableCell" },
-        { text: "", style: "tableCell" },
-        {
-          text: ` ${this.formatearFecha(
-            intensidad[i].FechaInicio
-          )} \n ${this.formatearFecha(intensidad[i].FechaFin)} `,
-          style: "tableCell",
-        },
-        { text: "", style: "tableCell" },
-      ]);
-
-      listaTem.push([
-        {
-          text: `${intensidad[i].anio}-${this.getnumeroRomanos(parseInt(intensidad[i].periodo))}`,
-          style: "tableCell",
-        },
-        { text: "Totales", style: "tableCell" },
-        { text: "Hora Catedra", style: "tableCell" },
-        { text: `${intensidad[i].horasSemana}`, style: "tableCell" },
-        { text: `${intensidad[i].numeroSemanas}`, style: "tableCell" },
-        { text: `${intensidad[i].horasSemestrales}`, style: "tableCell" },
-      ]);
-    }
-
-    return listaTem;
-  }
+ 
 
   getFuentePdf() {
     PdfMakeWrapper.setFonts(pdfFontTime, {
