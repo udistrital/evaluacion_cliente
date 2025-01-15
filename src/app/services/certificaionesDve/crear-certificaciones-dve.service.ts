@@ -9,10 +9,13 @@ import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/inf
 import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve/intensidadHorariaDVE.js";
 import swal from "sweetalert2";
 import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.service.js";
-import { error } from "console";
+import { error, table } from "console";
 import { AgoraService } from "../agora.service.js";
 import { DocumentosCrudService } from "./documentos-crud.service.js";
 import { PopUpManager } from "./../../managers/popUpManager";
+import { Cell } from "ng2-smart-table";
+import { UtilidadesService } from "../../@core/utils/utilidades.service.js";
+import { style } from "@angular/animations";
 
 @Injectable({
   providedIn: "root",
@@ -24,8 +27,9 @@ export class CrearCertificacionesDveService {
     private firmaElectronicaService: FirmaElectronicaService,
     private agoraService: AgoraService,
     private documentosCrudService: DocumentosCrudService,
-    private popUpManager: PopUpManager
-  ) {}
+    private popUpManager: PopUpManager,
+    private utilidadesService: UtilidadesService
+  ) { }
 
   /**
    * Tipo de contrato:
@@ -42,10 +46,10 @@ export class CrearCertificacionesDveService {
    * - Labora
    */
   async createPfd(
-    informacionCertificacionDve: InformacionCertificacionDve,
+    informacionCertificacionDve: InformacionDVE,
     icluirSalario: boolean
   ) {
-    console.log("ifno", informacionCertificacionDve, "incluir", icluirSalario);
+
     this.popUpManager.showLoadingAlert(
       "Descargando",
       "Por favor espera un momento"
@@ -53,15 +57,13 @@ export class CrearCertificacionesDveService {
     this.popUpManager.closeAlert();
     this.pdf = new PdfMakeWrapper();
     this.pdf = this.getStyles();
-    this.pdf.pageMargins([80, 100, 60, 60]);
-    const ultimoPago =
-      informacionCertificacionDve.intensidadHorariaDVE.length - 1;
+    this.pdf.pageMargins([40, 100, 40, 0]);
     const fecha = new Date();
 
     const docDefinition = {
-      content: [this.getBody(informacionCertificacionDve.informacionDve)],
+      content: [this.getBody(informacionCertificacionDve)],
       contentTable: [
-        this.getTable(informacionCertificacionDve.intensidadHorariaDVE),
+        this.getTable(informacionCertificacionDve.intensidadHoraria),
       ],
     };
     this.pdf.footer((currentPage, pageCount) =>
@@ -85,14 +87,14 @@ export class CrearCertificacionesDveService {
       this.pdf.add("\n");
       icluirSalario == true
         ? this.pdf.add(
-            new Txt(
-              `Salario mensual : ${informacionCertificacionDve.informacionDve.ultimo_pago_dve}`
-            ).style("textBold").end
-          )
+          new Txt(
+            `\n Salario mensual : ${informacionCertificacionDve.ultimoPagoDve}`
+          ).style("textBold").end
+        )
         : "";
       this.pdf.add(
         new Txt(
-          `Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${fecha.getMonth()}  del año ${fecha.getFullYear()}  a solicitud del interesado. `
+          `Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${this.obtenerMes(fecha.getMonth())}  del año ${fecha.getFullYear()}  a solicitud del interesado. `
         ).style("text").end
       );
 
@@ -104,23 +106,21 @@ export class CrearCertificacionesDveService {
       //this.pdf.add(this.getTableResponsable());
 
       this.pdf.add("\n" + "\n");
+
       this.pdf.create().getBlob(async (blob) => {
         let pdfBase64 = await this.firmarDocumento(
           blob,
-          informacionCertificacionDve.informacionDve.nombre_docente
+          informacionCertificacionDve.nombreDocente
         );
+
         this.popUpManager.showLoadingAlert("Descargando", "Espera por favor");
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
-        descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
+        descarga.download = `${informacionCertificacionDve.nombreDocente}.pdf`;
         descarga.click();
         this.popUpManager.closeAlert();
       });
-
-     
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) { }
   }
 
   getHeader(currentPage, pageCount) {
@@ -234,37 +234,53 @@ export class CrearCertificacionesDveService {
         bold: true,
         alignment: "center",
       },
+      tableCellJustify: {
+        fontSize: 6,
+        alignment: "justify",
+        lineHeight: 1.2,
+      },
+      justify: {
+        alignment: "justify",
+        lineHeight: 1.2,
+      },
+      center: {
+        alignment: "center",
+        lineHeight: 1.2,
+      },
     });
     return this.pdf;
   }
   getBody(informacionDVE: InformacionDVE) {
+
     const content = [
       {
         text: [
           { text: "Que el (la) Señor(a) ", style: "text" },
-          { text: `${informacionDVE.nombre_docente} `, style: "textBold" },
-          { text: " identificado(a) con cédula de ciudadania ", style: "text" },
+          { text: `${informacionDVE.nombreDocente} `, style: "textBold" },
+          { text: " identificado(a) con cédula de ciudadanía ", style: "text" },
           { text: " número ", style: "text" },
           {
-            text: `${informacionDVE.numero_documento}` + ", ",
+            text: `${informacionDVE.numeroDocumento}, `,
             style: "textBold",
           },
           {
-            text: ` ${
-              informacionDVE.activo == "true" ? "Labora" : "Laboro "
-            }en  esta Institución en la modalidad de Docente de Vinculación Especial`,
+            text: `${informacionDVE.activo === "true" ? "Labora" : "Laboró"
+              } en esta Institución en la modalidad de Docente de Vinculación Especial`,
             style: "text",
           },
-          { text: ` ${informacionDVE.categoria}`, style: "textBold" },
           {
-            text: ` para los periodos académicos que a continuación se detallan, en el nivel académico `,
+            text:` ${informacionDVE.dedicacion}`,
+            style: "textBold",
+          },
+          {
+            text: `, para los periodos académicos que a continuación se detallan, en el nivel académico`,
             style: "text",
           },
-          { text: `${informacionDVE.nivel_academico}`, style: "textBold" },
-          { text: "  adscrito a la Facultad de : ", style: "text" },
+          { text: `${informacionDVE.categoria}`, style: "textBold" },
+          { text: " adscrito a la Facultad de: ", style: "text" },
           { text: `${informacionDVE.facultad}`, style: "textBold" },
-          { text: "  en el Proyecto curricular: ", style: "text" },
-          { text: `${informacionDVE.proyecto_curricular}`, style: "textBold" },
+          { text: " en el Proyecto curricular: ", style: "text" },
+          { text: `${informacionDVE.proyectoCurricular}`, style: "textBold" },
           { text: ", con la siguiente intensidad horaria: ", style: "text" },
         ],
       },
@@ -274,26 +290,135 @@ export class CrearCertificacionesDveService {
   }
 
   getTable(intensidad: IntensidadHorariaDVE[]) {
-    const table = {
+    let tables = {
+      margin: [0, 5, 0, 10],
+      pageBreak: "auto",
       table: {
+        dontBreakRows: true,
         style: "tableHeader",
-        widths: ["auto", "*", "*", "auto", "auto", "auto"],
+        widths: ["8%", "9%", "13%", "19%", "18%", "9%", "11%", "13%"],
         body: [
           [
             { text: "AÑO", style: "tableHeader" },
             { text: "PERIODO", style: "tableHeader" },
-            { text: "NOMBRE DE LA ASIGNATURA", style: "tableHeader" },
+            { text: "RESOLUCION", style: "tableHeader" },
+            { text: "PROYECTO", style: "tableHeader" },
+            { text: "DEDICACÍON ASIGNATURAS", style: "tableHeader" },
             { text: "HORAS SEMANA", style: "tableHeader" },
             { text: "NUMERO SEMANAS", style: "tableHeader" },
-            { text: "TOTAL HORAS SEMESTRALES", style: "tableHeader" },
+            { text: "TOTAL, HORAS SEMESTRALES", style: "tableHeader" },
           ],
         ],
       },
+      layout: {
+        vAlign: "middle",
+      },
     };
-    this.getContentTable(intensidad).forEach((element) => {
-      table.table.body.push(element);
+
+    let dataTable = [];
+    intensidad.forEach((element) => {
+      const content = this.getContentTable(element);
+
+      content.forEach((row) => {
+        tables.table.body.push(row);
+      });
     });
-    return table;
+    tables.table.body.push();
+
+    return tables;
+  }
+
+  getContentTable(intensidad: IntensidadHorariaDVE): any[][] {
+    let listaData = [];
+
+    let horasemanasTotales: number = 0;
+    let horasemanaSemestrales: number = 0;
+    let totalsemanas: number = 0;
+
+    intensidad.resoluciones.forEach((resolucion, index) => {
+      horasemanasTotales += resolucion.horasSemanales;
+      horasemanaSemestrales += resolucion.horasSemestre;
+      totalsemanas += resolucion.numeroSemanas;
+
+      listaData.push([
+        {
+          text: `${intensidad.anio}`,
+          style: "center",
+          fontSize: 10,
+          rowSpan: intensidad.resoluciones.length,
+        },
+        {
+          text: `${this.utilidadesService.decimalToRoman(intensidad.periodo)}`,
+          style: "center",
+          fontSize: 10,
+          rowSpan: intensidad.resoluciones.length,
+        },
+        { text: `${resolucion.resolucion}`, style: "tableCell" },
+        {
+          text: `${resolucion.proyectoCurricular}`,
+          style: "center",
+          // rowSpan: intensidad.resoluciones.length,
+          fontSize: 7,
+        },
+        {
+          text: `${this.agregarSaltoDeLinea(resolucion.asignaturas)}`,
+          fontSize: 7,
+          style: "center",
+        },
+        { text: `${resolucion.horasSemanales}`, fontSize: 10, style: "center" },
+        {
+          text: [
+            {
+              text: `Del ${this.formatearFecha(
+                resolucion.fechaInicio
+              )} al ${this.formatearFecha(resolucion.fechaFin)}\n`,
+              fontSize: 8,
+              style: "center",
+            },
+            {
+              text: `(${resolucion.numeroSemanas} Semanas)\n`,
+              fontSize: 7,
+              style: "center",
+            },
+          ],
+          alignment: "center",
+        },
+        { text: `${resolucion.horasSemestre}`, fontSize: 10, style: "center" },
+      ]);
+    });
+
+    listaData.push([
+      {
+        text: `${intensidad.anio}-${this.utilidadesService.decimalToRoman(
+          intensidad.periodo
+        )}`,
+        style: "center",
+        fontSize: 9,
+       // rowSpan: intensidad.resoluciones.length,
+      },
+      {
+        text: `Totales`,
+        style: "center",
+        fontSize: 9,
+      //  rowSpan: intensidad.resoluciones.length,
+      },
+      { text: ``, style: "tableCell" },
+      { text: ``, fontSize: 7, style: "center" },
+      { text: `${intensidad.tipoVinculacion}`, fontSize: 7, style: "center" },
+      { text: `${horasemanasTotales}`, fontSize: 9, style: "center" },
+      {
+        text: `${totalsemanas}`,
+        fontSize: 9,
+        style: "center",
+
+        alignment: "center",
+      },
+      { text: `${horasemanaSemestrales}`, fontSize: 9, style: "center" },
+    ]);
+    horasemanasTotales = 0;
+    horasemanaSemestrales = 0;
+    totalsemanas = 0;
+    return listaData;
   }
 
   getTableResponsable() {
@@ -318,40 +443,6 @@ export class CrearCertificacionesDveService {
       },
     };
     return table;
-  }
-
-  getContentTable(intensidad: IntensidadHorariaDVE[]): any[][] {
-    let listaTem = [];
-
-    for (let i = 0; i < intensidad.length; i++) {
-      listaTem.push([
-        { text: `${intensidad[i].anio}`, style: "tableCell" },
-        { text: `${intensidad[i].periodo}`, style: "tableCell" },
-        { text: `${intensidad[i].nombreAsignatura == null? "" : intensidad[i].nombreAsignatura}`, style: "tableCell" },
-        { text: "", style: "tableCell" },
-        {
-          text: ` ${this.formatearFecha(
-            intensidad[i].FechaInicio
-          )} \n ${this.formatearFecha(intensidad[i].FechaFin)} `,
-          style: "tableCell",
-        },
-        { text: "", style: "tableCell" },
-      ]);
-
-      listaTem.push([
-        {
-          text: `${intensidad[i].anio}-${this.getnumeroRomanos(parseInt(intensidad[i].periodo))}`,
-          style: "tableCell",
-        },
-        { text: "Totales", style: "tableCell" },
-        { text: "Hora Catedra", style: "tableCell" },
-        { text: `${intensidad[i].horasSemana}`, style: "tableCell" },
-        { text: `${intensidad[i].numeroSemanas}`, style: "tableCell" },
-        { text: `${intensidad[i].horasSemestrales}`, style: "tableCell" },
-      ]);
-    }
-
-    return listaTem;
   }
 
   getFuentePdf() {
@@ -405,14 +496,16 @@ export class CrearCertificacionesDveService {
           .subscribe({
             next: (response: any) => {
               if (response && response.length > 0) {
-                this.popUpManager.closeAlert()
+                this.popUpManager.closeAlert();
                 resolve(response[0].file);
               } else {
                 reject("No se recibió una respuesta válida.");
               }
             },
             error: (error) => {
-              this.popUpManager.showErrorAlert("Error al firmar el documento. Intenta de nuevo.")
+              this.popUpManager.showErrorAlert(
+                "Error al firmar el documento. Intenta de nuevo."
+              );
               reject(error);
             },
           });
@@ -440,7 +533,7 @@ export class CrearCertificacionesDveService {
             },
           });
       });
-    } catch (error) {}
+    } catch (error) { }
   }
   async consultarTipoDeDocumento(): Promise<number> {
     try {
@@ -460,10 +553,11 @@ export class CrearCertificacionesDveService {
             },
           });
       });
-    } catch (error) {}
+    } catch (error) { }
   }
 
-  formatearFecha(fecha: Date): string {
+
+  obtenerMes(index: number): string {
     const meses: string[] = [
       "ENERO",
       "FEBRERO",
@@ -478,32 +572,20 @@ export class CrearCertificacionesDveService {
       "NOVIEMBRE",
       "DICIEMBRE",
     ];
-
+    return meses[index];
+  }
+  formatearFecha(fecha: Date): string {
+    
     const date = new Date(fecha);
 
     const dia = date.getDate();
-    const mes = meses[date.getMonth()];
+    const mes = this.obtenerMes(date.getMonth());
     const anio = date.getFullYear();
 
-    return `Del ${dia} de ${mes} de ${anio}`;
+    return `${dia} de ${mes} de ${anio}`;
   }
 
-
-  getnumeroRomanos (number:number)  {
-   const numeroEnRomano={ 
-    1: "I",
-    2: "II",
-    3: "III",
-    4:"IV"
+  agregarSaltoDeLinea(names: string): string {
+    return names.replace(/,/g, "\n\n");
   }
-  
-
-  if (number<5){
-    return numeroEnRomano[number]
-  }else{
-    return null
-  }
- 
-  };
-
 }
