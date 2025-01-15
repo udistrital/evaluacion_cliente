@@ -9,10 +9,13 @@ import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/inf
 import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve/intensidadHorariaDVE.js";
 import swal from "sweetalert2";
 import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.service.js";
-import { error } from "console";
+import { error, table } from "console";
 import { AgoraService } from "../agora.service.js";
 import { DocumentosCrudService } from "./documentos-crud.service.js";
 import { PopUpManager } from "./../../managers/popUpManager";
+import { Cell } from "ng2-smart-table";
+import { UtilidadesService } from "../../@core/utils/utilidades.service.js";
+import { style } from "@angular/animations";
 
 @Injectable({
   providedIn: "root",
@@ -24,7 +27,8 @@ export class CrearCertificacionesDveService {
     private firmaElectronicaService: FirmaElectronicaService,
     private agoraService: AgoraService,
     private documentosCrudService: DocumentosCrudService,
-    private popUpManager: PopUpManager
+    private popUpManager: PopUpManager,
+    private utilidadesService: UtilidadesService
   ) {}
 
   /**
@@ -42,10 +46,11 @@ export class CrearCertificacionesDveService {
    * - Labora
    */
   async createPfd(
-    informacionCertificacionDve: InformacionCertificacionDve,
+    informacionCertificacionDve: InformacionDVE,
     icluirSalario: boolean
   ) {
-    console.log("ifno", informacionCertificacionDve, "incluir", icluirSalario);
+
+   
     this.popUpManager.showLoadingAlert(
       "Descargando",
       "Por favor espera un momento"
@@ -53,15 +58,13 @@ export class CrearCertificacionesDveService {
     this.popUpManager.closeAlert();
     this.pdf = new PdfMakeWrapper();
     this.pdf = this.getStyles();
-    this.pdf.pageMargins([40, 100,40, 0]);
-    const ultimoPago =
-      informacionCertificacionDve.intensidadHorariaDVE.length - 1;
+    this.pdf.pageMargins([40, 100, 40, 0]);
     const fecha = new Date();
 
     const docDefinition = {
-      content: [this.getBody(informacionCertificacionDve.informacionDve)],
+      content: [this.getBody(informacionCertificacionDve)],
       contentTable: [
-        this.getTable(informacionCertificacionDve.intensidadHorariaDVE),
+        this.getTable(informacionCertificacionDve.intensidadHoraria),
       ],
     };
     this.pdf.footer((currentPage, pageCount) =>
@@ -86,13 +89,13 @@ export class CrearCertificacionesDveService {
       icluirSalario == true
         ? this.pdf.add(
             new Txt(
-              `Salario mensual : ${informacionCertificacionDve.informacionDve.ultimo_pago_dve}`
+              `\n Salario mensual : ${informacionCertificacionDve.ultimoPagoDve}`
             ).style("textBold").end
           )
         : "";
       this.pdf.add(
         new Txt(
-          `Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${fecha.getMonth()}  del año ${fecha.getFullYear()}  a solicitud del interesado. `
+          ` \n Se expide en Bogotá D.C. a los ${fecha.getDate()} días del mes de ${fecha.getMonth()}  del año ${fecha.getFullYear()}  a solicitud del interesado. `
         ).style("text").end
       );
 
@@ -103,29 +106,23 @@ export class CrearCertificacionesDveService {
 
       //this.pdf.add(this.getTableResponsable());
 
-
       this.pdf.add("\n" + "\n");
-      this.pdf.create().getBase64((data) => {
-        console.log("data", data);
-      });
-      this.pdf.create().getBlob(async (blob) => {
 
+      this.pdf.create().getBlob(async (blob) => {
         let pdfBase64 = await this.firmarDocumento(
           blob,
-          informacionCertificacionDve.informacionDve.nombre_docente
+          informacionCertificacionDve.nombreDocente
         );
 
         this.popUpManager.showLoadingAlert("Descargando", "Espera por favor");
         const descarga = document.createElement("a");
         descarga.href = "data:application/pdf;base64," + pdfBase64;
-        descarga.download = `${informacionCertificacionDve.informacionDve.nombre_docente}.pdf`;
+        descarga.download = `${informacionCertificacionDve.nombreDocente}.pdf`;
         descarga.click();
         this.popUpManager.closeAlert();
       });
-
-     
     } catch (error) {
-      console.error(error);
+    
     }
   }
 
@@ -242,37 +239,55 @@ export class CrearCertificacionesDveService {
       },
       tableCellJustify: {
         fontSize: 6,
-      alignment: 'justify',
-      lineHeight: 1.2
-      },justify: {
-      alignment: 'justify',
-      lineHeight: 1.2
+        alignment: "justify",
+        lineHeight: 1.2,
+      },
+      justify: {
+        alignment: "justify",
+        lineHeight: 1.2,
       },
       center: {
-        alignment: 'center', 
-        lineHeight: 1.2,  
-        }
+        alignment: "center",
+        lineHeight: 1.2,
+      },
     });
     return this.pdf;
   }
   getBody(informacionDVE: InformacionDVE) {
+    console.log("informacionDVE", informacionDVE);
+  
     const content = [
       {
         text: [
           { text: "Que el (la) Señor(a) ", style: "text" },
-          { text: `${informacionDVE.nombre_docente} `, style: "textBold" },
-          { text: " identificado(a) con cédula de ciudadania ", style: "text" },
+          { text: `${informacionDVE.nombreDocente} `, style: "textBold" },
+          { text: " identificado(a) con cédula de ciudadanía ", style: "text" },
           { text: " número ", style: "text" },
           {
-            text: `${informacionDVE.numero_documento}` + ", ",
+            text: `${informacionDVE.numeroDocumento}, `,
             style: "textBold",
           },
           {
-            text: ` ${
-              informacionDVE.activo == "true" ? "Labora" : "Laboro "
-            }en  esta Institución en la modalidad de Docente de Vinculación Especial con la siguiente intensidad horaria:`,
+            text: `${
+              informacionDVE.activo === "true" ? "Labora" : "Laboró"
+            } en esta Institución en la modalidad de Docente de Vinculación Especial`,
             style: "text",
           },
+          {
+            text: ` Hora Catedra a Termino, `,
+            style: "text",
+          },
+          { text: `Fijo`, style: "textBold" },
+          {
+            text: ` para los periodos académicos que a continuación se detallan, en el nivel académico `,
+            style: "text",
+          },
+          { text: `${informacionDVE.nivelAcademico}`, style: "textBold" },
+          { text: " adscrito a la Facultad de: ", style: "text" },
+          { text: `${informacionDVE.facultad}`, style: "textBold" },
+          { text: " en el Proyecto curricular: ", style: "text" },
+          { text: `${informacionDVE.proyectoCurricular}`, style: "textBold" },
+          { text: ", con la siguiente intensidad horaria: ", style: "text" },
         ],
       },
     ];
@@ -281,88 +296,148 @@ export class CrearCertificacionesDveService {
   }
 
   getTable(intensidad: IntensidadHorariaDVE[]) {
-    console.log("intensidad", intensidad);
-  
+   
 
-    let tables: any[] = [];
-  
+    let tables = {
+      margin: [0, 5, 0, 10],
+      pageBreak: "auto",
+      table: {
+        dontBreakRows: true,
+        style: "tableHeader",
+        widths: ["8%", "9%", "13%", "20%", "20%", "9%", "11%", "10%"],
+        body: [
+          [
+            { text: "AÑO", style: "tableHeader" },
+            { text: "PERIODO", style: "tableHeader" },
+            { text: "RESOLUCION", style: "tableHeader" },
+            { text: "PROYECTO", style: "tableHeader" },
+            { text: "DEDICACÍON ASIGNATURAS", style: "tableHeader" },
+            { text: "HORAS SEMANA", style: "tableHeader" },
+            { text: "NUMERO SEMANAS", style: "tableHeader" },
+            { text: "TOTAL, HORAS SEMESTRALES", style: "tableHeader" },
+          ],
+        ],
+      },
+      layout: {
+        vAlign: "middle",
+      },
+    };
+
+    let dataTable = [];
     intensidad.forEach((element) => {
-  
-      let table: any = {
-        margin: [0, 5, 0, 0], 
-        pageBreak: 'auto', 
-        table: {
-          dontBreakRows: true,
-          style: "tableHeader",
-          widths: ["12%", "12%", "16%", "14%", "12%", "14%", "10%", "10%"],
-          body: [] 
-        },
-        layout: {
-          vAlign: 'middle' 
-        }
-      };
-  
-      table.table.body.push([
-        { text: "PERIODO", style: "tableHeader" },
-        { text: "FACULTAD", style: "tableHeader" },
-        { text: "RESOLUCION", style: "tableHeader" },
-        { text: "ASIGNATURA", style: "tableHeader" },
-        { text: "CATEGORIA", style: "tableHeader" },
-        { text: "TOTAL, HORAS SEMESTRALES", style: "tableHeader" },
-        { text: "NUMERO SEMANAS", style: "tableHeader" },
-        { text: "HORAS SEMANA", style: "tableHeader" },
-      ]);
-  
       const content = this.getContentTable(element);
-  
+
       content.forEach((row) => {
-        table.table.body.push(row);
+        tables.table.body.push(row);
       });
-  
-      tables.push(table);
     });
-  
+    tables.table.body.push();
+
     return tables;
-  } getContentTable(intensidad: IntensidadHorariaDVE): any[][] {
-    let listaTem = [];
-
-    
-      listaTem.push([
-        { text: `${intensidad.anio}`, style: "tableCell" },
-        { text: `${intensidad.periodo}`, style: "tableCell" },
-        "",
-        { text: `${intensidad.nombreAsignatura == null? "" : intensidad.nombreAsignatura}`, style: "center" ,  fontSize: 8, wrap: true},
-        { text: "", style: "text" },
-        {
-          text: ` ${this.formatearFecha(
-            intensidad.FechaInicio
-          )} \n ${this.formatearFecha(intensidad.FechaFin)} `,
-          style: "tableCell",
-        },
-        { text: "", style: "tableCell" },
-      
-        "",
-      ]);
-
-      listaTem.push([
-        {
-          text: `DEDICACION`,
-          style: "tableHeader",
-        },
-        { text: "", style: "tableCell" },
-        { text: "PROYECTO", style: "tableHeader" },
-        { text: `${intensidad.proyectoCurricular}`, style: "tableCellJustify" },
-        { text: `NIVEL ACADEMICO`, style: "tableHeader" },
-        { text: ``, style: "tableCell" },
-        { text: `INTERVALO`, style: "tableHeader" },
-        { text: ``, style: "tableCell" },
-      ]);
-    
-
-    return listaTem;
   }
 
-  
+  getContentTable(intensidad: IntensidadHorariaDVE): any[][] {
+    let listaData = [];
+
+    let horasemanasTotales: number = 0;
+    let horasemanaSemestrales: number = 0;
+    let totalsemanas: number = 0;
+
+    intensidad.resoluciones.forEach((resolucion, index) => {
+      horasemanasTotales += resolucion.horasSemanales;
+      horasemanaSemestrales += resolucion.horasSemestre;
+      totalsemanas += resolucion.numeroSemanas;
+    
+      listaData.push([
+        index === 0
+          ? {
+              text: `${intensidad.anio}`,
+              style: "center",
+              fontSize: 10,
+              rowSpan: intensidad.resoluciones.length,
+            }
+          : {},
+        index === 0
+          ? {
+              text: `${this.utilidadesService.decimalToRoman(
+                intensidad.periodo
+              )}`,
+              style: "center",
+              fontSize: 10,
+              rowSpan: intensidad.resoluciones.length,
+            }
+          : {},
+        { text: `${resolucion.resolucion}`, style: "tableCell" },
+        index === 0
+          ? {
+              text: `${resolucion.proyectoCurricular}`,
+              style: "center",
+              rowSpan: intensidad.resoluciones.length,
+              fontSize: 7,
+            }
+          : {},
+        {
+          text: `${this.agregarSaltoDeLinea(resolucion.asignaturas)}`,
+          fontSize: 7,
+          style: "center",
+        },
+        { text: `${resolucion.horasSemanales}`, fontSize: 10, style: "center" },
+        {
+          text: [
+            {
+              text: `${this.formatearFecha(
+                resolucion.fechaInicio
+              )} al ${this.formatearFecha(resolucion.fechaFin)}\n`,
+              fontSize: 8,
+              style: "center",
+            },
+            {
+              text: `(${resolucion.numeroSemanas} Semanas)\n`,
+              fontSize: 7,
+              style: "center",
+            },
+          ],
+          alignment: "center",
+        },
+        { text: `${resolucion.horasSemestre}`, fontSize: 10, style: "center" },
+      ]);
+
+      listaData.push([
+        {
+          text: `${intensidad.anio}-${this.utilidadesService.decimalToRoman(
+            intensidad.periodo
+          )}`,
+          style: "center",
+          fontSize: 9,
+          rowSpan: intensidad.resoluciones.length,
+        },
+        {
+          text: `Totales`,
+          style: "center",
+          fontSize: 9,
+          rowSpan: intensidad.resoluciones.length,
+        },
+        { text: ``, style: "tableCell" },
+        { text: ``, fontSize: 7, style: "center" },
+        { text: `Hora Cátedra`, fontSize: 7, style: "center" },
+        { text: `${horasemanasTotales}`, fontSize: 9, style: "center" },
+        {
+          text: `${totalsemanas}`,
+          fontSize: 9,
+          style: "center",
+
+          alignment: "center",
+        },
+        { text: `${horasemanaSemestrales}`, fontSize: 9, style: "center" },
+      ]);
+      horasemanasTotales = 0;
+      horasemanaSemestrales = 0;
+      totalsemanas = 0;
+    });
+
+    return listaData;
+  }
+
   getTableResponsable() {
     const table = {
       table: {
@@ -386,8 +461,6 @@ export class CrearCertificacionesDveService {
     };
     return table;
   }
-
- 
 
   getFuentePdf() {
     PdfMakeWrapper.setFonts(pdfFontTime, {
@@ -440,14 +513,16 @@ export class CrearCertificacionesDveService {
           .subscribe({
             next: (response: any) => {
               if (response && response.length > 0) {
-                this.popUpManager.closeAlert()
+                this.popUpManager.closeAlert();
                 resolve(response[0].file);
               } else {
                 reject("No se recibió una respuesta válida.");
               }
             },
             error: (error) => {
-              this.popUpManager.showErrorAlert("Error al firmar el documento. Intenta de nuevo.")
+              this.popUpManager.showErrorAlert(
+                "Error al firmar el documento. Intenta de nuevo."
+              );
               reject(error);
             },
           });
@@ -523,22 +598,7 @@ export class CrearCertificacionesDveService {
     return `Del ${dia} de ${mes} de ${anio}`;
   }
 
-
-  getnumeroRomanos (number:number)  {
-   const numeroEnRomano={ 
-    1: "I",
-    2: "II",
-    3: "III",
-    4:"IV"
+  agregarSaltoDeLinea(names: string): string {
+    return names.replace(/,/g, "\n\n\n");
   }
-  
-
-  if (number<5){
-    return numeroEnRomano[number]
-  }else{
-    return null
-  }
- 
-  };
-
 }
