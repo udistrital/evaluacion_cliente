@@ -1,32 +1,14 @@
-export class IntensidadHorariaDVE {
-  constructor(
+import { Resoluciones } from "./resoluciones";
+
+export interface IntensidadHorariaDVE {
+
     anio: string,
     periodo: string,
-    nombreAsignatura:string[],
-    horasSemana: string,
+    tipoVinculacion: string,
     numeroSemanas: string,
-    horasSemestrales: string,
-    FechaInicio:Date,
-    FechaFin:Date
+    horaSemanales: string,
+    resoluciones: Resoluciones[],
 
-  ) {
-    this.anio = anio;
-    this.periodo = periodo;
-    this.nombreAsignatura = nombreAsignatura;
-    this.horasSemana = horasSemana;
-    this.numeroSemanas = numeroSemanas;
-    this.horasSemestrales = horasSemestrales;
-    this.FechaFin=FechaFin
-    this.FechaInicio=FechaInicio
-  }
-
-  anio: string;
-  periodo: string;
-  nombreAsignatura: string[];
-  horasSemana: string;
-  numeroSemanas: string;
-  horasSemestrales: string;
-
-  FechaInicio:Date;
-  FechaFin:Date;
 }
+
+

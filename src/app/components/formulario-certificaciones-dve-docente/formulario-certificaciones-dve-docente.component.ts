@@ -114,8 +114,7 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
 
   private getPeticion(form: FormGroup) {
     return {
-      //numero_documento: this.documentoDocente,
-      numero_documento: "79362769",
+      numero_documento: this.documentoDocente,
       periodo_inicial: form.value.periodo_inicial,
       periodo_final: form.value.periodo_final,
       vinculaciones: form.value.vinculaciones,
