@@ -1,8 +1,8 @@
-interface Resoluciones {
+export interface Resoluciones {
     proyectoCurricular: string; 
     asignaturas: string; 
-    fechaInicio: string; 
-    fechaFin: string; 
+    fechaInicio: Date; 
+    fechaFin: Date; 
     horasSemanales: number;
     numeroSemanas: number; 
     horasSemestre: number; 

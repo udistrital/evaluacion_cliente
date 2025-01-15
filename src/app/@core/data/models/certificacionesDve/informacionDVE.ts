@@ -1,3 +1,5 @@
+import { IntensidadHorariaDVE } from "./intensidadHorariaDVE";
+
 export interface InformacionDVE {
   activo: string;
   nombreDocente: string;
@@ -6,7 +8,7 @@ export interface InformacionDVE {
   facultad: string;
   proyectoCurricular: string;
   categoria: string;
-  dedicacion: string
-  ultimoPagoDve:string;
-
+  dedicacion: string;
+  ultimoPagoDve: number;
+  intensidadHoraria: IntensidadHorariaDVE[];
 }
