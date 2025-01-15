@@ -35,60 +35,61 @@ export class CertificacionDveService {
     return this.requestManeger.post(endpoint, body);
   }
 
-
   getDataCertificactionDve(peticion: any): Observable<any> {
-    console.log("peticion desde due", peticion);
-    
     let respuesta = this.http
       .post<any>(this.urlCertificacionesDve, peticion, {
         headers: this.httpHeaders,
       })
       .pipe(
         map((response) => {
-          console.log("Respuesta recibida info:", response);
-  
+          console.log("response desde el servicio", response.Data.informacion_dve.proyecto_curricular);
           return {
             activo: response.Data.informacion_dve.activo,
             nombreDocente: response.Data.informacion_dve.nombre_docente,
             numeroDocumento: response.Data.informacion_dve.numero_documento,
-            ultimoPagoDve:response.Data.informacion_dve.ultimo_pago_dve,
-            intensidadHoraria: response.Data.intensidad_horaria.map((intensidad: any) => {
-              return {
-                anio: intensidad.Año,
-                periodo: intensidad.Periodo,
-                tipoVinculacion: intensidad.TipoVinculacion,
-                numeroSemanas: intensidad.NumeroSemanas,
-                horaSemanales: intensidad.HorasSemanales,
-                resoluciones: intensidad.Resoluciones.map((resolucion: any) => {
-                  return {
-                    proyectoCurricular: resolucion.ProyectoCurricular,
-                    asignaturas: resolucion.Asignaturas,
-                    fechaInicio: resolucion.FechaInicio,
-                    fechaFin: resolucion.FechaFin,
-                    horasSemanales: resolucion.HorasSemanales,
-                    numeroSemanas: resolucion.NumeroSemanas,
-                    horasSemestre: resolucion.HorasSemestre,
-                    tipoVinculacion: resolucion.TipoVinculacion,
-                    categoria: resolucion.Titular,
-                    valor: resolucion.Valor,
-                    nivelAcademico: resolucion.NivelAcademico,
-                    facultad: resolucion.Facultad,
-                    resolucion: resolucion.Resolucion
-                  };
-                })
-              };
-            })
+            nivelAcademico: response.Data.informacion_dve.numero_documento,
+            facultad: response.Data.informacion_dve.facultad,
+            proyectoCurricular:response.Data.informacion_dve.proyecto_curricular,
+            categoria: response.Data.informacion_dve.categoria,
+            dedicacion: response.Data.informacion_dve.dedicacion,
+            ultimoPagoDve: response.Data.informacion_dve.ultimo_pago_dve,
+            intensidadHoraria: response.Data.intensidad_horaria.map(
+              (intensidad: any) => {
+                return {
+                  anio: intensidad.Año,
+                  periodo: intensidad.Periodo,
+                  tipoVinculacion: intensidad.TipoVinculacion,
+                  numeroSemanas: intensidad.NumeroSemanas,
+                  horaSemanales: intensidad.HorasSemanales,
+                  resoluciones: intensidad.Resoluciones.map(
+                    (resolucion: any) => {
+                      return {
+                        proyectoCurricular: resolucion.ProyectoCurricular,
+                        asignaturas: resolucion.Asignaturas,
+                        fechaInicio: resolucion.FechaInicio,
+                        fechaFin: resolucion.FechaFin,
+                        horasSemanales: resolucion.HorasSemanales,
+                        numeroSemanas: resolucion.NumeroSemanas,
+                        horasSemestre: resolucion.HorasSemestre,
+                        tipoVinculacion: resolucion.TipoVinculacion,
+                        categoria: resolucion.Titular,
+                        valor: resolucion.Valor,
+                        nivelAcademico: resolucion.NivelAcademico,
+                        facultad: resolucion.Facultad,
+                        resolucion: resolucion.Resolucion,
+                      };
+                    }
+                  ),
+                };
+              }
+            ),
           };
         })
       );
 
-      respuesta.subscribe((data) => {
-        console.log("subscribe", data);
-      });
-    
     return respuesta;
   }
-  
+
   getDataCertificactionDveTest(): Observable<any> {
     let informacionDVE: InformacionDVE = {
       activo: "false",
@@ -100,9 +101,9 @@ export class CertificacionDveService {
       categoria: "Titular",
       dedicacion: "HCP",
       ultimoPagoDve: 1504440.0,
-      intensidadHoraria: []
+      intensidadHoraria: [],
     };
-  
+
     let intensidadHoraria: IntensidadHorariaDVE[] = [
       {
         anio: "2024",
@@ -124,7 +125,7 @@ export class CertificacionDveService {
             valor: "1504440.0",
             nivelAcademico: "PREGRADO",
             facultad: "FACULTAD DE INGENIERIA",
-            resolucion: "243"
+            resolucion: "243",
           },
           {
             proyectoCurricular: "INGENIERIA ELECTRICA",
@@ -139,9 +140,9 @@ export class CertificacionDveService {
             valor: "501480.0",
             nivelAcademico: "PREGRADO",
             facultad: "FACULTAD DE INGENIERIA",
-            resolucion: "243"
-          }
-        ]
+            resolucion: "243",
+          },
+        ],
       },
       {
         anio: "2024",
@@ -163,7 +164,7 @@ export class CertificacionDveService {
             valor: "1356840.0",
             nivelAcademico: "PREGRADO",
             facultad: "FACULTAD DE INGENIERIA",
-            resolucion: "028"
+            resolucion: "028",
           },
           {
             proyectoCurricular: "INGENIERIA ELECTRICA",
@@ -178,14 +179,14 @@ export class CertificacionDveService {
             valor: "452280.0",
             nivelAcademico: "PREGRADO",
             facultad: "FACULTAD DE INGENIERIA",
-            resolucion: "028"
-          }
-        ]
-      }
+            resolucion: "028",
+          },
+        ],
+      },
     ];
-  
+
     informacionDVE.intensidadHoraria = intensidadHoraria;
-  
+
     return of(informacionDVE);
   }
 
