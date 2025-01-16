@@ -27,21 +27,24 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
   }
 
   submitFormularioCertificacionesDveTalentoHumano() {
-     console.log("incluirdesde el formu",this.formularioCertificacionesDveTalentoHumano.value.incluir_salario)
     if (this.formularioCertificacionesDveTalentoHumano.valid) {
+      
       const peticion = this.getPeticion(this.formularioCertificacionesDveTalentoHumano)
       this.popUpManager.showLoadingAlert("Generando", "Por favor espera un momento");
-
       this.certificacionesService.getDataCertificactionDve(peticion).subscribe({
-        next:(response:any)=>{
-          
+        next:(response)=>{
+   
           if(response!=undefined){
             this.crearCertificado.createPfd(response,this.formularioCertificacionesDveTalentoHumano.value.incluir_salario)
           }else{
-            this.popUpManager.showErrorAlert("Erro al consular")
+            this.popUpManager.showErrorAlert("Erro al consultar")
           }
-        },error:(error:any)=>{
-          this.popUpManager.showErrorAlert("Erro al generar certificado")
+        },error:(error)=>{
+         if(error.error.Message.Message){
+          this.popUpManager.showErrorAlert(error.error.Message.Message)
+
+         }else{ this.popUpManager.showErrorAlert("Erro al generar certificado")}
+         
         }
       })
       
@@ -55,11 +58,11 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
 
 
   eliminarLetras(identificacion:string){
-    const soloLetrasYSimbolosRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s!@#$%^&*(),.?":{}|<>_-]+$/;
-    if(soloLetrasYSimbolosRegex.test(String(identificacion))){
-      identificacion = identificacion.slice(0,-1)
-      this.formularioCertificacionesDveTalentoHumano.patchValue({numero_documento:identificacion})
-    }
+    console.log(identificacion)
+    const soloNumeros = identificacion.replace(/[^0-9]/g, '');
+    this.formularioCertificacionesDveTalentoHumano.patchValue({
+      numero_documento: soloNumeros
+    });
   }
 
 
@@ -69,6 +72,5 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
       incluir_salario: form.value.incluir_salario,
     };
   }
-
 
 }
