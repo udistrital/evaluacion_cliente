@@ -4,3 +4,9 @@
     padding: 10px 80px;
   }
 
+.box-input{
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center; 
+  align-items: center; 
+}

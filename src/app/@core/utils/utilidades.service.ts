@@ -39,4 +39,25 @@ export class UtilidadesService {
         return trans;
     }
 
+ decimalToRoman(decimal: string): string {
+        
+ let decimalNumber = Number(decimal)
+        const romanSymbols = ['I', 'IV', 'V', 'IX', 'X', 'XL', 'L', 'XC', 'C', 'CD', 'D', 'M'];
+        const decimalValues = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 1000];
+    
+        let roman = '';  
+    
+  
+        for (let i = decimalValues.length - 1; i >= 0; i--) {
+         
+            while (decimalNumber >= decimalValues[i]) {
+                roman += romanSymbols[i];
+                decimalNumber -= decimalValues[i];
+            }
+        }
+    
+        return roman;
+    }
+    
+
 }

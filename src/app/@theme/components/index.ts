@@ -20,5 +20,4 @@ export * from '../../components/tabla-busqueda-certificacion/tabla-busqueda-cert
 export * from '../../components/crear-certificacion/crear-certificacion.component';
 export * from '../../components/crear-certificacion-sin-novedad/crear-certificacion-sin-novedad.component';
 export * from '../../components/ver-certificacion/ver-certificacion.component';
-export * from '../../components/formulario-certificaciones-dve/formulario-certificaciones-dve.component';
-export * from '../../components/formulario-certificaciones-dve-talento-humano/formulario-certificaciones-dve-talento-humano.component';
+export * from '../../components/formulario-certificaciones-dve-talento-humano/formulario-certificaciones-dve-talento-humano.component'; export * from '../../components/formulario-certificaciones-dve-docente/formulario-certificaciones-dve-docente.component';
