@@ -16,6 +16,7 @@ import { PopUpManager } from "./../../managers/popUpManager";
 import { Cell } from "ng2-smart-table";
 import { UtilidadesService } from "../../@core/utils/utilidades.service.js";
 import { style } from "@angular/animations";
+import { environment } from "../../../environments/environment.js";
 
 @Injectable({
   providedIn: "root",
@@ -472,7 +473,7 @@ export class CrearCertificacionesDveService {
     let idDocumnento = await this.consultarTipoDeDocumento();
     let docsAFirmar = [
       {
-        IdDocumento: 12,
+        IdDocumento: environment.production? 96 : 12,
         nombre: nombreArchivo + ".pdf",
         metadatos: {},
         descripcion: "",
