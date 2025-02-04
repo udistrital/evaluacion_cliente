@@ -466,7 +466,7 @@ export class CrearCertificacionComponent implements OnInit {
     });
 
     const arreglo2 = [];
-    this.documentosCrud.get('tipo_documento?query=codigo_abreviacion:SOPFA&limit=1')
+    this.documentosCrud.get('tipo_documento?query=codigo_abreviacion:CERT-CPS&limit=1')
       .subscribe(
         response => {
           if (Array.isArray(response) && response.length > 0) {
