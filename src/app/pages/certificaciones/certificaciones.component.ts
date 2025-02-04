@@ -32,10 +32,10 @@ export class CertificacionesComponent implements OnInit {
   }
 
   ngOnInit() {
-  //  this.componenteVer = false;
-    //this.componenteRealizar = false;
-    //this.componenteRealizarCertificacion = false;
-    //this.permisoFiltrarContratos = !!this.menuService.getAccion('Ver contratos ajenos');
+    this.componenteVer = false;
+    this.componenteRealizar = false;
+    this.componenteRealizarCertificacion = false;
+    this.permisoFiltrarContratos = !!this.menuService.getAccion('Ver contratos ajenos');
   }
 
   /*Guardo los datos de la consulta obtenida creada por el filtro*/
