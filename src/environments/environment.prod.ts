@@ -5,7 +5,7 @@
  */
 
 export const environment = {
-  production: true,
+  production: false,
   GESTOR_DOCUMENTAL_MID: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1/',
   FIRMA_ELECTRONICA_MID: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/firma_electronica_mid/v1/',
   CONFIGURACION_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/',
