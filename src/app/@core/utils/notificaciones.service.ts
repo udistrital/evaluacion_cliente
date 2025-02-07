@@ -55,31 +55,31 @@ export class NotificacionesService {
     }
 
     connect() {
-        if (this.autenticacion.live() && production) {
-            this.payload = this.autenticacion.getPayload();
-            this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role).filter((data: any) => (data.indexOf('/') === -1));
-            this.messagesSubject
-                .pipe(
-                    map((msn: any) => {
-                        if (msn.Estado === 'conected') {
-                            this.send_ping();
-                        } else {
-                            this.listMessage = [...[msn], ...this.listMessage];
-                            this.noNotifySubject.next(this.listMessage.length);
-                            this.arrayMessagesSubject.next(this.listMessage);
-                        }
-                        return msn;
-                    }),
-                )
-                .subscribe(
-                    (msg: any) => this.send_ping(),
-                    err => {
-                        console.info(err);
-                        // this.connect();
-                    },
-                    () => console.info('complete'),
-                );
-        }
+        // if (this.autenticacion.live() && production) {
+        //     this.payload = this.autenticacion.getPayload();
+        //     this.roles = (JSON.parse(atob(localStorage.getItem('id_token').split('.')[1])).role).filter((data: any) => (data.indexOf('/') === -1));
+        //     this.messagesSubject
+        //         .pipe(
+        //             map((msn: any) => {
+        //                 if (msn.Estado === 'conected') {
+        //                     this.send_ping();
+        //                 } else {
+        //                     this.listMessage = [...[msn], ...this.listMessage];
+        //                     this.noNotifySubject.next(this.listMessage.length);
+        //                     this.arrayMessagesSubject.next(this.listMessage);
+        //                 }
+        //                 return msn;
+        //             }),
+        //         )
+        //         .subscribe(
+        //             (msg: any) => this.send_ping(),
+        //             err => {
+        //                 console.info(err);
+        //                 // this.connect();
+        //             },
+        //             () => console.info('complete'),
+        //         );
+        // }
     }
 
     close() {
