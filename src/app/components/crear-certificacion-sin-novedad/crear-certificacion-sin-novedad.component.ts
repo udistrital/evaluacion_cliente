@@ -800,7 +800,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         },
       ],
     });
-    this.documentoService.get('tipo_documento?query=codigo_abreviacion:SOPFA&limit=1')
+    this.documentoService.get('tipo_documento?query=codigo_abreviacion:CERT-CPS&limit=1')
       .subscribe(
         response => {
           if (Array.isArray(response) && response.length > 0) {
