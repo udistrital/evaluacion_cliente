@@ -98,7 +98,7 @@ export class CrearCertificacionComponent implements OnInit {
   }
 
   private getUsuario() {
-    this.user = 'Julio César Otálora Neisa';
+    this.user = 'OFICNA DE CONTRATACIÓN';
   }
 
   private getDependenciaEmisora() {
@@ -429,7 +429,7 @@ export class CrearCertificacionComponent implements OnInit {
     pdf.add(filasFirma);
     pdf.add(
       new Txt(
-        'Elaboró: ' + this.user + ' - Contratista' +
+        'Elaboró: ' + this.user +
         '                                                                                                                                         ' +
         '                                                                                           ',
       ).fontSize(6).decoration('underline').alignment('left').end,
