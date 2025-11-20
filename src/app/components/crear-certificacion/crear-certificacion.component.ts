@@ -35,9 +35,9 @@ export class CrearCertificacionComponent implements OnInit {
   valorPorDia: number = 0;
   fechaInicio: string = '';
   fechaFin: string = '';
+  unidadEjecutora: number = 0;
   otrosDatos: string;
   estadoContrato: string;
-  // los valores que tienes un _ ejemplo valor_contrato son para validar si el usuario quiere ese dato en el pdf
   valor_contrato: string;
   duracion_contrato: string;
   fecha_Inicio: string;
@@ -92,21 +92,17 @@ export class CrearCertificacionComponent implements OnInit {
 
   ngOnInit() {
     this.consultarDatosContrato();
-    this.consultarFirmantes();
-    this.getDependenciaEmisora();
     this.getUsuario();
   }
 
   private getUsuario() {
-    this.user = 'OFICNA DE CONTRATACIÓN';
-  }
-
-  private getDependenciaEmisora() {
-    this.seleccionarOtros = !!this.menuService.getAccion('Seleccionar otros contractual');
-    this.jefeDependencia = 'DIANA XIMENA PIRACHICÁN MARTÍNEZ';
-    this.firma = IMAGENES.firma;
-    this.nombreDependencia = 'Oficina de Contratación';
-    this.emailDependencia = 'juridica@udistrital.edu.co';
+    if (this.unidadEjecutora === 1) {
+      this.user = 'OFICINA DE CONTRATACIÓN';
+    } else if (this.unidadEjecutora === 2) {
+      this.user = 'OFICINA DE EXTENSIÓN';
+    } else {
+      this.user = 'OFICINA DE CONTRATACIÓN';
+    }
   }
 
   regresarFiltro() {
@@ -338,7 +334,7 @@ export class CrearCertificacionComponent implements OnInit {
       );
     }
 
-    this.datosTabla.push(...filasNovedades);
+    filasNovedades.forEach(f => this.datosTabla.push(f));
 
     if (this.fecha_final === '1') {
       this.datosTabla.push(
@@ -713,9 +709,8 @@ export class CrearCertificacionComponent implements OnInit {
     }
 
     if (fechaProrroga > new Date(this.fechaInicio)) {
-      filasNovedades.unshift(...filasProrroga);
+      filasProrroga.reverse().forEach(f => filasNovedades.unshift(f));
     }
-
     return filasNovedades;
   }
   regresarInicio() {
@@ -755,12 +750,20 @@ export class CrearCertificacionComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
+
+    let cargo_id = 281;
+
+    if (this.unidadEjecutora === 2) {
+      cargo_id = 287;
+    }
+
     const currDate = this.getCurrentDate();
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
-      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
-      .subscribe((response) => {
-        if (Object.keys(response[0]).length > 0) {
+    const query = `supervisor_contrato?query=CargoId__Id:${cargo_id},FechaFin__gte:${currDate},FechaInicio__lte:${currDate}&limit=1`;
+
+    this.AdministrativaAmazon.get(query).subscribe(
+      (response) => {
+
+        if (response && response.length > 0 && Object.keys(response[0]).length > 0) {
           this.firmantes = {
             nombre: response[0].Nombre,
             tipoId: 'CC',
@@ -772,11 +775,13 @@ export class CrearCertificacionComponent implements OnInit {
           this.openWindow(this.translate.instant(`GLOBAL.sin_info_oficina`));
           this.regresarFiltro();
         }
-      }, (error) => {
+      },
+      (error) => {
         this.firmantes = undefined;
         this.openWindow(this.translate.instant(`GLOBAL.error_info_oficina`));
         this.regresarFiltro();
-      });
+      }
+    );
   }
   consultarDatosContrato() {
     this.consultarContratista();
@@ -793,6 +798,18 @@ export class CrearCertificacionComponent implements OnInit {
           this.tipoContrato = res_contrato.Data[0].contrato_general.TipoContrato.TipoContrato;
           this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
           this.estadoContrato = res_contrato.Data[0].estado_contrato.contratoEstado.estado.nombreEstado;
+          if (
+            res_contrato.Data[0].contrato_general &&
+            res_contrato.Data[0].contrato_general.UnidadEjecutora
+          ) {
+            this.unidadEjecutora = res_contrato.Data[0].contrato_general.UnidadEjecutora;
+          } else {
+            this.unidadEjecutora = 1;
+          }
+          this.consultarFirmantes();
+
+          this.getUsuario();
+
 
           const plazo = res_contrato.Data[0].contrato_general.PlazoEjecucion;
           this.valorPorDia = res_contrato.Data[0].contrato_general.ValorContrato / (plazo > 12 ? plazo : plazo * 30);
@@ -924,7 +941,6 @@ export class CrearCertificacionComponent implements OnInit {
   diasFecha(fecha1, fecha2) {
     const date_1 = new Date(fecha1.toString()).getTime();
     const date_2 = new Date(fecha2.toString()).getTime();
-    // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
         'Error la fecha de finalizacion siempre debe ser mayor a la fecha de inicio',
@@ -936,7 +952,7 @@ export class CrearCertificacionComponent implements OnInit {
     }
   }
   formato(texto) {
-    if (texto == null) {
+    if (texto === null) {
       return '';
     } else {
       return texto.toString().replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');

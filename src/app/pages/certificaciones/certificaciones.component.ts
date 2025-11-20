@@ -53,7 +53,6 @@ export class CertificacionesComponent implements OnInit {
   /*Guarda los datos de la fila selecionada en el componente tabla-busqueda en la variable datosContratoAVer
    y habilita el componente realizar-certificacion*/
   relizarCertificacion(data: any) {
-    // console.log("esta es la data", data);
 
     this.datosContratoAEvaluar[0] = data;
     this.componenteRealizar = true;

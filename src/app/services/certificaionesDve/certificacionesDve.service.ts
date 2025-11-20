@@ -36,13 +36,12 @@ export class CertificacionDveService {
   }
 
   getDataCertificactionDve(peticion: any): Observable<any> {
-    let respuesta = this.http
+    const respuesta = this.http
       .post<any>(this.urlCertificacionesDve, peticion, {
         headers: this.httpHeaders,
       })
       .pipe(
         map((response) => {
-          console.log("response desde el servicio", response.Data.informacion_dve.proyecto_curricular);
           return {
             activo: response.Data.informacion_dve.activo,
             nombreDocente: response.Data.informacion_dve.nombre_docente,
@@ -91,7 +90,7 @@ export class CertificacionDveService {
   }
 
   getDataCertificactionDveTest(): Observable<any> {
-    let informacionDVE: InformacionDVE = {
+    const informacionDVE: InformacionDVE = {
       activo: "false",
       nombreDocente: "LUIS ENRIQUE CORREA BECERRA",
       numeroDocumento: "79108100",
@@ -104,7 +103,7 @@ export class CertificacionDveService {
       intensidadHoraria: [],
     };
 
-    let intensidadHoraria: IntensidadHorariaDVE[] = [
+    const intensidadHoraria: IntensidadHorariaDVE[] = [
       {
         anio: "2024",
         periodo: "3",
@@ -197,7 +196,7 @@ export class CertificacionDveService {
           next: (response: any) => {
             if (response && response.length > 0) {
               const data = response[0];
-              let nombreCompleto =
+              const nombreCompleto =
                 data.PrimerNombre +
                 " " +
                 data.PrimerApellido +
