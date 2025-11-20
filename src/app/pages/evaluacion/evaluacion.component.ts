@@ -7,14 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EvaluacionComponent implements OnInit {
   titulo: string = 'Lista Provedores';
-  /*Se guarda los datos que envía el componente filtro*/
   data: any;
-  /*Variables que guardan los datos que envía el componente tabla-busqueda*/
   datosContratoAVer: any;
   datosContratoAEvaluar: any;
-  /*Varible para saber si debe mostrar o no el componente ver*/
   componenteVer: boolean;
-  /*Varible para saber si debe mostrar o no el componente ver*/
   componenteRealizar: boolean;
 
   constructor() {
