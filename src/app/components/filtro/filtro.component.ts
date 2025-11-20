@@ -75,11 +75,10 @@ export class FiltroComponent implements OnInit {
 
   RealizarPeticion(qSupervisor: string = '', qTipo: string = '') {
     qSupervisor = '';
-    if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
+    if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null)
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + qSupervisor + qTipo)
         .subscribe((res) => {
-          // console.log('respuesta del filtro',res);
           if (res.Data !== null) {
             this.dataResponse.emit(res.Data);
           }
@@ -88,7 +87,7 @@ export class FiltroComponent implements OnInit {
           this.dataResponse.emit([]);
         });
     } else {
-      if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
+      if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
         this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor +
           '&NumContrato=0&Vigencia=' + String(this.vigencia) + qSupervisor + qTipo)
@@ -102,7 +101,7 @@ export class FiltroComponent implements OnInit {
           });
       } else {
         if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
-          && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
+          && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia === undefined)) {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia=0' + qSupervisor + qTipo)
             .subscribe((res) => {
               if (res.Data !== null) {
@@ -114,7 +113,7 @@ export class FiltroComponent implements OnInit {
             });
         } else {
           if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
-            && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
+            && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia !== undefined)) {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia='
               + String(this.vigencia) + qSupervisor + qTipo).subscribe((res) => {
                 if (res.Data !== null) {
@@ -125,8 +124,8 @@ export class FiltroComponent implements OnInit {
                 this.dataResponse.emit([]);
               });
           } else {
-            if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
-              && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
+            if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null))
+              && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia === undefined)) {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0' + qSupervisor + qTipo).subscribe((res) => {
                   if (res.Data !== null) {
@@ -138,8 +137,8 @@ export class FiltroComponent implements OnInit {
                   this.dataResponse.emit([]);
                 });
             } else {
-              if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
-                && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
+              if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null))
+                && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia !== undefined)) {
                 this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                   + this.numero_contrato + '&Vigencia=' + String(this.vigencia) + qSupervisor + qTipo).subscribe((res) => {
                     if (res.Data !== null) {

@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { CrearCertificacionesDveService } from '../../services/certificaionesDve/crear-certificaciones-dve.service';
 import { CertificacionDveService } from '../../services/certificaionesDve/certificacionesDve.service';
-import { error } from 'console';
 import { async } from '@angular/core/testing';
 import { PopUpManager } from '../../managers/popUpManager';
 
@@ -39,8 +38,8 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
   }
 
   getAniosYPeriodos(): string[] {
-    let aniosYperiodo: string[] = [];
-    let anioActual = new Date().getFullYear();
+    const aniosYperiodo: string[] = [];
+    const anioActual = new Date().getFullYear();
     let anioInicial = 2017;
 
     while (anioInicial <= anioActual) {
@@ -53,7 +52,7 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
   }
 
   getVinculacion(): string[] {
-    let vinculaciones: string[] = [];
+    const vinculaciones: string[] = [];
 
     vinculaciones.push("Vinculacion-I");
     vinculaciones.push("Vinculacion-II");
@@ -65,7 +64,7 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
 
     if(this.formularioCertificacionesDve.valid){
       try {
-        let peticion = this.getPeticion(this.formularioCertificacionesDve);
+        const peticion = this.getPeticion(this.formularioCertificacionesDve);
         const Swal = require("sweetalert2");
         Swal.fire({
           title: "Generando",
@@ -73,29 +72,23 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
           icon: "success",
           showConfirmButton: false,
         });
-  
+
         this.certificacionesService
           .getDataCertificactionDve(peticion)
           .subscribe({next:(response) => {
-            if(response!=undefined){
-              console.log("response desde el sercvio2 ",response)
+            if(response!==undefined){
             this.crearCertificado.createPfd(
               response,
               this.formularioCertificacionesDve.value.incluir_salario
             );
             }else{
-              this.popUpManager.showErrorAlert("Erro al consular")
+              this.popUpManager.showErrorAlert("Erro al consular");
             }
-            
+
           },error:(error:any)=>{
             this.popUpManager.showErrorAlert("Error al consultar la información");
-  
+
           }});
-      //   this.crearCertificado.createPfd(
-      //     this.certificacionesService
-      // .getDataCertificactionDveTest(),
-      //     this.formularioCertificacionesDve.value.incluirSalario
-      //   );
       } catch (error) {}
     }else{
       this.popUpManager.showErrorAlert("Valida el formulario");
@@ -139,12 +132,12 @@ export class FormularioCertificacionesDveDocenteComponent implements OnInit {
         };
 
         if (periodoInicialValue.length > 1 && periodoFinalValue.length > 1) {
-          const periodoInicialValor = parseInt(periodoInicialValue[0])
-          const periodoFinalValor = parseInt(periodoFinalValue[0]) 
+          const periodoInicialValor = parseInt(periodoInicialValue[0], 10);
+          const periodoFinalValor = parseInt(periodoFinalValue[0], 10);
 
           if (periodoInicialValor > periodoFinalValor) {
             return { rangoValido: true };
-            
+
           }else{
             if( numeroRomanos[periodoInicialValue[1]]>numeroRomanos[periodoFinalValue[1]]){
               return { rangoValido: true };

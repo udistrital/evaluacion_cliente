@@ -66,9 +66,9 @@ export class UserService {
         };
     }
     public getPayload(): any {
-        var payload: any = {};
+        let payload: any = {};
         const idToken = window.localStorage.getItem('id_token').split('.');
-        if (idToken != undefined) {
+        if (idToken !== undefined) {
           payload = JSON.parse(atob(idToken[1]));
         }
         return payload;

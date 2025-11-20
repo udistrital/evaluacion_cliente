@@ -941,7 +941,6 @@ export class CrearCertificacionComponent implements OnInit {
   diasFecha(fecha1, fecha2) {
     const date_1 = new Date(fecha1.toString()).getTime();
     const date_2 = new Date(fecha2.toString()).getTime();
-    // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
         'Error la fecha de finalizacion siempre debe ser mayor a la fecha de inicio',
@@ -953,7 +952,7 @@ export class CrearCertificacionComponent implements OnInit {
     }
   }
   formato(texto) {
-    if (texto == null) {
+    if (texto === null) {
       return '';
     } else {
       return texto.toString().replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');

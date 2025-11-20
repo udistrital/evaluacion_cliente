@@ -474,7 +474,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
 
     const arreglo = [];
     const arreglo2 = [];
-    if (this.listaNovedades != null) {
+    if (this.listaNovedades !== null) {
       for (let i = 0; i < this.listaNovedades.length; i++) {
         if (this.listaNovedades[i] === 'cesion') {
           this.novedadCesion = true;
@@ -937,7 +937,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.dataContrato[0].Vigencia,
       )
       .subscribe((res_contrato) => {
-        // console.log('aca esta el contrato', res_contrato);
         this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
         this.valorContrato =
           res_contrato.Data[0].contrato_general.ValorContrato;
@@ -1005,17 +1004,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   crearNovedades() {
     this.numeroNovedadesArr.length = 0;
     for (let i = 0; i < this.numeroNovedadesCesion; i++) {
-      // console.log(i);
       this.numeroNovedadesArr.push('');
     }
-    /*Guardothis.numeroNovedadesArrOtro.length = 0;
-    for (var i = 0; i < this.numeroNovedadesOtro; i++) {
-      //console.log(i);
-      this.numeroNovedadesArrOtro.push('');
-    }*/
     this.numeroNovedadesArrProrroga.length = 0;
     for (let i = 0; i < this.numeroNovedadesProrroga; i++) {
-      // console.log(i);
       this.numeroNovedadesArrProrroga.push('');
     }
 
@@ -1027,7 +1019,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   diasFecha(fecha1, fecha2) {
     const date_1 = new Date(fecha1.toString()).getTime();
     const date_2 = new Date(fecha2.toString()).getTime();
-    // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
         'Error la fecha de finalizacion siempre debe ser mayor a la fecha de inicio',
