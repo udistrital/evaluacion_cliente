@@ -9,14 +9,14 @@
             <div class="col-md-auto">
                 <div class="example-form">
                     <mat-form-field>
-                        <input type="number" [(ngModel)]="identificacion_proveedor" matInput placeholder="Identificación del proveedor" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? undefined : event.charCode >= 48 && event.charCode <= 57">
+                        <input type="number" [(ngModel)]="identificacion_proveedor" matInput placeholder="Identificación del proveedor" onkeypress="return (event.charCode === 8 || event.charCode === 0) ? undefined : event.charCode >= 48 && event.charCode <= 57">
                     </mat-form-field>
                 </div>
             </div>
             <div class="col-md-auto">
                 <div class="example-form">
                     <mat-form-field>
-                        <input type="number" [(ngModel)]="numero_contrato" matInput placeholder="Numero de contrato" onkeypress="return (event.charCode == 8 || event.charCode == 0) ? undefined : event.charCode >= 48 && event.charCode <= 57">
+                        <input type="number" [(ngModel)]="numero_contrato" matInput placeholder="Numero de contrato" onkeypress="return (event.charCode === 8 || event.charCode === 0) ? undefined : event.charCode >= 48 && event.charCode <= 57">
                     </mat-form-field>
                 </div>
             </div>

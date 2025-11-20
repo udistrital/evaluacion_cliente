@@ -57,6 +57,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   fechaInicio: string = '';
   fechaFin: string = '';
   texto_observacion: string = '';
+  unidadEjecutora: number = 0;
   nuevo_texto: boolean = false;
   novedadCesion: boolean = false;
   novedadOtro: boolean = false;
@@ -157,7 +158,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
       );
 
     this.consultarDatosContrato();
-    this.consultarFirmantes();
     this.consultarRepresentantes();
   }
   regresarFiltro() {
@@ -468,35 +468,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           ],
         },
       ],
-      firmaPagina: [
-        {
-          text: 'DIANA XIMENA PIRACHICÁN MARTÍNEZ  \n OFICINA DE CONTRATACIÓN',
-          style: 'body1',
-          bold: true,
-          alignment: 'center',
-        },
-      ],
-      firmaImagen: [
-        {
-          image: IMAGENES.firma,
-          alignment: 'center',
-          width: 150,
-        },
-      ],
-      escudoImagen: [
-        {
-          image: IMAGENES.escudo,
-          alignment: 'center',
-          width: 45,
-        },
-      ],
     };
 
     // -------------------------------------------------------------------------------------
 
     const arreglo = [];
     const arreglo2 = [];
-    if (this.listaNovedades != null) {
+    if (this.listaNovedades !== null) {
       for (let i = 0; i < this.listaNovedades.length; i++) {
         if (this.listaNovedades[i] === 'cesion') {
           this.novedadCesion = true;
@@ -561,7 +539,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     pdf.add(
       new Table([
         [
-          docDefinition.escudoImagen,
           docDefinition.valorCabe, /*
                   new Txt('Código de autenticidad:' + response['Enlace'])
                     .bold()
@@ -800,7 +777,7 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         },
       ],
     });
-    this.documentoService.get('tipo_documento?query=codigo_abreviacion:SOPFA&limit=1')
+    this.documentoService.get('tipo_documento?query=codigo_abreviacion:CERT-CPS&limit=1')
       .subscribe(
         response => {
           if (Array.isArray(response) && response.length > 0) {
@@ -898,13 +875,22 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
     const day = ('0' + date.getDate()).slice(-2); // Añade un cero a la izquierda si es necesario
     return `${year}-${month}-${day}`;
   }
+
+
   consultarFirmantes() {
-    const cargo = 'JEFE OFICINA DE CONTRATACIÓN';
+    let cargo_id = 281;
+
+    if (this.unidadEjecutora === 2) {
+      cargo_id = 287;
+    }
+
     const currDate = this.getCurrentDate();
-    this.AdministrativaAmazon.get('supervisor_contrato?query=CargoId__Cargo:' + cargo + ',FechaFin__gte:' +
-      currDate + ',FechaInicio__lte:' + currDate + '&limit=1')
-      .subscribe((response) => {
-        if (Object.keys(response[0]).length > 0) {
+    const query = `supervisor_contrato?query=CargoId__Id:${cargo_id},FechaFin__gte:${currDate},FechaInicio__lte:${currDate}&limit=1`;
+
+    this.AdministrativaAmazon.get(query).subscribe(
+      (response) => {
+
+        if (response && response.length > 0 && Object.keys(response[0]).length > 0) {
           this.firmantes = {
             nombre: response[0].Nombre,
             tipoId: 'CC',
@@ -916,11 +902,13 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
           this.openWindow(this.translate.instant(`GLOBAL.sin_info_oficina`));
           this.regresarFiltro();
         }
-      }, (error) => {
+      },
+      (error) => {
         this.firmantes = undefined;
         this.openWindow(this.translate.instant(`GLOBAL.error_info_oficina`));
         this.regresarFiltro();
-      });
+      }
+    );
   }
 
   consultarRepresentantes() {
@@ -949,7 +937,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.dataContrato[0].Vigencia,
       )
       .subscribe((res_contrato) => {
-        // console.log('aca esta el contrato', res_contrato);
         this.objeto = res_contrato.Data[0].contrato_general.ObjetoContrato;
         this.valorContrato =
           res_contrato.Data[0].contrato_general.ValorContrato;
@@ -971,7 +958,17 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
         this.idTipoContrato =
           res_contrato.Data[0].contrato_general.TipoContrato.Id;
         this.actividadEspecifica = res_contrato.Data[0].actividades_contrato.contrato.actividades;
+        if (
+          res_contrato.Data[0].contrato_general &&
+          res_contrato.Data[0].contrato_general.UnidadEjecutora
+        ) {
+          this.unidadEjecutora = res_contrato.Data[0].contrato_general.UnidadEjecutora;
+        } else {
+          this.unidadEjecutora = 1;
+        }
+        this.consultarFirmantes();
       }),
+
       (error_service) => {
         this.openWindow(error_service.message);
       };
@@ -1007,17 +1004,10 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   crearNovedades() {
     this.numeroNovedadesArr.length = 0;
     for (let i = 0; i < this.numeroNovedadesCesion; i++) {
-      // console.log(i);
       this.numeroNovedadesArr.push('');
     }
-    /*Guardothis.numeroNovedadesArrOtro.length = 0;
-    for (var i = 0; i < this.numeroNovedadesOtro; i++) {
-      //console.log(i);
-      this.numeroNovedadesArrOtro.push('');
-    }*/
     this.numeroNovedadesArrProrroga.length = 0;
     for (let i = 0; i < this.numeroNovedadesProrroga; i++) {
-      // console.log(i);
       this.numeroNovedadesArrProrroga.push('');
     }
 
@@ -1029,7 +1019,6 @@ export class CrearCertificacionSinNovedadComponent implements OnInit {
   diasFecha(fecha1, fecha2) {
     const date_1 = new Date(fecha1.toString()).getTime();
     const date_2 = new Date(fecha2.toString()).getTime();
-    // console.log(date_1, date_2);
     if (date_2 < date_1) {
       this.openWindow(
         'Error la fecha de finalizacion siempre debe ser mayor a la fecha de inicio',
