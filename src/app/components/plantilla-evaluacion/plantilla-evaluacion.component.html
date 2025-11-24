@@ -37,7 +37,7 @@
               </p>
               <div class="mat-select" *ngSwitchCase="'select'">
                 <label matInput *ngIf="this.realizar===false">{{seccionHija['Item'][2].Valor.Nombre}}</label>
-                <mat-select *ngIf="this.realizar===true && this.evaRealizada == false"
+                <mat-select *ngIf="this.realizar===true && this.evaRealizada === false"
                   [(ngModel)]="json.Secciones[i].Seccion_hija_id[j]['Item'][2].Valor"
                   (selectionChange)="filterChanged(i, seccionHija['Condicion'][0]['Nombre'])" placeholder="Opción">
                   <mat-option *ngFor="let opcion of seccionHija['Item'][2]['Opcion_item']"
@@ -45,7 +45,7 @@
                     {{opcion['IdOpciones']['Nombre']}}
                   </mat-option>
                 </mat-select>
-                <mat-select *ngIf="this.realizar===true && this.evaRealizada == true"
+                <mat-select *ngIf="this.realizar===true && this.evaRealizada === true"
                   [(ngModel)]="json.Secciones[i].Seccion_hija_id[j]['Item'][2].Valor"
                   (selectionChange)="filterChanged(i, seccionHija['Condicion'][0]['Nombre'])"
                   placeholder="{{seccionHija['Item'][2].Valor.Nombre}}">

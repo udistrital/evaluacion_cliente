@@ -74,7 +74,7 @@ export class CertificacionComponent implements OnInit {
   }
 
   RealizarPeticion() {
-    if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
+    if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null)
       && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia === undefined)) {
       this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor))
         .subscribe((res) => {
@@ -86,7 +86,7 @@ export class CertificacionComponent implements OnInit {
           this.dataResponse.emit([]);
         });
     } else {
-      if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null)
+      if ((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null)
         && (this.numero_contrato === undefined || this.numero_contrato === null) && (this.vigencia !== undefined)) {
         this.evaluacionMidService.get('filtroProveedor?ProvID=' + String(this.identificacion_proveedor) + '&Vigencia=' + String(this.vigencia))
           .subscribe((res) => {
@@ -99,7 +99,7 @@ export class CertificacionComponent implements OnInit {
           });
       } else {
         if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
-          && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
+          && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia === undefined)) {
           this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia=0')
             .subscribe((res) => {
               if (res.Data !== null) {
@@ -111,7 +111,7 @@ export class CertificacionComponent implements OnInit {
             });
         } else {
           if ((this.identificacion_proveedor === undefined || this.identificacion_proveedor === null)
-            && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
+            && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia !== undefined)) {
             this.evaluacionMidService.get('filtroContrato?NumContrato=' + String(this.numero_contrato) + '&Vigencia='
               + String(this.vigencia)).subscribe((res) => {
                 if (res.Data !== null) {
@@ -122,8 +122,8 @@ export class CertificacionComponent implements OnInit {
                 this.dataResponse.emit([]);
               });
           } else {
-            if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
-              && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia === undefined)) {
+            if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null))
+              && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia === undefined)) {
               this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                 + this.numero_contrato + '&Vigencia=0').subscribe((res) => {
                   if (res.Data !== null) {
@@ -134,8 +134,8 @@ export class CertificacionComponent implements OnInit {
                   this.dataResponse.emit([]);
                 });
             } else {
-              if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor != null))
-                && (this.numero_contrato !== undefined && this.numero_contrato != null) && (this.vigencia !== undefined)) {
+              if (((this.identificacion_proveedor !== undefined) && (this.identificacion_proveedor !== null))
+                && (this.numero_contrato !== undefined && this.numero_contrato !== null) && (this.vigencia !== undefined)) {
                 this.evaluacionMidService.get('filtroMixto?IdentProv=' + this.identificacion_proveedor + '&NumContrato='
                   + this.numero_contrato + '&Vigencia=' + String(this.vigencia)).subscribe((res) => {
                     if (res.Data !== null) {

@@ -2,14 +2,11 @@ import { Injectable, OnInit } from "@angular/core";
 import { PdfMakeWrapper, Table, Txt, Img } from "pdfmake-wrapper";
 import { pdfFontTime } from "../../../assets/skins/lightgray/fonts/vfs_fonts_times.js";
 import { IMAGENES } from "../../components/images.js";
-import { element, text } from "@angular/core/src/render3/instructions.js";
-import { image } from "html2canvas/dist/types/css/types/image.js";
 import { InformacionCertificacionDve } from "../../@core/data/models/certificacionesDve/informacionCertificacionDve.js";
 import { InformacionDVE } from "./../../@core/data/models/certificacionesDve/informacionDVE";
 import { IntensidadHorariaDVE } from "../../@core/data/models/certificacionesDve/intensidadHorariaDVE.js";
 import swal from "sweetalert2";
 import { FirmaElectronicaService } from "../../@core/utils/firma_electronica.service.js";
-import { error, table } from "console";
 import { AgoraService } from "../agora.service.js";
 import { DocumentosCrudService } from "./documentos-crud.service.js";
 import { PopUpManager } from "./../../managers/popUpManager";
@@ -85,7 +82,7 @@ export class CrearCertificacionesDveService {
       this.pdf.add("\n");
       this.pdf.add(docDefinition.contentTable);
       this.pdf.add("\n");
-      icluirSalario == true
+      icluirSalario === true
         ? this.pdf.add(
           new Txt(
             `\n Salario mensual : ${informacionCertificacionDve.ultimoPagoDve}`
@@ -108,7 +105,7 @@ export class CrearCertificacionesDveService {
       this.pdf.add("\n" + "\n");
 
       this.pdf.create().getBlob(async (blob) => {
-        let pdfBase64 = await this.firmarDocumento(
+        const pdfBase64 = await this.firmarDocumento(
           blob,
           informacionCertificacionDve.nombreDocente
         );
@@ -290,7 +287,7 @@ export class CrearCertificacionesDveService {
   }
 
   getTable(intensidad: IntensidadHorariaDVE[]) {
-    let tables = {
+    const tables = {
       margin: [0, 5, 0, 10],
       pageBreak: "auto",
       table: {
@@ -315,7 +312,7 @@ export class CrearCertificacionesDveService {
       },
     };
 
-    let dataTable = [];
+    const dataTable = [];
     intensidad.forEach((element) => {
       const content = this.getContentTable(element);
 
@@ -329,7 +326,7 @@ export class CrearCertificacionesDveService {
   }
 
   getContentTable(intensidad: IntensidadHorariaDVE): any[][] {
-    let listaData = [];
+    const listaData = [];
 
     let horasemanasTotales: number = 0;
     let horasemanaSemestrales: number = 0;
@@ -467,10 +464,10 @@ export class CrearCertificacionesDveService {
   }
 
   async firmarDocumento(file: any, nombreArchivo: string): Promise<string> {
-    let data = await this.obtenerDatosSuperVisor();
+    const data = await this.obtenerDatosSuperVisor();
     this.popUpManager.showLoadingAlert("Firmando", "Espera... por favor");
-    let idDocumnento = await this.consultarTipoDeDocumento();
-    let docsAFirmar = [
+    const idDocumnento = await this.consultarTipoDeDocumento();
+    const docsAFirmar = [
       {
         IdDocumento: 12,
         nombre: nombreArchivo + ".pdf",
@@ -511,7 +508,6 @@ export class CrearCertificacionesDveService {
           });
       });
     } catch (error) {
-      console.log(error);
     }
   }
 
@@ -549,7 +545,6 @@ export class CrearCertificacionesDveService {
               }
             },
             error: (error) => {
-              console.log(error);
             },
           });
       });
@@ -575,7 +570,7 @@ export class CrearCertificacionesDveService {
     return meses[index];
   }
   formatearFecha(fecha: Date): string {
-    
+
     const date = new Date(fecha);
 
     const dia = date.getDate();

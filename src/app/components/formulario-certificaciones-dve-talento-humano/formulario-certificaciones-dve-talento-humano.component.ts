@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PopUpManager } from '../../managers/popUpManager';
 import { CrearCertificacionesDveService } from '../../services/certificaionesDve/crear-certificaciones-dve.service';
 import { CertificacionDveService } from '../../services/certificaionesDve/certificacionesDve.service';
-import { error } from 'console';
 
 @Component({
   selector: 'ngx-formulario-certificaciones-dve-talento-humano',
@@ -28,37 +27,36 @@ export class FormularioCertificacionesDveTalentoHumanoComponent implements OnIni
 
   submitFormularioCertificacionesDveTalentoHumano() {
     if (this.formularioCertificacionesDveTalentoHumano.valid) {
-      
-      const peticion = this.getPeticion(this.formularioCertificacionesDveTalentoHumano)
+
+      const peticion = this.getPeticion(this.formularioCertificacionesDveTalentoHumano);
       this.popUpManager.showLoadingAlert("Generando", "Por favor espera un momento");
       this.certificacionesService.getDataCertificactionDve(peticion).subscribe({
         next:(response)=>{
-   
-          if(response!=undefined){
-            this.crearCertificado.createPfd(response,this.formularioCertificacionesDveTalentoHumano.value.incluir_salario)
+
+          if(response!==undefined){
+            this.crearCertificado.createPfd(response,this.formularioCertificacionesDveTalentoHumano.value.incluir_salario);
           }else{
-            this.popUpManager.showErrorAlert("Erro al consultar")
+            this.popUpManager.showErrorAlert("Erro al consultar");
           }
         },error:(error)=>{
          if(error.error.Message.Message){
-          this.popUpManager.showErrorAlert(error.error.Message.Message)
+          this.popUpManager.showErrorAlert(error.error.Message.Message);
 
-         }else{ this.popUpManager.showErrorAlert("Erro al generar certificado")}
-         
+         }else{ this.popUpManager.showErrorAlert("Erro al generar certificado");}
+
         }
-      })
-      
+      });
+
 
     }else {
-      this.formuarioValido=true
-      this.popUpManager.showErrorAlert("Valide el formulario")
+      this.formuarioValido=true;
+      this.popUpManager.showErrorAlert("Valide el formulario");
     }
   }
 
 
 
   eliminarLetras(identificacion:string){
-    console.log(identificacion)
     const soloNumeros = identificacion.replace(/[^0-9]/g, '');
     this.formularioCertificacionesDveTalentoHumano.patchValue({
       numero_documento: soloNumeros

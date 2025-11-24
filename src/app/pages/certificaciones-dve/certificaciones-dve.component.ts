@@ -19,7 +19,7 @@ export class CertificacionesDveComponent implements OnInit {
 
   async ngOnInit() {
    await this.getToken();
-  this.habilitarMenu()
+  this.habilitarMenu();
   }
 
    docente= {
@@ -38,20 +38,19 @@ export class CertificacionesDveComponent implements OnInit {
     }
   }
 
- 
-  
+
+
   obtenerRoles():string[]{
-    console.log(this.userService.getPayload().role)
-    return this.userService.getPayload().role
+    return this.userService.getPayload().role;
   }
 
   habilitarMenu(){
-    
+
     const esTalentoHumano = this.obtenerRoles().includes("TALENTO_HUMANO") ;
-    const esDocente  = this.obtenerRoles().includes("DOCENTE")
+    const esDocente  = this.obtenerRoles().includes("DOCENTE");
     this.menuTalentoHumano =  esTalentoHumano ;
     this.menuDocente= esDocente && !esTalentoHumano;
-     
+
   }
 
 
@@ -59,8 +58,8 @@ export class CertificacionesDveComponent implements OnInit {
     const soloLetrasYSimbolosRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s!@#$%^&*(),.?":{}|<>_-]+$/;
 
     if(soloLetrasYSimbolosRegex.test(String(identificacion))){
-    
+
     }
   }
-  
+
 }

@@ -173,7 +173,7 @@ export class DinamicformComponent implements OnInit, OnChanges {
       this.interlaced.emit(c);
     }
     if (c.etiqueta === 'select') {
-      if (c.valor == null) {
+      if (c.valor === null) {
         c.clase = 'form-control form-control-danger';
         c.alerta = 'Seleccione el campo';
         return false;
@@ -232,7 +232,7 @@ export class DinamicformComponent implements OnInit, OnChanges {
       this.interlaced.emit(c);
     }
     if (c.etiqueta === 'select') {
-      if (c.valor == null) {
+      if (c.valor === null) {
         c.clase = 'form-control form-control-danger';
         c.alerta = 'Seleccione el campo';
         return false;
@@ -273,19 +273,15 @@ export class DinamicformComponent implements OnInit, OnChanges {
 
     this.normalform.campos.forEach((d: any) => {
       requeridos = d.requerido ? requeridos + 1 : requeridos;
-      // console.log(d);
       if (this.normalform.btn) {
-        /// console.log('ok');
         if (this.validCampo(d)) {
           if (d.etiqueta === 'file') {
             result[d.nombre] = { nombre: d.nombre, file: d.File };
-            // result[d.nombre].push({ nombre: d.name, file: d.valor });
           } else if (d.etiqueta === 'select') {
             result[d.nombre] = d.relacion ? d.valor : d.valor.Id;
           } else {
             result[d.nombre] = d.valor;
           }
-          // console.log(result);
           resueltos = d.requerido ? resueltos + 1 : resueltos;
         } else {
           this.data.valid = false;
@@ -294,13 +290,11 @@ export class DinamicformComponent implements OnInit, OnChanges {
         if (this.validCampo2(d)) {
           if (d.etiqueta === 'file') {
             result[d.nombre] = { nombre: d.nombre, file: d.File };
-            // result[d.nombre].push({ nombre: d.name, file: d.valor });
           } else if (d.etiqueta === 'select') {
             result[d.nombre] = d.relacion ? d.valor : d.valor.Id;
           } else {
             result[d.nombre] = d.valor;
           }
-          // console.log(result);
           resueltos = d.requerido ? resueltos + 1 : resueltos;
         } else {
           this.data.valid = false;

@@ -41,7 +41,7 @@ export class UtilidadesService {
 
  decimalToRoman(decimal: string): string {
         
- let decimalNumber = Number(decimal)
+ let decimalNumber = Number(decimal);
         const romanSymbols = ['I', 'IV', 'V', 'IX', 'X', 'XL', 'L', 'XC', 'C', 'CD', 'D', 'M'];
         const decimalValues = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 1000];
     
