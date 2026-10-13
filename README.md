@@ -31,28 +31,28 @@ git clone https://github.com/udistrital/evaluacion_cliente.git
 # enter the project directory
 cd evaluacion_cliente
 ```
+Usar Node.js 14 y pnpm 7.33.7, igual que el pipeline.
 Iniciar el servidor en local
 ```bash
 # install dependency
-npx npm install
-or
-npm install
+npm install --global pnpm@7.33.7
+pnpm install --frozen-lockfile
 # start server
-npx ng serve
+pnpm start
 # Whenever you want to change the port just run
-npx ng dev --port = 9528
+pnpm start --port 9528
 ```
 
 Linter
 ```bash
 # Angular linter
-npm run lint
+pnpm run lint
 # run linter and auto fix
-npm run lint:fix
+pnpm run lint:fix
 # run linter on styles
-npm run lint:styles
+pnpm run lint:styles
 # run lint UI
-npm run lint:ci
+pnpm run lint:ci
 ```
 
 ### Ejecución Dockerfile
@@ -65,12 +65,10 @@ npm run lint:ci
 ```
 ### Ejecución Pruebas
 
-Pruebas unitarias powered by Jest
+Pruebas unitarias con Karma y Jasmine
 ```bash
 # run unit test
-npm run test
-# Runt linter + unit test
-npm run test:ui
+pnpm run test
 ```
 ## Mockups
 Los siguientes mockups representan la estructura general de la aplicación, módulos, submódulos, estructura de información en vista formulario y vista tabla.

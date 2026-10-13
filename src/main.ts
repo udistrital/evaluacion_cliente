@@ -14,5 +14,8 @@ if (environment.production) {
 
 // autenticacion.clearUrl();
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+// Mientras el aviso esté activo, no iniciar la aplicación ni sus rutas de acceso.
+if (!document.getElementById('maintenance-notice')) {
+  platformBrowserDynamic().bootstrapModule(AppModule)
+    .catch(err => console.error(err));
+}
