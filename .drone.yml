@@ -23,7 +23,8 @@ steps:
         - push
 
   - name: nodejs_develop
-    image: node:lts-bullseye
+    # Angular 7 and both locked node-sass 4.x versions support Node 10.
+    image: node:10.24.1-buster
     commands:
       - node --version
       - npm i
@@ -36,7 +37,7 @@ steps:
         - push
 
   - name: nodejs_release
-    image: node:lts-bullseye
+    image: node:10.24.1-buster
     commands:
       - node --version
       - npm i
@@ -48,7 +49,7 @@ steps:
         - push
 
   - name: nodejs_master
-    image: node:lts-bullseye
+    image: node:10.24.1-buster
     commands:
       - node --version
       - npm i
