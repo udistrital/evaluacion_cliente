@@ -23,12 +23,13 @@ steps:
         - push
 
   - name: nodejs_develop
-    # Angular 7 and both locked node-sass 4.x versions support Node 10.
-    image: node:10.24.1-buster
+    image: node:14
     commands:
       - node --version
-      - npm i
-      - npm run build
+      - npm install --global pnpm@7.33.7
+      - pnpm --version
+      - pnpm install --frozen-lockfile
+      - pnpm run build
     when:
       branch:
         - feature/*
@@ -40,8 +41,10 @@ steps:
     image: node:14
     commands:
       - node --version
-      - npm i
-      - npm run build:test
+      - npm install --global pnpm@7.33.7
+      - pnpm --version
+      - pnpm install --frozen-lockfile
+      - pnpm run build:test
     when:
       branch:
         - release/*
@@ -49,11 +52,13 @@ steps:
         - push
 
   - name: nodejs_master
-    image: node:10.24.1-buster
+    image: node:14
     commands:
       - node --version
-      - npm i
-      - npm run build:prod
+      - npm install --global pnpm@7.33.7
+      - pnpm --version
+      - pnpm install --frozen-lockfile
+      - pnpm run build:prod
     when:
       branch:
         - master
@@ -71,7 +76,7 @@ steps:
         from_secret: aws_secret_access_key
       region: us-east-1
       source: dist/**/*
-      target: /sga/${DRONE_REPO_NAME}
+      target: /${DRONE_REPO_NAME}
       strip_prefix: dist/
     when:
       branch:
@@ -90,7 +95,7 @@ steps:
         from_secret: aws_secret_access_key
       region: us-east-1
       source: dist/**/*
-      target: /sga/${DRONE_REPO_NAME}
+      target: /${DRONE_REPO_NAME}
       strip_prefix: dist/
     when:
       branch:
