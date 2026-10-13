@@ -37,7 +37,7 @@ steps:
         - push
 
   - name: nodejs_release
-    image: node:10.24.1-buster
+    image: node:14
     commands:
       - node --version
       - npm i
